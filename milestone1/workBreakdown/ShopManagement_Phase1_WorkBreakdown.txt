@@ -1,0 +1,39 @@
+
+-----------------------Milestone 1 ------------------------------
+
+********************** Phase 1 Db Schema Analysis ************************
+Entity Identification + Relationships among those entities => 2days
+
+
+******************** Phase 2 SaaS Part ***********************************
+Web services for user creation and user roles and user information  => 1day
+Web services for adding,fetching,updating and removing products and their brands => 2days
+Web services for creating, searching and updating invoice records => 2days
+Web service for searching stock on basis of products and brands => 1day
+Web services for inventory management => 2days
+Web services for getting sales, top selling products, low stock products => 2days
+Web services for reporting section alongwith customized parameters => 4days
+
+
+***************************Phase 3 Android App ****************************
+Login flow with owner and salesman roles => 1day
+
+Sales flow for salesman => 2days
+Invoice Printing => 2days
+Message Alert => 2days
+Finishing sales with due payments => 1day
+
+View Stock flow => 2days
+
+Purchase flow with adding, editing and removal of products and brands => 3days
+
+Invoice searching flow => 1day
+
+Dashboard screen layout designing => 1day
+Integration of dashboard screen with services => 2days
+
+Reporting section => 7days
+
+
+*Note-- The mentioned time is a rough estimate of the upper boundary including the testing of each process, and hopefully to be completed before the mentioned duration.
+
