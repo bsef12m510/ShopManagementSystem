@@ -25,14 +25,30 @@ namespace WebSource.Controllers
         }
 
         // GET api/values/5
-        public string Get(int id)
+        public IHttpActionResult Get(string id)
         {
-            return "value";
+            SMS_DBEntities1 db = new SMS_DBEntities1();
+            var users = db.users.ToList();
+       
+            List<string> usernames = new List<string>();
+            foreach (var user in users)
+            {
+                if(user.user_id.Equals(id))
+                {
+                    return Ok(user);
+                }
+
+            }
+            return BadRequest();
         }
 
         // POST api/values
-        public void Post([FromBody]string value)
+        public void Post([FromBody]user user)
         {
+            SMS_DBEntities1 db = new SMS_DBEntities1();
+            db.users.Add(user);
+            db.SaveChanges();
+
         }
 
         // PUT api/values/5
@@ -41,8 +57,24 @@ namespace WebSource.Controllers
         }
 
         // DELETE api/values/5
-        public void Delete(int id)
+        public IHttpActionResult Delete(string id)
         {
+            SMS_DBEntities1 db = new SMS_DBEntities1();
+            var users = db.users.ToList();
+
+            List<string> usernames = new List<string>();
+            foreach (var user in users)
+            {
+                if (user.user_id.Equals(id))
+                {
+                    users.Remove(user);
+                    db.Entry(user).State = System.Data.Entity.EntityState.Deleted;
+                    db.SaveChanges();
+                    return Ok(user);
+                }
+
+            }
+            return BadRequest();
         }
     }
 }
