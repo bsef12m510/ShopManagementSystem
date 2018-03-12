@@ -12,23 +12,19 @@ namespace WebSource.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class user
+    public partial class brand
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public user()
+        public brand()
         {
-            this.invoices = new HashSet<invoice>();
-            this.shops = new HashSet<shop>();
+            this.products = new HashSet<product>();
         }
     
-        public string user_id { get; set; }
-        public string password { get; set; }
-        public string role_id { get; set; }
-        public string username { get; set; }
+        public int brand_id { get; set; }
+        public string brand_name { get; set; }
+        public string brand_icon { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<invoice> invoices { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<shop> shops { get; set; }
+        public virtual ICollection<product> products { get; set; }
     }
 }

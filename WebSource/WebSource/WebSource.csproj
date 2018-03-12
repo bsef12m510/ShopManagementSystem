@@ -214,7 +214,28 @@
     </Compile>
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\brand.cs">
+      <DependentUpon>SMS_Model.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\inventory.cs">
+      <DependentUpon>SMS_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\invoice.cs">
+      <DependentUpon>SMS_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\product.cs">
+      <DependentUpon>SMS_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\purchase.cs">
+      <DependentUpon>SMS_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\sale.cs">
+      <DependentUpon>SMS_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\shop.cs">
+      <DependentUpon>SMS_Model.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\SMS_Model.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
