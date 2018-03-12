@@ -12,23 +12,30 @@ namespace WebSource.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class user
+    public partial class product
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public user()
+        public product()
         {
-            this.invoices = new HashSet<invoice>();
-            this.shops = new HashSet<shop>();
+            this.purchases = new HashSet<purchase>();
+            this.sales = new HashSet<sale>();
+            this.inventories = new HashSet<inventory>();
         }
     
-        public string user_id { get; set; }
-        public string password { get; set; }
-        public string role_id { get; set; }
-        public string username { get; set; }
+        public int product_id { get; set; }
+        public string product_name { get; set; }
+        public int brand_id { get; set; }
+        public string specs { get; set; }
+        public string unit_of_msrmnt { get; set; }
+        public double unit_price { get; set; }
+        public string product_image { get; set; }
     
+        public virtual brand brand { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<invoice> invoices { get; set; }
+        public virtual ICollection<purchase> purchases { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<shop> shops { get; set; }
+        public virtual ICollection<sale> sales { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<inventory> inventories { get; set; }
     }
 }
