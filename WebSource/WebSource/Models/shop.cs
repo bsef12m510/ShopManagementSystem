@@ -18,8 +18,9 @@ namespace WebSource.Models
         public shop()
         {
             this.invoices = new HashSet<invoice>();
+            this.purchases = new HashSet<purchase>();
+            this.sales = new HashSet<sale>();
             this.users = new HashSet<user>();
-            this.inventories = new HashSet<inventory>();
         }
     
         public int shop_id { get; set; }
@@ -29,8 +30,10 @@ namespace WebSource.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<invoice> invoices { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<user> users { get; set; }
+        public virtual ICollection<purchase> purchases { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<inventory> inventories { get; set; }
+        public virtual ICollection<sale> sales { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<user> users { get; set; }
     }
 }

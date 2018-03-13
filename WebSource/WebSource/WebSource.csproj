@@ -218,9 +218,6 @@
       <DependentUpon>SMS_Model.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\IdentityModels.cs" />
-    <Compile Include="Models\inventory.cs">
-      <DependentUpon>SMS_Model.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\invoice.cs">
       <DependentUpon>SMS_Model.tt</DependentUpon>
     </Compile>

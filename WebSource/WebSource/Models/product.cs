@@ -19,7 +19,6 @@ namespace WebSource.Models
         {
             this.purchases = new HashSet<purchase>();
             this.sales = new HashSet<sale>();
-            this.inventories = new HashSet<inventory>();
         }
     
         public int product_id { get; set; }
@@ -35,7 +34,5 @@ namespace WebSource.Models
         public virtual ICollection<purchase> purchases { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<sale> sales { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<inventory> inventories { get; set; }
     }
 }
