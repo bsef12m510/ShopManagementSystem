@@ -16,8 +16,18 @@ namespace WebSource.Models
     {
         public int sale_id { get; set; }
         public int product_id { get; set; }
+        public Nullable<int> shop_id { get; set; }
         public int prod_quant { get; set; }
+        public string is_pmnt_clr { get; set; }
+        public Nullable<double> total_amt { get; set; }
+        public Nullable<double> paid_amt { get; set; }
+        public Nullable<double> discount { get; set; }
+        public string agent_id { get; set; }
+        public string cust_name { get; set; }
+        public string cust_phone { get; set; }
     
         public virtual product product { get; set; }
+        public virtual shop shop { get; set; }
+        public virtual user user { get; set; }
     }
 }
