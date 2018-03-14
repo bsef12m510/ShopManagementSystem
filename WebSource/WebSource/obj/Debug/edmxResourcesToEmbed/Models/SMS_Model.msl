@@ -1,13 +1,101 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
   <EntityContainerMapping StorageEntityContainer="SMS_DBModelStoreContainer" CdmEntityContainer="SMS_DBEntities1">
+    <EntitySetMapping Name="brands">
+      <EntityTypeMapping TypeName="SMS_DBModel.brand">
+        <MappingFragment StoreEntitySet="brands">
+          <ScalarProperty Name="brand_icon" ColumnName="brand_icon" />
+          <ScalarProperty Name="brand_name" ColumnName="brand_name" />
+          <ScalarProperty Name="brand_id" ColumnName="brand_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="inventories">
+      <EntityTypeMapping TypeName="SMS_DBModel.inventory">
+        <MappingFragment StoreEntitySet="inventory">
+          <ScalarProperty Name="prod_quant" ColumnName="prod_quant" />
+          <ScalarProperty Name="product_id" ColumnName="product_id" />
+          <ScalarProperty Name="shop_id" ColumnName="shop_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="product_types">
+      <EntityTypeMapping TypeName="SMS_DBModel.product_types">
+        <MappingFragment StoreEntitySet="product_types">
+          <ScalarProperty Name="type_name" ColumnName="type_name" />
+          <ScalarProperty Name="type_id" ColumnName="type_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="products">
+      <EntityTypeMapping TypeName="SMS_DBModel.product">
+        <MappingFragment StoreEntitySet="products">
+          <ScalarProperty Name="product_image" ColumnName="product_image" />
+          <ScalarProperty Name="unit_price" ColumnName="unit_price" />
+          <ScalarProperty Name="unit_of_msrmnt" ColumnName="unit_of_msrmnt" />
+          <ScalarProperty Name="specs" ColumnName="specs" />
+          <ScalarProperty Name="brand_id" ColumnName="brand_id" />
+          <ScalarProperty Name="product_type" ColumnName="product_type" />
+          <ScalarProperty Name="product_name" ColumnName="product_name" />
+          <ScalarProperty Name="product_id" ColumnName="product_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="purchases">
+      <EntityTypeMapping TypeName="SMS_DBModel.purchase">
+        <MappingFragment StoreEntitySet="purchase">
+          <ScalarProperty Name="pur_time" ColumnName="pur_time" />
+          <ScalarProperty Name="pur_date" ColumnName="pur_date" />
+          <ScalarProperty Name="dlr_phone" ColumnName="dlr_phone" />
+          <ScalarProperty Name="dlr_name" ColumnName="dlr_name" />
+          <ScalarProperty Name="agent_id" ColumnName="agent_id" />
+          <ScalarProperty Name="paid_amt" ColumnName="paid_amt" />
+          <ScalarProperty Name="total_amt" ColumnName="total_amt" />
+          <ScalarProperty Name="is_pmnt_clr" ColumnName="is_pmnt_clr" />
+          <ScalarProperty Name="shop_id" ColumnName="shop_id" />
+          <ScalarProperty Name="prod_quant" ColumnName="prod_quant" />
+          <ScalarProperty Name="prod_id" ColumnName="prod_id" />
+          <ScalarProperty Name="purch_id" ColumnName="purch_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="sales">
+      <EntityTypeMapping TypeName="SMS_DBModel.sale">
+        <MappingFragment StoreEntitySet="sales">
+          <ScalarProperty Name="sale_time" ColumnName="sale_time" />
+          <ScalarProperty Name="sale_date" ColumnName="sale_date" />
+          <ScalarProperty Name="cust_phone" ColumnName="cust_phone" />
+          <ScalarProperty Name="cust_name" ColumnName="cust_name" />
+          <ScalarProperty Name="agent_id" ColumnName="agent_id" />
+          <ScalarProperty Name="discount" ColumnName="discount" />
+          <ScalarProperty Name="paid_amt" ColumnName="paid_amt" />
+          <ScalarProperty Name="total_amt" ColumnName="total_amt" />
+          <ScalarProperty Name="is_pmnt_clr" ColumnName="is_pmnt_clr" />
+          <ScalarProperty Name="prod_quant" ColumnName="prod_quant" />
+          <ScalarProperty Name="shop_id" ColumnName="shop_id" />
+          <ScalarProperty Name="product_id" ColumnName="product_id" />
+          <ScalarProperty Name="sale_id" ColumnName="sale_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="shops">
+      <EntityTypeMapping TypeName="SMS_DBModel.shop">
+        <MappingFragment StoreEntitySet="shops">
+          <ScalarProperty Name="shop_mngr" ColumnName="shop_mngr" />
+          <ScalarProperty Name="shope_name" ColumnName="shope_name" />
+          <ScalarProperty Name="shop_id" ColumnName="shop_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="users">
       <EntityTypeMapping TypeName="SMS_DBModel.user">
         <MappingFragment StoreEntitySet="users">
-          <ScalarProperty Name="user_id" ColumnName="user_id" />
-          <ScalarProperty Name="password" ColumnName="password" />
-          <ScalarProperty Name="role_id" ColumnName="role_id" />
+          <ScalarProperty Name="shop_id" ColumnName="shop_id" />
+          <ScalarProperty Name="api_key" ColumnName="api_key" />
           <ScalarProperty Name="username" ColumnName="username" />
+          <ScalarProperty Name="role_id" ColumnName="role_id" />
+          <ScalarProperty Name="password" ColumnName="password" />
+          <ScalarProperty Name="user_id" ColumnName="user_id" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

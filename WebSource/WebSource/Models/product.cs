@@ -19,10 +19,12 @@ namespace WebSource.Models
         {
             this.purchases = new HashSet<purchase>();
             this.sales = new HashSet<sale>();
+            this.inventories = new HashSet<inventory>();
         }
     
         public int product_id { get; set; }
         public string product_name { get; set; }
+        public int product_type { get; set; }
         public int brand_id { get; set; }
         public string specs { get; set; }
         public string unit_of_msrmnt { get; set; }
@@ -30,9 +32,12 @@ namespace WebSource.Models
         public string product_image { get; set; }
     
         public virtual brand brand { get; set; }
+        public virtual product_types product_types { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<purchase> purchases { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<sale> sales { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<inventory> inventories { get; set; }
     }
 }

@@ -208,6 +208,7 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -217,11 +218,15 @@
     <Compile Include="Models\brand.cs">
       <DependentUpon>SMS_Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\CProduct.cs" />
     <Compile Include="Models\IdentityModels.cs" />
-    <Compile Include="Models\invoice.cs">
+    <Compile Include="Models\inventory.cs">
       <DependentUpon>SMS_Model.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\product.cs">
+      <DependentUpon>SMS_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\product_types.cs">
       <DependentUpon>SMS_Model.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\purchase.cs">
@@ -371,7 +376,6 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
-
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

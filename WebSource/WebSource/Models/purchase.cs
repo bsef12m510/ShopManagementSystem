@@ -24,6 +24,8 @@ namespace WebSource.Models
         public string agent_id { get; set; }
         public string dlr_name { get; set; }
         public string dlr_phone { get; set; }
+        public System.DateTime pur_date { get; set; }
+        public System.TimeSpan pur_time { get; set; }
     
         public virtual product product { get; set; }
         public virtual shop shop { get; set; }

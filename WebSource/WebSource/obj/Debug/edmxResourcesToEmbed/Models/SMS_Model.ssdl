@@ -1,5 +1,85 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Schema Namespace="SMS_DBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="brands">
+    <Key>
+      <PropertyRef Name="brand_id" />
+    </Key>
+    <Property Name="brand_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="brand_name" Type="varchar" MaxLength="60" />
+    <Property Name="brand_icon" Type="varchar" MaxLength="255" />
+  </EntityType>
+  <EntityType Name="inventory">
+    <Key>
+      <PropertyRef Name="shop_id" />
+      <PropertyRef Name="product_id" />
+    </Key>
+    <Property Name="shop_id" Type="int" Nullable="false" />
+    <Property Name="product_id" Type="int" Nullable="false" />
+    <Property Name="prod_quant" Type="int" />
+  </EntityType>
+  <EntityType Name="product_types">
+    <Key>
+      <PropertyRef Name="type_id" />
+    </Key>
+    <Property Name="type_id" Type="int" Nullable="false" />
+    <Property Name="type_name" Type="varchar" MaxLength="25" Nullable="false" />
+  </EntityType>
+  <EntityType Name="products">
+    <Key>
+      <PropertyRef Name="product_id" />
+    </Key>
+    <Property Name="product_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="product_name" Type="varchar" MaxLength="200" />
+    <Property Name="product_type" Type="int" Nullable="false" />
+    <Property Name="brand_id" Type="int" Nullable="false" />
+    <Property Name="specs" Type="varchar" MaxLength="255" />
+    <Property Name="unit_of_msrmnt" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="unit_price" Type="float" Nullable="false" />
+    <Property Name="product_image" Type="varchar" MaxLength="255" />
+  </EntityType>
+  <EntityType Name="purchase">
+    <Key>
+      <PropertyRef Name="purch_id" />
+    </Key>
+    <Property Name="purch_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="prod_id" Type="int" Nullable="false" />
+    <Property Name="prod_quant" Type="int" Nullable="false" />
+    <Property Name="shop_id" Type="int" Nullable="false" />
+    <Property Name="is_pmnt_clr" Type="nchar" MaxLength="1" Nullable="false" />
+    <Property Name="total_amt" Type="float" />
+    <Property Name="paid_amt" Type="float" />
+    <Property Name="agent_id" Type="varchar" MaxLength="50" />
+    <Property Name="dlr_name" Type="varchar" MaxLength="50" />
+    <Property Name="dlr_phone" Type="varchar" MaxLength="50" />
+    <Property Name="pur_date" Type="date" Nullable="false" />
+    <Property Name="pur_time" Type="time" Precision="7" Nullable="false" />
+  </EntityType>
+  <EntityType Name="sales">
+    <Key>
+      <PropertyRef Name="sale_id" />
+    </Key>
+    <Property Name="sale_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="product_id" Type="int" Nullable="false" />
+    <Property Name="shop_id" Type="int" />
+    <Property Name="prod_quant" Type="int" Nullable="false" />
+    <Property Name="is_pmnt_clr" Type="nchar" MaxLength="1" Nullable="false" />
+    <Property Name="total_amt" Type="float" />
+    <Property Name="paid_amt" Type="float" />
+    <Property Name="discount" Type="float" />
+    <Property Name="agent_id" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="cust_name" Type="varchar" MaxLength="50" />
+    <Property Name="cust_phone" Type="varchar" MaxLength="50" />
+    <Property Name="sale_date" Type="date" Nullable="false" />
+    <Property Name="sale_time" Type="time" Precision="7" Nullable="false" />
+  </EntityType>
+  <EntityType Name="shops">
+    <Key>
+      <PropertyRef Name="shop_id" />
+    </Key>
+    <Property Name="shop_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="shope_name" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="shop_mngr" Type="varchar" MaxLength="50" />
+  </EntityType>
   <EntityType Name="users">
     <Key>
       <PropertyRef Name="user_id" />
@@ -8,8 +88,161 @@
     <Property Name="password" Type="varchar" MaxLength="100" Nullable="false" />
     <Property Name="role_id" Type="varchar" MaxLength="5" Nullable="false" />
     <Property Name="username" Type="varchar" MaxLength="100" />
+    <Property Name="api_key" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="shop_id" Type="int" Nullable="false" />
   </EntityType>
+  <Association Name="fk_prod_br_id">
+    <End Role="brands" Type="Self.brands" Multiplicity="1" />
+    <End Role="products" Type="Self.products" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="brands">
+        <PropertyRef Name="brand_id" />
+      </Principal>
+      <Dependent Role="products">
+        <PropertyRef Name="brand_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_prod_type_id">
+    <End Role="product_types" Type="Self.product_types" Multiplicity="1" />
+    <End Role="products" Type="Self.products" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="product_types">
+        <PropertyRef Name="type_id" />
+      </Principal>
+      <Dependent Role="products">
+        <PropertyRef Name="product_type" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_pur_pid">
+    <End Role="products" Type="Self.products" Multiplicity="1" />
+    <End Role="purchase" Type="Self.purchase" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="products">
+        <PropertyRef Name="product_id" />
+      </Principal>
+      <Dependent Role="purchase">
+        <PropertyRef Name="prod_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_pur_sh_id">
+    <End Role="shops" Type="Self.shops" Multiplicity="1" />
+    <End Role="purchase" Type="Self.purchase" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="shops">
+        <PropertyRef Name="shop_id" />
+      </Principal>
+      <Dependent Role="purchase">
+        <PropertyRef Name="shop_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_pur_uid">
+    <End Role="users" Type="Self.users" Multiplicity="0..1" />
+    <End Role="purchase" Type="Self.purchase" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="users">
+        <PropertyRef Name="user_id" />
+      </Principal>
+      <Dependent Role="purchase">
+        <PropertyRef Name="agent_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_sales_pid">
+    <End Role="products" Type="Self.products" Multiplicity="1" />
+    <End Role="sales" Type="Self.sales" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="products">
+        <PropertyRef Name="product_id" />
+      </Principal>
+      <Dependent Role="sales">
+        <PropertyRef Name="product_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_sales_sh_id">
+    <End Role="shops" Type="Self.shops" Multiplicity="0..1" />
+    <End Role="sales" Type="Self.sales" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="shops">
+        <PropertyRef Name="shop_id" />
+      </Principal>
+      <Dependent Role="sales">
+        <PropertyRef Name="shop_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_sales_uid">
+    <End Role="users" Type="Self.users" Multiplicity="1" />
+    <End Role="sales" Type="Self.sales" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="users">
+        <PropertyRef Name="user_id" />
+      </Principal>
+      <Dependent Role="sales">
+        <PropertyRef Name="agent_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_users_shid">
+    <End Role="shops" Type="Self.shops" Multiplicity="1" />
+    <End Role="users" Type="Self.users" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="shops">
+        <PropertyRef Name="shop_id" />
+      </Principal>
+      <Dependent Role="users">
+        <PropertyRef Name="shop_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <EntityContainer Name="SMS_DBModelStoreContainer">
+    <EntitySet Name="brands" EntityType="Self.brands" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="inventory" EntityType="Self.inventory" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="product_types" EntityType="Self.product_types" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="products" EntityType="Self.products" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="purchase" EntityType="Self.purchase" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="sales" EntityType="Self.sales" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="shops" EntityType="Self.shops" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="users" EntityType="Self.users" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="fk_prod_br_id" Association="Self.fk_prod_br_id">
+      <End Role="brands" EntitySet="brands" />
+      <End Role="products" EntitySet="products" />
+    </AssociationSet>
+    <AssociationSet Name="fk_prod_type_id" Association="Self.fk_prod_type_id">
+      <End Role="product_types" EntitySet="product_types" />
+      <End Role="products" EntitySet="products" />
+    </AssociationSet>
+    <AssociationSet Name="fk_pur_pid" Association="Self.fk_pur_pid">
+      <End Role="products" EntitySet="products" />
+      <End Role="purchase" EntitySet="purchase" />
+    </AssociationSet>
+    <AssociationSet Name="fk_pur_sh_id" Association="Self.fk_pur_sh_id">
+      <End Role="shops" EntitySet="shops" />
+      <End Role="purchase" EntitySet="purchase" />
+    </AssociationSet>
+    <AssociationSet Name="fk_pur_uid" Association="Self.fk_pur_uid">
+      <End Role="users" EntitySet="users" />
+      <End Role="purchase" EntitySet="purchase" />
+    </AssociationSet>
+    <AssociationSet Name="fk_sales_pid" Association="Self.fk_sales_pid">
+      <End Role="products" EntitySet="products" />
+      <End Role="sales" EntitySet="sales" />
+    </AssociationSet>
+    <AssociationSet Name="fk_sales_sh_id" Association="Self.fk_sales_sh_id">
+      <End Role="shops" EntitySet="shops" />
+      <End Role="sales" EntitySet="sales" />
+    </AssociationSet>
+    <AssociationSet Name="fk_sales_uid" Association="Self.fk_sales_uid">
+      <End Role="users" EntitySet="users" />
+      <End Role="sales" EntitySet="sales" />
+    </AssociationSet>
+    <AssociationSet Name="fk_users_shid" Association="Self.fk_users_shid">
+      <End Role="shops" EntitySet="shops" />
+      <End Role="users" EntitySet="users" />
+    </AssociationSet>
   </EntityContainer>
 </Schema>

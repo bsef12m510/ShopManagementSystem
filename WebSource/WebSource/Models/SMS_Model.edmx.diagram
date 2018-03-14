@@ -4,24 +4,25 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="cbed434ae3094be39ed465a873da7e87" Name="Diagram1">
-        <EntityTypeShape EntityType="SMS_DBModel.brand" Width="1.5" PointX="0.75" PointY="12" />
-        <EntityTypeShape EntityType="SMS_DBModel.invoice" Width="1.5" PointX="8.25" PointY="14.125" />
-        <EntityTypeShape EntityType="SMS_DBModel.product" Width="1.5" PointX="3" PointY="11.5" />
-        <EntityTypeShape EntityType="SMS_DBModel.purchase" Width="1.5" PointX="5.25" PointY="9.125" />
-        <EntityTypeShape EntityType="SMS_DBModel.sale" Width="1.5" PointX="5.25" PointY="14.125" />
-        <EntityTypeShape EntityType="SMS_DBModel.shop" Width="1.5" PointX="0.75" PointY="8.25" />
-        <EntityTypeShape EntityType="SMS_DBModel.user" Width="1.5" PointX="3" PointY="21.125" />
+      <Diagram DiagramId="cbed434ae3094be39ed465a873da7e87" Name="Diagram1" ZoomLevel="63">
+        <EntityTypeShape EntityType="SMS_DBModel.brand" Width="1.5" PointX="0.75" PointY="2.75" />
+        <EntityTypeShape EntityType="SMS_DBModel.inventory" Width="1.5" PointX="2.75" PointY="1.75" />
+        <EntityTypeShape EntityType="SMS_DBModel.product_types" Width="1.5" PointX="0.75" PointY="5.75" />
+        <EntityTypeShape EntityType="SMS_DBModel.product" Width="1.5" PointX="3" PointY="4.875" />
+        <EntityTypeShape EntityType="SMS_DBModel.purchase" Width="1.5" PointX="8.25" PointY="4.625" />
+        <EntityTypeShape EntityType="SMS_DBModel.sale" Width="1.5" PointX="5.25" PointY="4.5" />
+        <EntityTypeShape EntityType="SMS_DBModel.shop" Width="1.5" PointX="6" PointY="10.25" />
+        <EntityTypeShape EntityType="SMS_DBModel.user" Width="1.5" PointX="6" PointY="0.75" />
         <AssociationConnector Association="SMS_DBModel.fk_prod_br_id" />
-        <AssociationConnector Association="SMS_DBModel.fk_inv_sh_id" />
-        <AssociationConnector Association="SMS_DBModel.fk_inv_uid" />
+        <AssociationConnector Association="SMS_DBModel.fk_prod_type_id" />
         <AssociationConnector Association="SMS_DBModel.fk_pur_pid" />
         <AssociationConnector Association="SMS_DBModel.fk_sales_pid" />
         <AssociationConnector Association="SMS_DBModel.fk_pur_sh_id" />
         <AssociationConnector Association="SMS_DBModel.fk_pur_uid" />
         <AssociationConnector Association="SMS_DBModel.fk_sales_sh_id" />
         <AssociationConnector Association="SMS_DBModel.fk_sales_uid" />
-        <AssociationConnector Association="SMS_DBModel.shop_users" />
+        <AssociationConnector Association="SMS_DBModel.fk_users_shid" />
+        <AssociationConnector Association="SMS_DBModel.fk_inv_pid" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
