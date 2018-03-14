@@ -12,12 +12,12 @@ namespace WebSource.Controllers
     {
         [HttpGet]
         [ActionName("SearchByProduct")]
-        public IHttpActionResult SearcProduct(String product_name)
+        public IHttpActionResult SearcProduct(String userId, String product)
         {
             SMS_DBEntities1 db = new SMS_DBEntities1();
             //  IEnumerable<product> products = db.products.Where(x => x.product_name.Equals(product_name));
             var products = new List<product>();
-            var user_id = "hrauf";
+            var user_id = userId;
             var user = db.users.First(y => y.user_id.Equals(user_id));
             var shop = db.shops.First(y => y.shop_id == user.shop_id);
             var inventory = db.inventories.Where(y => y.shop_id == shop.shop_id);
@@ -27,14 +27,52 @@ namespace WebSource.Controllers
 
 
 
+            //foreach (var i in inventory)
+            //{
+            //    var p = db.products.first(y => y.product_id == i.product_id);
+            //    if (db.product_types.first(y=>y.type_id==p.product_type).type_name.equals(product))
+            //        products.add(p);
+                
+            //}
+           // return Ok(products);
+
+            var cproducts = new List<CProduct>();
             foreach (var i in inventory)
             {
                 var p = db.products.First(y => y.product_id == i.product_id);
-                if (db.product_types.First(y=>y.type_id==p.product_type).type_name.Equals("tv"))
-                    products.Add(p);
-                
+                var type = db.product_types.First(y => y.type_id == p.product_type);
+                var brand = db.brands.First(y => y.brand_id == p.brand_id);
+                if (type.type_name.Equals(product)) {     
+                    cproducts.Add(new CProduct(p,type,brand,i.prod_quant));
+                }
+                 
             }
-            return Ok(products);
+            return Ok(cproducts);
+        }
+
+        [HttpGet]
+        [ActionName("SearchByBrand")]
+        public IHttpActionResult SearchBrand(string userId, string brandName)
+        {
+            SMS_DBEntities1 db = new SMS_DBEntities1();
+            var user = db.users.First(y => y.user_id.Equals(userId));
+            var shop = db.shops.First(y => y.shop_id == user.shop_id);
+            var inventory = db.inventories.Where(y => y.shop_id == shop.shop_id);
+
+            var cproducts = new List<CProduct>();
+            foreach (var i in inventory)
+            {
+                var p = db.products.First(y => y.product_id == i.product_id);
+                var type = db.product_types.First(y => y.type_id == p.product_type);
+                var brand = db.brands.First(y => y.brand_id == p.brand_id);
+                if (brand.brand_name.Equals(brandName))
+                {
+                    cproducts.Add(new CProduct(p, type, brand, i.prod_quant));
+                }
+
+            }
+            return Ok(cproducts);
+
         }
     }
 }

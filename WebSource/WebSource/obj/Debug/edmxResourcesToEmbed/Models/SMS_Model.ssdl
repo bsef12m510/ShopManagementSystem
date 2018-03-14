@@ -91,6 +91,18 @@
     <Property Name="api_key" Type="varchar" MaxLength="100" Nullable="false" />
     <Property Name="shop_id" Type="int" Nullable="false" />
   </EntityType>
+  <Association Name="fk_inv_pid">
+    <End Role="products" Type="Self.products" Multiplicity="1" />
+    <End Role="inventory" Type="Self.inventory" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="products">
+        <PropertyRef Name="product_id" />
+      </Principal>
+      <Dependent Role="inventory">
+        <PropertyRef Name="product_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="fk_prod_br_id">
     <End Role="brands" Type="Self.brands" Multiplicity="1" />
     <End Role="products" Type="Self.products" Multiplicity="*" />
@@ -208,6 +220,10 @@
     <EntitySet Name="sales" EntityType="Self.sales" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="shops" EntityType="Self.shops" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="users" EntityType="Self.users" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="fk_inv_pid" Association="Self.fk_inv_pid">
+      <End Role="products" EntitySet="products" />
+      <End Role="inventory" EntitySet="inventory" />
+    </AssociationSet>
     <AssociationSet Name="fk_prod_br_id" Association="Self.fk_prod_br_id">
       <End Role="brands" EntitySet="brands" />
       <End Role="products" EntitySet="products" />

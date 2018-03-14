@@ -218,7 +218,9 @@
     <Compile Include="Models\brand.cs">
       <DependentUpon>SMS_Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\CBrand.cs" />
     <Compile Include="Models\CProduct.cs" />
+    <Compile Include="Models\CProductType.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\inventory.cs">
       <DependentUpon>SMS_Model.tt</DependentUpon>
