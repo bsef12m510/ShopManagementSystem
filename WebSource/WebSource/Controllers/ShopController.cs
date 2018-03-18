@@ -15,7 +15,7 @@ namespace WebSource.Controllers
         public IHttpActionResult GetShop(String apiKey , String shopName)
         {
             SMS_DBEntities1 db = new SMS_DBEntities1();
-            var user = db.users.First(x => x.api_key.Equals(apiKey));
+            var user = db.users.FirstOrDefault(x => x.api_key.Equals(apiKey));
             if (user.role_id.Equals("admin"))
             {
                 var shop = db.shops.FirstOrDefault(x => x.shope_name.Equals(shopName));
@@ -35,7 +35,7 @@ namespace WebSource.Controllers
         public IHttpActionResult GetAllShops(String apiKey)
         {
             SMS_DBEntities1 db = new SMS_DBEntities1();
-            var user = db.users.First(x => x.api_key.Equals(apiKey));
+            var user = db.users.FirstOrDefault(x => x.api_key.Equals(apiKey));
             if (user.role_id.Equals("admin"))
             {
                 var shops = db.shops.ToList();
@@ -56,7 +56,7 @@ namespace WebSource.Controllers
         public IHttpActionResult Post(String apiKey, [FromBody]shop shop)
         {
             SMS_DBEntities1 db = new SMS_DBEntities1();
-            var user = db.users.First(x => x.api_key.Equals(apiKey));
+            var user = db.users.FirstOrDefault(x => x.api_key.Equals(apiKey));
             if (user.role_id.Equals("admin"))
             {
                 db.shops.Add(shop);
@@ -69,8 +69,23 @@ namespace WebSource.Controllers
 
         [HttpPut]
         [ActionName("UpdateShop")]
-        public void Put(int id, [FromBody]string value)
+        public IHttpActionResult Put(String apiKey, int id, [FromBody]shop updatedShop)
         {
+            SMS_DBEntities1 db = new SMS_DBEntities1();
+            var user = db.users.FirstOrDefault(x => x.api_key.Equals(apiKey));
+            if (user.role_id.Equals("admin"))
+            {
+                var shop = db.shops.FirstOrDefault(x => x.shop_id == id);
+                if (shop != null)
+                {
+                    shop.shope_name = updatedShop.shope_name;
+                    shop.shop_mngr = updatedShop.shop_mngr;
+                    db.Entry(shop).State = System.Data.Entity.EntityState.Modified;
+                    db.SaveChanges();
+                    return Ok(new CShop(shop));
+                }
+            }
+            return BadRequest();
         }
 
         [HttpDelete]
@@ -78,7 +93,7 @@ namespace WebSource.Controllers
         public IHttpActionResult Delete(String apiKey, int id)
         {
             SMS_DBEntities1 db = new SMS_DBEntities1();
-            var user = db.users.First(x => x.api_key.Equals(apiKey));
+            var user = db.users.FirstOrDefault(x => x.api_key.Equals(apiKey));
             if (user.role_id.Equals("admin"))
             {
                 var shops = db.shops.ToList();

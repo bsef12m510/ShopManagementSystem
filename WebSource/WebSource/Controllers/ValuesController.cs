@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DAL.TimeUuidGenerator;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -46,6 +47,8 @@ namespace WebSource.Controllers
         public void Post([FromBody]user user)
         {
             SMS_DBEntities1 db = new SMS_DBEntities1();
+           
+            user.api_key = GuidGenerator.GenerateTimeBasedGuid().ToString();
             db.users.Add(user);
             db.SaveChanges();
 
