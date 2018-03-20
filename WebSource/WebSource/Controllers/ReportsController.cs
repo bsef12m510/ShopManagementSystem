@@ -45,32 +45,45 @@ namespace WebSource.Controllers
         [ActionName("salesReport")]
         public IHttpActionResult GetSalesReport(string apiKey, DateTime dateFrom, DateTime dateTo)
         {
-            SMS_DBEntities1 db = new SMS_DBEntities1();
-            var user = db.users.FirstOrDefault(x => x.api_key.Equals(apiKey));
-            if (null != user)
+            if (null != dateFrom && null != dateTo)
             {
-                var shop = db.shops.FirstOrDefault(x => x.shop_id == user.shop_id);
-                if (null != shop)
+                SMS_DBEntities1 db = new SMS_DBEntities1();
+                var user = db.users.FirstOrDefault(x => x.api_key.Equals(apiKey));
+                if (null != user)
                 {
-                    var csales = new List<CSale>();
-                    var sales = db.sales.Where(x => x.shop_id == shop.shop_id);
-                    foreach(var s in sales)
+                    var shop = db.shops.FirstOrDefault(x => x.shop_id == user.shop_id);
+                    if (null != shop)
                     {
-                        var product = db.products.FirstOrDefault(x => x.product_id == s.product_id);
-                        var product_type = db.product_types.FirstOrDefault(x => x.type_id == product.product_type);
-                        var brand = db.brands.FirstOrDefault(x => x.brand_id == product.brand_id);
-                        var cproduct = new CProduct(product, product_type, brand, 0);
-                        var agent = db.users.FirstOrDefault(x => x.user_id.Equals(s.agent_id));
-                        var cuser = new CUser(agent);
+                        var csales = new List<CSale>();
+                        IEnumerable<sale> sales;
 
-                        csales.Add(new CSale(s, cproduct, cuser));
+                        if (DateTime.Compare(dateFrom, dateTo) == 0)
+                            sales = db.sales.Where(x => x.shop_id == shop.shop_id && x.sale_date == dateFrom);
+                        else
+                            sales = db.sales.Where(x => x.shop_id == shop.shop_id && x.sale_date >= dateFrom && x.sale_date <= dateTo);
+
+                        foreach (var s in sales)
+                        {
+                            var product = db.products.FirstOrDefault(x => x.product_id == s.product_id);
+                            var product_type = db.product_types.FirstOrDefault(x => x.type_id == product.product_type);
+                            var brand = db.brands.FirstOrDefault(x => x.brand_id == product.brand_id);
+                            var cproduct = new CProduct(product, product_type, brand, 0);
+                            var agent = db.users.FirstOrDefault(x => x.user_id.Equals(s.agent_id));
+                            var cuser = new CUser(agent);
+
+                            csales.Add(new CSale(s, cproduct, cuser));
+                        }
+
+                        return Ok(csales);
                     }
 
-                    return Ok(csales);
                 }
-                    
+                return BadRequest();
             }
-            return BadRequest();
+            else
+            {
+                return BadRequest();
+            }
         }
     }
 }
