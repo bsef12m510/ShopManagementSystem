@@ -12,7 +12,7 @@ namespace WebSource.Controllers
     {
         [HttpPost]
         [ActionName("SaleProduct")]
-        public IHttpActionResult saleProducts(String apiKey, [FromBody]List<sale> products)
+        public IHttpActionResult saleProducts(String apiKey, IEnumerable<sale> products)
         {
             bool ok = true;
 
