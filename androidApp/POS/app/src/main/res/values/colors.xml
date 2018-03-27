@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <item name="colorPrimary" type="color">#ffffff</item>
+    <item name="colorPrimaryDark" type="color">#2aa338</item>
+    <item name="colorAccent" type="color">#32c843</item>
+    <item name="colorBlack" type="color">#000</item>
+    <item name="buttonColor" type="color">#28c63b</item>aaa
+    <item name="buttonGray" type="color">#aaa</item>
+    <item name="buttonUploadFile" type="color">#2989c6</item>
+    <item name="bgQueryLimitColor" type="color">#f6f6f6</item>
+    <item name="bgQueryUsedColor" type="color">#f2f2f2</item>
+    <item name="bgAccountHeaderColor" type="color">#f8f8f8</item>
+    <item name="plansSlashAfterColor" type="color">#f8f8f8</item>
+
+
+
+</resources>
