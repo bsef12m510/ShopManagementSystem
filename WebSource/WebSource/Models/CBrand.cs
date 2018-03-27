@@ -16,5 +16,7 @@ namespace WebSource.Models
             brand_name = brand.brand_name;
             brand_icon = brand.brand_icon;
         }
+
+
     }
 }

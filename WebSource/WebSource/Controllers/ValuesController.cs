@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DAL.TimeUuidGenerator;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -42,10 +43,24 @@ namespace WebSource.Controllers
             return BadRequest();
         }
 
+        [HttpGet]
+        [ActionName("login")]
+        public IHttpActionResult Login(String userId, String pswd)
+        {
+            SMS_DBEntities1 db = new SMS_DBEntities1();
+            var user = db.users.FirstOrDefault(x => x.user_id.Equals(userId) && x.password.Equals(pswd));
+            if (user != null)
+                return Ok(new CUser(user));
+            else
+                return Ok(false);
+        }
+
         // POST api/values
         public void Post([FromBody]user user)
         {
             SMS_DBEntities1 db = new SMS_DBEntities1();
+           
+            user.api_key = GuidGenerator.GenerateTimeBasedGuid().ToString();
             db.users.Add(user);
             db.SaveChanges();
 
