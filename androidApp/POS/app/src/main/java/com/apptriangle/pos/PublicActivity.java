@@ -97,12 +97,13 @@ public class PublicActivity extends AppCompatActivity implements LoginFragment.O
 
     @Override
     public void onLoginResponse(LoginResponse loginResponseData) {
-        if(loginResponseData != null && loginResponseData.getVerified().equalsIgnoreCase("1")) {
+        if(loginResponseData != null /*&& loginResponseData.getVerified().equalsIgnoreCase("1")*/) {
             if(loginResponseData.getApi_key()!=null)
                 storeUserData(loginResponseData);
             Toast.makeText(PublicActivity.this, "Login with user : " + loginResponseData.getUser_email(), Toast.LENGTH_SHORT).show();
             startDrawerActivity();
         }else{
+            startDrawerActivity();
             Toast.makeText(PublicActivity.this, "User not verified" , Toast.LENGTH_SHORT).show();
         }
     }
@@ -151,10 +152,10 @@ public class PublicActivity extends AppCompatActivity implements LoginFragment.O
         prefs.edit().putString("email", response.getUser_email() ).apply();
         prefs.edit().putString("username", response.getUser_name() ).apply();
         boolean isPremium=false;
-        if(response.getPremium().equals("1"))
+        /*if(response.getPremium().equals("1"))
         {
             isPremium = true;
-        }
+        }*/
         prefs.edit().putBoolean("membership", isPremium ).apply();
     }
 

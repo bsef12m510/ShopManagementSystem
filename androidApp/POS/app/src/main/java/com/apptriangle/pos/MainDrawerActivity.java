@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.apptriangle.pos.dashboard.fragment.DashboardFragment;
 
 
 public class MainDrawerActivity extends AppCompatActivity
@@ -51,7 +52,7 @@ public class MainDrawerActivity extends AppCompatActivity
         userNameTextView=(TextView)headerView.findViewById(R.id.header_username);
         emailTextView=(TextView)headerView.findViewById(R.id.header_email);
         getSavedHeaderData();
-//        replaceFragment(new PlagiarismCheckerFragment(),TAG_PLAG);
+        replaceFragment(new DashboardFragment(),"asd");
     }
 
     private void getSavedHeaderData()
@@ -99,7 +100,8 @@ public class MainDrawerActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_home) {
-
+            Fragment fragment =  new DashboardFragment();
+            replaceFragment(fragment,"asd");
         /*    Fragment fragment = new PlagiarismCheckerFragment();
             replaceFragment(fragment,TAG_PLAG);
             // Handle the camera action

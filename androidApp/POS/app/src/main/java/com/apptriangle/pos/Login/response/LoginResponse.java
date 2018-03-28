@@ -5,23 +5,24 @@ public class LoginResponse {
     private String user_id;
     private String api_key;
     private String user_name;
-    private String user_email;
-    private String queries_limit;
+    private String role;
+    private String password;
+    private String shop_id;
 
-    public String getQueries_used() {
-        return queries_used;
+    public String getShop_id() {
+        return shop_id;
     }
 
-    public void setQueries_used(String queries_used) {
-        this.queries_used = queries_used;
+    public void setShop_id(String shop_id) {
+        this.shop_id = shop_id;
     }
 
     public String getQueries_limit() {
-        return queries_limit;
+        return role;
     }
 
     public void setQueries_limit(String queries_limit) {
-        this.queries_limit = queries_limit;
+        this.role = queries_limit;
     }
 
     public String getUser_id() {
@@ -49,42 +50,12 @@ public class LoginResponse {
     }
 
     public String getUser_email() {
-        return user_email;
+        return password;
     }
 
     public void setUser_email(String user_email) {
-        this.user_email = user_email;
+        this.password = user_email;
     }
 
-    private String queries_used;
-    private String premium;
-    private String verified;
-    private Integer response;
-
-
-
-    public String getPremium() {
-        return premium;
-    }
-
-    public void setPremium(String premium) {
-        this.premium = premium;
-    }
-
-    public String getVerified() {
-        return verified;
-    }
-
-    public void setVerified(String verified) {
-        this.verified = verified;
-    }
-
-    public Integer getResponse() {
-        return response;
-    }
-
-    public void setResponse(Integer response) {
-        this.response = response;
-    }
 
 }
