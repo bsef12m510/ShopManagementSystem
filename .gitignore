@@ -1,6 +1,6 @@
 
 WebSource/WebSource/App_Data/SMS_DB_log.ldf
-*.xml
+WebSource/WebSource/bin/
 *.dll
 *.exe
 *.htm
