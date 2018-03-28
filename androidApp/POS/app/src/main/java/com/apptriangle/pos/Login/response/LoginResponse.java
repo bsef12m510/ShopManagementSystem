@@ -2,29 +2,6 @@ package com.apptriangle.pos.Login.response;
 
 public class LoginResponse {
 
-    private String user_id;
-    private String api_key;
-    private String user_name;
-    private String role;
-    private String password;
-    private String shop_id;
-
-    public String getShop_id() {
-        return shop_id;
-    }
-
-    public void setShop_id(String shop_id) {
-        this.shop_id = shop_id;
-    }
-
-    public String getQueries_limit() {
-        return role;
-    }
-
-    public void setQueries_limit(String queries_limit) {
-        this.role = queries_limit;
-    }
-
     public String getUser_id() {
         return user_id;
     }
@@ -41,21 +18,46 @@ public class LoginResponse {
         this.api_key = api_key;
     }
 
-    public String getUser_name() {
-        return user_name;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUser_name(String user_name) {
-        this.user_name = user_name;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public String getUser_email() {
+    public String getRole_id() {
+        return role_id;
+    }
+
+    public void setRole_id(String role_id) {
+        this.role_id = role_id;
+    }
+
+    public String getPassword() {
         return password;
     }
 
-    public void setUser_email(String user_email) {
-        this.password = user_email;
+    public void setPassword(String password) {
+        this.password = password;
     }
+
+    public String getShop_id() {
+        return shop_id;
+    }
+
+    public void setShop_id(String shop_id) {
+        this.shop_id = shop_id;
+    }
+
+    private String user_id;
+    private String api_key;
+    private String username;
+    private String role_id;
+    private String password;
+    private String shop_id;
+
+
 
 
 }

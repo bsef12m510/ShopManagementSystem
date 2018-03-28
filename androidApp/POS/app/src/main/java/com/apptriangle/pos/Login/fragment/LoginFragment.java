@@ -71,7 +71,7 @@ public class LoginFragment extends Fragment {
         loginButton = (Button)contentView.findViewById(R.id.loginButton);
         email = (EditText)contentView.findViewById(R.id.email);
         password = (EditText)contentView.findViewById(R.id.password);
-        email.setText("913kc@gmail.com");
+        email.setText("zawan");
         password.setText("123");
     }
     void underLineTetView(TextView textView)
@@ -131,7 +131,7 @@ public class LoginFragment extends Fragment {
                     ApiClient.getClient().create(LoginService.class);
             RequestBody emailParam = RequestBody.create(MediaType.parse("text/plain"), email.getText().toString());
             RequestBody passParam = RequestBody.create(MediaType.parse("text/plain"), password.getText().toString());
-            Call<LoginResponse> call = loginService.login(emailParam, passParam);
+            Call<LoginResponse> call = loginService.login( email.getText().toString(), password.getText().toString());
             pd.show();
             call.enqueue(new Callback<LoginResponse>() {
                 @Override
@@ -149,7 +149,7 @@ public class LoginFragment extends Fragment {
                     // Log error here since request failed
                     Log.e("failure", "failure");
                     pd.hide();
-                    onSuccessfulLogin(loginResponseData);
+                    onSuccessfulLogin(null);
 
                 }
             });

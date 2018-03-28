@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.apptriangle.pos.dashboard.fragment.AdminDashboardFragment;
 import com.apptriangle.pos.dashboard.fragment.DashboardFragment;
 
 
@@ -52,14 +53,14 @@ public class MainDrawerActivity extends AppCompatActivity
         userNameTextView=(TextView)headerView.findViewById(R.id.header_username);
         emailTextView=(TextView)headerView.findViewById(R.id.header_email);
         getSavedHeaderData();
-        replaceFragment(new DashboardFragment(),"asd");
+        replaceFragment(new AdminDashboardFragment(),"asd");
     }
 
     private void getSavedHeaderData()
     {
-        SharedPreferences shared = getSharedPreferences( "com.prepostseo.plagiarismchecker", Context.MODE_PRIVATE);
+        SharedPreferences shared = getSharedPreferences( "com.appTriangle.pos", Context.MODE_PRIVATE);
         userNameTextView.setText(shared.getString("username", ""));
-        emailTextView.setText(shared.getString("email",""));
+        emailTextView.setText(shared.getString("role",""));
     }
     @Override
     public void onBackPressed() {
@@ -100,7 +101,7 @@ public class MainDrawerActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_home) {
-            Fragment fragment =  new DashboardFragment();
+            Fragment fragment =  new AdminDashboardFragment();
             replaceFragment(fragment,"asd");
         /*    Fragment fragment = new PlagiarismCheckerFragment();
             replaceFragment(fragment,TAG_PLAG);

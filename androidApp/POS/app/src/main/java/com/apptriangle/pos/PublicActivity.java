@@ -100,10 +100,10 @@ public class PublicActivity extends AppCompatActivity implements LoginFragment.O
         if(loginResponseData != null /*&& loginResponseData.getVerified().equalsIgnoreCase("1")*/) {
             if(loginResponseData.getApi_key()!=null)
                 storeUserData(loginResponseData);
-            Toast.makeText(PublicActivity.this, "Login with user : " + loginResponseData.getUser_email(), Toast.LENGTH_SHORT).show();
-            startDrawerActivity();
+            Toast.makeText(PublicActivity.this, "Login with user : " + loginResponseData.getUsername(), Toast.LENGTH_SHORT).show();
+            startDrawerActivity(loginResponseData);
         }else{
-            startDrawerActivity();
+//            startDrawerActivity();
             Toast.makeText(PublicActivity.this, "User not verified" , Toast.LENGTH_SHORT).show();
         }
     }
@@ -146,22 +146,26 @@ public class PublicActivity extends AppCompatActivity implements LoginFragment.O
 
     public void storeUserData(LoginResponse response) {
         SharedPreferences prefs = this.getSharedPreferences(
-                "com.prepostseo.plagiarismchecker", Context.MODE_PRIVATE);
+                "com.appTriangle.pos", Context.MODE_PRIVATE);
 
         prefs.edit().putString("api_key", response.getApi_key()).apply();
-        prefs.edit().putString("email", response.getUser_email() ).apply();
-        prefs.edit().putString("username", response.getUser_name() ).apply();
+        prefs.edit().putString("role", response.getRole_id() ).apply();
+        prefs.edit().putString("username", response.getUsername() ).apply();
         boolean isPremium=false;
         /*if(response.getPremium().equals("1"))
         {
             isPremium = true;
         }*/
-        prefs.edit().putBoolean("membership", isPremium ).apply();
+//        prefs.edit().putBoolean("membership", isPremium ).apply();
     }
 
-    public void startDrawerActivity(){
+    public void startDrawerActivity(LoginResponse response){
 
-        Intent intent = new Intent(PublicActivity.this,MainDrawerActivity.class);
+        Intent intent;
+        if(response.getRole_id().equalsIgnoreCase("admin"))
+            intent = new Intent(PublicActivity.this,MainDrawerActivity.class);
+        else
+            intent = new Intent(PublicActivity.this,SecureActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
