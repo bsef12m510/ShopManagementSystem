@@ -57,8 +57,8 @@ public class LoginFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initialize(contentView);
-        setClickListeners();
+//        initialize(contentView);
+//        setClickListeners();
         pd = new ProgressDialog(getActivity());
         pd.setMessage("Logging you in");
         pd.setCanceledOnTouchOutside(false);
