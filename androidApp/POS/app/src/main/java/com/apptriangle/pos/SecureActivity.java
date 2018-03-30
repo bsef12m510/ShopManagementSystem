@@ -1,5 +1,6 @@
 package com.apptriangle.pos;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -7,22 +8,27 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.apptriangle.pos.dashboard.fragment.DashboardFragment;
+import com.apptriangle.pos.sales.fragment.SalesFragment;
+import com.apptriangle.pos.stock.fragment.StockFragment;
 
 /**
  * Created by zeeshan on 3/28/2018.
  */
-public class SecureActivity extends AppCompatActivity  {
+public class SecureActivity extends AppCompatActivity implements DashboardFragment.OnFragmentInteractionListener {
     private FrameLayout fragmentContainer;
     private FragmentManager fm;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_secure);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         initialize();
         displayFragment(1);
     }
@@ -77,7 +83,37 @@ public class SecureActivity extends AppCompatActivity  {
         ft.commit();
     }
 
+    @Override
+    public void onSalesClickListener() {
+        fm = getFragmentManager();
 
+        // replace
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.setCustomAnimations(R.anim.slide_in_left,
+                R.anim.slide_out_right,R.anim.slide_in_left,
+                R.anim.slide_out_right);
+
+            ft.replace(R.id.fragmentContainer, new SalesFragment(),"salesFragment");
+
+        ft.addToBackStack("salesFragment");
+        ft.commit();
+    }
+
+    @Override
+    public void onStockClickListener() {
+        fm = getFragmentManager();
+
+        // replace
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.setCustomAnimations(R.anim.slide_in_left,
+                R.anim.slide_out_right,R.anim.slide_in_left,
+                R.anim.slide_out_right);
+
+        ft.replace(R.id.fragmentContainer, new StockFragment(),"stockFragment");
+
+        ft.addToBackStack("stockFragment");
+        ft.commit();
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -85,4 +121,7 @@ public class SecureActivity extends AppCompatActivity  {
         Fragment fragment = getFragmentManager().findFragmentByTag("plagFrag");
         fragment.onActivityResult(requestCode, resultCode, data);
     }
+
+
+
 }

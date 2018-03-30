@@ -12,6 +12,7 @@
     <item name="bgQueryUsedColor" type="color">#f2f2f2</item>
     <item name="bgAccountHeaderColor" type="color">#f8f8f8</item>
     <item name="plansSlashAfterColor" type="color">#f8f8f8</item>
+    <color name="body_background_color">#f3f3f3</color>
 
 
 

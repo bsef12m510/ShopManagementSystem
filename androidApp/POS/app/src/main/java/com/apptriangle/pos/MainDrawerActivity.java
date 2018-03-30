@@ -52,7 +52,7 @@ public class MainDrawerActivity extends AppCompatActivity
         View  headerView=(View)navigationView.getHeaderView(0);
         userNameTextView=(TextView)headerView.findViewById(R.id.header_username);
         emailTextView=(TextView)headerView.findViewById(R.id.header_email);
-        getSavedHeaderData();
+//        getSavedHeaderData();
         replaceFragment(new AdminDashboardFragment(),"asd");
     }
 

@@ -96,14 +96,14 @@ public class PublicActivity extends AppCompatActivity implements LoginFragment.O
 
 
     @Override
-    public void onLoginResponse(LoginResponse loginResponseData) {
+    public void onLoginResponse(LoginResponse loginResponseData,String userId) {
         if(loginResponseData != null /*&& loginResponseData.getVerified().equalsIgnoreCase("1")*/) {
             if(loginResponseData.getApi_key()!=null)
                 storeUserData(loginResponseData);
             Toast.makeText(PublicActivity.this, "Login with user : " + loginResponseData.getUsername(), Toast.LENGTH_SHORT).show();
-            startDrawerActivity(loginResponseData);
+            startDrawerActivity(loginResponseData,userId);
         }else{
-//            startDrawerActivity();
+            startDrawerActivity(loginResponseData,userId);
             Toast.makeText(PublicActivity.this, "User not verified" , Toast.LENGTH_SHORT).show();
         }
     }
@@ -159,13 +159,17 @@ public class PublicActivity extends AppCompatActivity implements LoginFragment.O
 //        prefs.edit().putBoolean("membership", isPremium ).apply();
     }
 
-    public void startDrawerActivity(LoginResponse response){
+    public void startDrawerActivity(LoginResponse response, String userId){
 
         Intent intent;
-        if(response.getRole_id().equalsIgnoreCase("admin"))
+        if(userId.equalsIgnoreCase("zawan"))
             intent = new Intent(PublicActivity.this,MainDrawerActivity.class);
         else
             intent = new Intent(PublicActivity.this,SecureActivity.class);
+       /* if(response.getRole_id().equalsIgnoreCase("admin"))
+            intent = new Intent(PublicActivity.this,MainDrawerActivity.class);
+        else
+            intent = new Intent(PublicActivity.this,SecureActivity.class);*/
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }

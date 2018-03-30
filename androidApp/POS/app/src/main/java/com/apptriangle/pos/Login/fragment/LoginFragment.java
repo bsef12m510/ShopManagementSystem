@@ -57,8 +57,8 @@ public class LoginFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-//        initialize(contentView);
-//        setClickListeners();
+        initialize(contentView);
+        setClickListeners();
         pd = new ProgressDialog(getActivity());
         pd.setMessage("Logging you in");
         pd.setCanceledOnTouchOutside(false);
@@ -98,9 +98,9 @@ public class LoginFragment extends Fragment {
         });
     }
 
-    public void onSuccessfulLogin(LoginResponse loginResponseData) {
+    public void onSuccessfulLogin(LoginResponse loginResponseData,String userId) {
         if (mListener != null) {
-            mListener.onLoginResponse(loginResponseData);
+            mListener.onLoginResponse(loginResponseData, userId);
         }
     }
 
@@ -140,7 +140,7 @@ public class LoginFragment extends Fragment {
                     if (response != null) {
                         loginResponseData = (LoginResponse) response.body();
 
-                        onSuccessfulLogin(loginResponseData);
+                        onSuccessfulLogin(loginResponseData,email.getText().toString());
                     }
                 }
 
@@ -149,7 +149,7 @@ public class LoginFragment extends Fragment {
                     // Log error here since request failed
                     Log.e("failure", "failure");
                     pd.hide();
-                    onSuccessfulLogin(null);
+                    onSuccessfulLogin(null,email.getText().toString());
 
                 }
             });
@@ -168,7 +168,7 @@ public class LoginFragment extends Fragment {
      */
     public interface OnLoginResponseListener {
         // TODO: Update argument type and name
-        public void onLoginResponse(LoginResponse loginResponseData);
+        public void onLoginResponse(LoginResponse loginResponseData, String userId);
         public void onRegisterClick();
     }
 

@@ -1,5 +1,6 @@
 package com.apptriangle.pos.dashboard.fragment;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 
 
 import com.apptriangle.pos.R;
@@ -29,18 +31,11 @@ public class DashboardFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private View contentView;
     String[] listItems = {"item 1", "item 2 ", "list", "android" };
+    Button salesBtn, stockBtn;
 
 
     public DashboardFragment() {
         // Required empty public constructor
-    }
-
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-
     }
 
     @Override
@@ -51,23 +46,56 @@ public class DashboardFragment extends Fragment {
         return contentView;
     }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setTitle();
+        salesBtn = (Button)contentView.findViewById(R.id.button1);
+        stockBtn = (Button)contentView.findViewById(R.id.button3);
+        salesBtn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                onSalesClick();
+            }
+        });
+
+        stockBtn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                onStockClick();
+            }
+        });
+    }
+
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
+    public void onSalesClick() {
         if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+            mListener.onSalesClickListener();
+        }
+    }
+
+    public void onStockClick() {
+        if (mListener != null) {
+            mListener.onStockClickListener();
         }
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mListener = (OnFragmentInteractionListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
         }
     }
+
+    void setTitle()
+    {
+        ((Activity) getActivity()).setTitle(getResources().getString(R.string.app_name));
+    }
+
 
     @Override
     public void onDetach() {
@@ -87,6 +115,7 @@ public class DashboardFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onSalesClickListener();
+        void onStockClickListener();
     }
 }
