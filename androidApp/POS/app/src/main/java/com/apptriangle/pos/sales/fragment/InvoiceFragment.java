@@ -1,66 +1,79 @@
-package com.apptriangle.pos.dashboard.fragment;
+package com.apptriangle.pos.sales.fragment;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.widget.NestedScrollView;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.apptriangle.pos.R;
-import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.utils.ColorTemplate;
+import com.apptriangle.pos.sales.adaptor.VerifySaleAdaptor;
+import com.apptriangle.pos.sales.response.SalesResponse;
 
 import java.util.ArrayList;
 
 /**
- * Created by zeeshan on 3/28/2018.
+ * Created by zeeshan on 4/1/2018.
  */
-public class AdminDashboardFragment extends Fragment {
-    private PieChart mChart;
+public class InvoiceFragment extends Fragment {
+
     private OnFragmentInteractionListener mListener;
     private View contentView;
+    private RecyclerView recyclerView;
     String[] listItems = {"item 1", "item 2 ", "list", "android" };
+    private VerifySaleAdaptor adaptor;
+    public boolean fromHome = false;
+    private CardView searchContainer1, searchContainer2;
+    private NestedScrollView saleDescContainer;
 
-
-    public AdminDashboardFragment() {
+    public InvoiceFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-
+        setTitle();
+        initialize();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        contentView = inflater.inflate(R.layout.fragment_admin_dashboard, container, false);
-        mChart = (PieChart) contentView.findViewById(R.id.pieChart1);
-        mChart.getDescription().setEnabled(false);
-
-        // radius of the center hole in percent of maximum radius
-        mChart.setHoleRadius(45f);
-        mChart.setTransparentCircleRadius(50f);
-
-        Legend l = mChart.getLegend();
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
-        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
-        l.setOrientation(Legend.LegendOrientation.VERTICAL);
-        l.setDrawInside(false);
-
-        mChart.setData(generatePieData());
+        contentView = inflater.inflate(R.layout.fragment_invoice, container, false);
         return contentView;
+    }
+
+    public void initialize(){
+        recyclerView = (RecyclerView) contentView.findViewById(R.id.sales_recycler_view);
+        searchContainer1 =(CardView) contentView.findViewById(R.id.searchContainer1);
+        searchContainer2 =(CardView) contentView.findViewById(R.id.searchContainer2);
+        saleDescContainer =(NestedScrollView) contentView.findViewById(R.id.saleDescContainer);
+        if(!fromHome) {
+            searchContainer1.setVisibility(View.GONE);
+            searchContainer2.setVisibility(View.GONE);
+        }else{
+            saleDescContainer.setVisibility(View.GONE);
+        }
+        ArrayList<SalesResponse> stockResponseArrayList = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            SalesResponse tmp = new SalesResponse();
+            stockResponseArrayList.add(tmp);
+        }
+
+        adaptor = new VerifySaleAdaptor(getActivity(), stockResponseArrayList, true);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(adaptor);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -70,31 +83,9 @@ public class AdminDashboardFragment extends Fragment {
         }
     }
 
-
-    /**
-     * generates less data (1 DataSet, 4 values)
-     * @return
-     */
-    protected PieData generatePieData() {
-
-        int count = 4;
-
-        ArrayList<PieEntry> entries1 = new ArrayList<PieEntry>();
-
-        for(int i = 0; i < count; i++) {
-            entries1.add(new PieEntry((float) ((Math.random() * 60) + 40), "Quarter " + (i+1)));
-        }
-
-        PieDataSet ds1 = new PieDataSet(entries1, "Quarterly Revenues 2015");
-        ds1.setColors(ColorTemplate.MATERIAL_COLORS);
-        ds1.setSliceSpace(2f);
-        ds1.setValueTextColor(Color.WHITE);
-        ds1.setValueTextSize(12f);
-
-        PieData d = new PieData(ds1);
-
-
-        return d;
+    void setTitle()
+    {
+        ((Activity) getActivity()).setTitle(getResources().getString(R.string.app_name));
     }
 
     @Override

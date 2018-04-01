@@ -5,26 +5,31 @@ import android.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.apptriangle.pos.R;
-import com.apptriangle.pos.dashboard.fragment.DashboardFragment;
+import com.apptriangle.pos.sales.adaptor.VerifySaleAdaptor;
+import com.apptriangle.pos.sales.response.SalesResponse;
+
+import java.util.ArrayList;
 
 /**
- * Created by zawan on 3/30/18.
+ * Created by zeeshan on 3/31/2018.
  */
-
-public class SalesFragment extends Fragment {
-
+public class VerifySalesFragment extends Fragment {
+    private Button finishBtn;
     private OnFragmentInteractionListener mListener;
     private View contentView;
+    private RecyclerView recyclerView;
     String[] listItems = {"item 1", "item 2 ", "list", "android" };
-    private Button checkoutBtn;
+    private VerifySaleAdaptor adaptor;
 
-    public SalesFragment() {
+    public VerifySalesFragment() {
         // Required empty public constructor
     }
 
@@ -32,33 +37,44 @@ public class SalesFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initialize(contentView);
         setTitle();
-
+        initialize();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        contentView = inflater.inflate(R.layout.fragment_sales, container, false);
+        contentView = inflater.inflate(R.layout.fragment_verify_sales, container, false);
         return contentView;
     }
 
-    public void initialize(View view){
-        checkoutBtn = (Button)view.findViewById(R.id.checkoutBtn);
-        checkoutBtn.setOnClickListener(new View.OnClickListener(){
+    public void initialize(){
+        finishBtn = (Button)contentView.findViewById(R.id.finishButton);
+        finishBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                onCheckoutButtonPressed();
+                onFinishPressed();
             }
         });
+        recyclerView = (RecyclerView) contentView.findViewById(R.id.sales_recycler_view);
+        ArrayList<SalesResponse> stockResponseArrayList = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            SalesResponse tmp = new SalesResponse();
+            stockResponseArrayList.add(tmp);
+        }
+
+        adaptor = new VerifySaleAdaptor(getActivity(), stockResponseArrayList, false);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(adaptor);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void onCheckoutButtonPressed() {
+    public void onFinishPressed() {
         if (mListener != null) {
-            mListener.onCheckoutListener();
+            mListener.onFinishClicked();
         }
     }
 
@@ -96,6 +112,6 @@ public class SalesFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onCheckoutListener();
+        void onFinishClicked();
     }
 }

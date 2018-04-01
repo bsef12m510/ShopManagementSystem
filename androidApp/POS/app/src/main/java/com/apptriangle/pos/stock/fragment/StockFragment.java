@@ -51,7 +51,7 @@ public class StockFragment extends Fragment {
         lytEmpty = (LinearLayout) contentView.findViewById(R.id.lytEmpty);
         mRecyclerView = (RecyclerView) contentView.findViewById(R.id.my_recycler_view);
         ArrayList<StockResponse> stockResponseArrayList = new ArrayList<>();
-        for (int i = 0; i < 0; i++) {
+        for (int i = 0; i < 10; i++) {
             StockResponse tmp = new StockResponse();
             stockResponseArrayList.add(tmp);
         }

@@ -76,7 +76,8 @@
                         android:layout_marginLeft="20dp"
                         android:layout_marginRight="20dp"
                         android:text="@string/login"
-                        style="@style/Button"
+                        style="@style/Widget.AppCompat.Button.Colored"
+                        android:textColor="@color/white"
                         android:id="@+id/loginButton" />
                 </LinearLayout>
 

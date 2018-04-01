@@ -198,8 +198,8 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:text="Add More Products"
-
-            style="@style/Button"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:textColor="@color/white"
             android:id="@+id/more" />
 
         <Button
@@ -210,8 +210,9 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:text="Checkout"
-            style="@style/Button"
-            android:id="@+id/checkout" />
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:textColor="@color/white"
+            android:id="@+id/checkoutBtn" />
 
         </LinearLayout>
 

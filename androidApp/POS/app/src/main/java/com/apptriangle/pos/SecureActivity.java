@@ -14,13 +14,15 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.apptriangle.pos.dashboard.fragment.DashboardFragment;
+import com.apptriangle.pos.sales.fragment.InvoiceFragment;
 import com.apptriangle.pos.sales.fragment.SalesFragment;
+import com.apptriangle.pos.sales.fragment.VerifySalesFragment;
 import com.apptriangle.pos.stock.fragment.StockFragment;
 
 /**
  * Created by zeeshan on 3/28/2018.
  */
-public class SecureActivity extends AppCompatActivity implements DashboardFragment.OnFragmentInteractionListener {
+public class SecureActivity extends AppCompatActivity implements DashboardFragment.OnFragmentInteractionListener, SalesFragment.OnFragmentInteractionListener, VerifySalesFragment.OnFragmentInteractionListener {
     private FrameLayout fragmentContainer;
     private FragmentManager fm;
     @Override
@@ -112,6 +114,56 @@ public class SecureActivity extends AppCompatActivity implements DashboardFragme
         ft.replace(R.id.fragmentContainer, new StockFragment(),"stockFragment");
 
         ft.addToBackStack("stockFragment");
+        ft.commit();
+    }
+
+    @Override
+    public void onInvoiceClickListener() {
+        fm = getFragmentManager();
+
+        // replace
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.setCustomAnimations(R.anim.slide_in_left,
+                R.anim.slide_out_right,R.anim.slide_in_left,
+                R.anim.slide_out_right);
+
+        InvoiceFragment fragment = new InvoiceFragment();
+        fragment.fromHome = true;
+        ft.replace(R.id.fragmentContainer,fragment ,"invoiceFragment");
+
+        ft.addToBackStack("invoiceFragment");
+        ft.commit();
+    }
+
+    @Override
+    public void onCheckoutListener() {
+        fm = getFragmentManager();
+
+        // replace
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.setCustomAnimations(R.anim.slide_in_left,
+                R.anim.slide_out_right,R.anim.slide_in_left,
+                R.anim.slide_out_right);
+
+        ft.replace(R.id.fragmentContainer, new VerifySalesFragment(),"verifySalesFragment");
+
+        ft.addToBackStack("verifySalesFragment");
+        ft.commit();
+    }
+
+    @Override
+    public void onFinishClicked() {
+        fm = getFragmentManager();
+
+        // replace
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.setCustomAnimations(R.anim.slide_in_left,
+                R.anim.slide_out_right,R.anim.slide_in_left,
+                R.anim.slide_out_right);
+
+        ft.replace(R.id.fragmentContainer, new InvoiceFragment(),"invoiceFragment");
+
+        ft.addToBackStack("invoiceFragment");
         ft.commit();
     }
 
