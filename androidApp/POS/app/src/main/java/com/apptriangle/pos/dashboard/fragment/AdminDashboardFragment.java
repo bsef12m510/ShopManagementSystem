@@ -5,11 +5,15 @@ import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.apptriangle.pos.R;
+import com.apptriangle.pos.dashboard.adapter.SalesAdminAdapter;
+import com.apptriangle.pos.sales.response.SalesResponse;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.PieData;
@@ -18,6 +22,7 @@ import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by zeeshan on 3/28/2018.
@@ -25,7 +30,9 @@ import java.util.ArrayList;
 public class AdminDashboardFragment extends Fragment {
     private PieChart mChart;
     private OnFragmentInteractionListener mListener;
+    private RecyclerView recyclerView;
     private View contentView;
+    private SalesAdminAdapter adapter;
     String[] listItems = {"item 1", "item 2 ", "list", "android" };
 
 
@@ -38,6 +45,7 @@ public class AdminDashboardFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        initialize();
 
     }
 
@@ -61,6 +69,23 @@ public class AdminDashboardFragment extends Fragment {
 
         mChart.setData(generatePieData());
         return contentView;
+    }
+
+
+    public void initialize(){
+        List<SalesResponse> list = new ArrayList<>();
+        for (int i = 0; i <10 ; i++) {
+            SalesResponse tmp = new SalesResponse();
+            list.add(tmp);
+        }
+        recyclerView = (RecyclerView)contentView.findViewById(R.id.recyclerView);
+        adapter = new SalesAdminAdapter(getActivity(), list);
+
+        recyclerView.setVisibility(View.VISIBLE);
+        recyclerView.setNestedScrollingEnabled(false);
+        GridLayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 2);
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setAdapter(adapter);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
