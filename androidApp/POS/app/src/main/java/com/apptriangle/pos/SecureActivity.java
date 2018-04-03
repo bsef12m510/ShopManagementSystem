@@ -22,7 +22,7 @@ import com.apptriangle.pos.stock.fragment.StockFragment;
 /**
  * Created by zeeshan on 3/28/2018.
  */
-public class SecureActivity extends AppCompatActivity implements DashboardFragment.OnFragmentInteractionListener, SalesFragment.OnFragmentInteractionListener, VerifySalesFragment.OnFragmentInteractionListener {
+public class SecureActivity extends AppCompatActivity implements DashboardFragment.OnFragmentInteractionListener, SalesFragment.OnFragmentInteractionListener, VerifySalesFragment.OnFragmentInteractionListener, InvoiceFragment.OnFragmentInteractionListener {
     private FrameLayout fragmentContainer;
     private FragmentManager fm;
     @Override
@@ -165,6 +165,11 @@ public class SecureActivity extends AppCompatActivity implements DashboardFragme
 
         ft.addToBackStack("invoiceFragment");
         ft.commit();
+    }
+
+    @Override
+    public void onFragmentInteraction() {
+
     }
 
     @Override

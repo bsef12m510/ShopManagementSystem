@@ -24,7 +24,7 @@ import com.apptriangle.pos.dashboard.fragment.DashboardFragment;
 
 
 public class MainDrawerActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener/*, PlagiarismCheckerFragment.OnFragmentInteractionListener*/ {
+        implements NavigationView.OnNavigationItemSelectedListener, AdminDashboardFragment.OnFragmentInteractionListener {
 
     private boolean fromPlagFragment = false;
     private static String TAG_PLAG = "plagFrag";
@@ -148,6 +148,12 @@ public class MainDrawerActivity extends AppCompatActivity
                 .replace(R.id.content_frame, fragment,TAG)
                 .commit();
     }
+
+    @Override
+    public void onFragmentInteraction() {
+
+    }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {

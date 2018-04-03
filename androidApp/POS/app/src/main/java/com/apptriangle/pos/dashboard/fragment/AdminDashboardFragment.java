@@ -1,11 +1,15 @@
 package com.apptriangle.pos.dashboard.fragment;
 
+import android.app.Activity;
 import android.app.Fragment;
-import android.content.Context;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,7 +48,10 @@ public class AdminDashboardFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        ViewPager pager = (ViewPager) contentView.findViewById(R.id.viewPager);
+        pager.setAdapter(new MyPagerAdapter(((AppCompatActivity)getActivity()).getSupportFragmentManager()));
+        TabLayout tabLayout = (TabLayout) contentView.findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(pager);
         initialize();
 
     }
@@ -54,20 +61,7 @@ public class AdminDashboardFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         contentView = inflater.inflate(R.layout.fragment_admin_dashboard, container, false);
-        mChart = (PieChart) contentView.findViewById(R.id.pieChart1);
-        mChart.getDescription().setEnabled(false);
 
-        // radius of the center hole in percent of maximum radius
-        mChart.setHoleRadius(45f);
-        mChart.setTransparentCircleRadius(50f);
-
-        Legend l = mChart.getLegend();
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
-        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
-        l.setOrientation(Legend.LegendOrientation.VERTICAL);
-        l.setDrawInside(false);
-
-        mChart.setData(generatePieData());
         return contentView;
     }
 
@@ -83,52 +77,29 @@ public class AdminDashboardFragment extends Fragment {
 
         recyclerView.setVisibility(View.VISIBLE);
         recyclerView.setNestedScrollingEnabled(false);
-        GridLayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 2);
+//        GridLayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 3);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(adapter);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
+    public void onButtonPressed() {
         if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+            mListener.onFragmentInteraction();
         }
     }
 
 
-    /**
-     * generates less data (1 DataSet, 4 values)
-     * @return
-     */
-    protected PieData generatePieData() {
 
-        int count = 4;
-
-        ArrayList<PieEntry> entries1 = new ArrayList<PieEntry>();
-
-        for(int i = 0; i < count; i++) {
-            entries1.add(new PieEntry((float) ((Math.random() * 60) + 40), "Quarter " + (i+1)));
-        }
-
-        PieDataSet ds1 = new PieDataSet(entries1, "Quarterly Revenues 2015");
-        ds1.setColors(ColorTemplate.MATERIAL_COLORS);
-        ds1.setSliceSpace(2f);
-        ds1.setValueTextColor(Color.WHITE);
-        ds1.setValueTextSize(12f);
-
-        PieData d = new PieData(ds1);
-
-
-        return d;
-    }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mListener = (OnFragmentInteractionListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
         }
     }
@@ -151,6 +122,40 @@ public class AdminDashboardFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onFragmentInteraction();
     }
+
+    private class MyPagerAdapter extends FragmentPagerAdapter {
+
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        public MyPagerAdapter(FragmentManager fm) {
+            super(fm);
+            mFragmentTitleList.add("Pie");
+            mFragmentTitleList.add("Bar");
+        }
+
+        @Override
+        public android.support.v4.app.Fragment getItem(int pos) {
+            switch(pos) {
+
+                case 0: return PieChartFragment.newInstance("FirstFragment, Instance 1");
+                case 1: return BarChartFragment.newInstance("SecondFragment, Instance 1");
+
+                default: return PieChartFragment.newInstance("ThirdFragment, Default");
+            }
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return 2;
+        }
+    }
+
+
 }
