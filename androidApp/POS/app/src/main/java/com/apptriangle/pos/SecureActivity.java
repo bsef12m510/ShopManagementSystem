@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.apptriangle.pos.dashboard.fragment.DashboardFragment;
+import com.apptriangle.pos.purchase.fragemnt.PurchaseFragment;
 import com.apptriangle.pos.sales.fragment.InvoiceFragment;
 import com.apptriangle.pos.sales.fragment.SalesFragment;
 import com.apptriangle.pos.sales.fragment.VerifySalesFragment;
@@ -22,7 +23,7 @@ import com.apptriangle.pos.stock.fragment.StockFragment;
 /**
  * Created by zeeshan on 3/28/2018.
  */
-public class SecureActivity extends AppCompatActivity implements DashboardFragment.OnFragmentInteractionListener, SalesFragment.OnFragmentInteractionListener, VerifySalesFragment.OnFragmentInteractionListener, InvoiceFragment.OnFragmentInteractionListener {
+public class SecureActivity extends AppCompatActivity implements DashboardFragment.OnFragmentInteractionListener, SalesFragment.OnFragmentInteractionListener, VerifySalesFragment.OnFragmentInteractionListener, InvoiceFragment.OnFragmentInteractionListener, PurchaseFragment.OnFragmentInteractionListener {
     private FrameLayout fragmentContainer;
     private FragmentManager fm;
     @Override
@@ -118,6 +119,25 @@ public class SecureActivity extends AppCompatActivity implements DashboardFragme
     }
 
     @Override
+    public void onPurchaseClickListener() {
+        fm = getFragmentManager();
+
+        // replace
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.setCustomAnimations(R.anim.slide_in_left,
+                R.anim.slide_out_right,R.anim.slide_in_left,
+                R.anim.slide_out_right);
+
+        PurchaseFragment fragment = new PurchaseFragment();
+
+        ft.replace(R.id.fragmentContainer,fragment ,"purchaseFragment");
+
+        ft.addToBackStack("purchaseFragment");
+        ft.commit();
+    }
+
+
+    @Override
     public void onInvoiceClickListener() {
         fm = getFragmentManager();
 
@@ -169,6 +189,11 @@ public class SecureActivity extends AppCompatActivity implements DashboardFragme
 
     @Override
     public void onFragmentInteraction() {
+
+    }
+
+    @Override
+    public void onCheckoutListenerPurchase() {
 
     }
 

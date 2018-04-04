@@ -31,7 +31,7 @@ public class DashboardFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private View contentView;
     String[] listItems = {"item 1", "item 2 ", "list", "android" };
-    Button salesBtn, stockBtn, invoiceBtn;
+    Button salesBtn, stockBtn, invoiceBtn, purchaseBtn;
 
 
     public DashboardFragment() {
@@ -53,6 +53,7 @@ public class DashboardFragment extends Fragment {
         salesBtn = (Button)contentView.findViewById(R.id.button1);
         stockBtn = (Button)contentView.findViewById(R.id.button3);
         invoiceBtn = (Button)contentView.findViewById(R.id.button4);
+        purchaseBtn = (Button)contentView.findViewById(R.id.button2);
         salesBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -71,6 +72,13 @@ public class DashboardFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 onInvoiceClick();
+            }
+        });
+
+        purchaseBtn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                onPurchaseClick();
             }
         });
     }
@@ -93,6 +101,13 @@ public class DashboardFragment extends Fragment {
             mListener.onInvoiceClickListener();
         }
     }
+
+    public void onPurchaseClick() {
+        if (mListener != null) {
+            mListener.onPurchaseClickListener();
+        }
+    }
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -131,5 +146,6 @@ public class DashboardFragment extends Fragment {
         void onSalesClickListener();
         void onStockClickListener();
         void onInvoiceClickListener();
+        void onPurchaseClickListener();
     }
 }
