@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/scrollView"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:background="#ececec"
@@ -32,6 +33,7 @@
             android:layout_weight="0.5">
 
             <TextView
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/txtDate"
@@ -75,15 +77,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
+                android:padding="10dp"
                 android:layout_marginRight="4dp"
                 android:layout_weight="1">
 
                 <Spinner
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-
-
-                    android:prompt="@string/hintProduct"
+                    android:id="@+id/productsDropdown"
                     android:spinnerMode="dialog"
                     >
 
@@ -96,14 +97,17 @@
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
                android:background="@drawable/round_button"
+               android:layout_gravity="center"
                android:padding="6dp"
                android:layout_marginRight="4dp"
                android:src="@drawable/plus"/>
 
             <ImageButton
+                android:id="@+id/editProductBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/round_button"
+                android:layout_gravity="center"
                 android:padding="6dp"
                 android:src="@drawable/edit"/>
 
@@ -124,14 +128,13 @@
                 android:layout_height="wrap_content"
                 android:background="@color/white"
                 android:layout_marginRight="4dp"
+                android:padding="10dp"
                 android:layout_weight="1">
 
                 <Spinner
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-
-
-                    android:prompt="@string/hintProduct"
+                    android:id="@+id/brandsDropdown"
                     android:spinnerMode="dialog"
                     >
 
@@ -140,16 +143,20 @@
             </LinearLayout>
 
             <ImageButton
+                android:id="@+id/addBrandBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/round_button"
+                android:layout_gravity="center"
                 android:padding="6dp"
                 android:layout_marginRight="4dp"
                 android:src="@drawable/plus"/>
 
             <ImageButton
+                android:id="@+id/editBrandBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:background="@drawable/round_button"
                 android:padding="6dp"
                 android:src="@drawable/edit"/>
@@ -348,22 +355,25 @@
             android:layout_marginBottom="12dp"
             android:layout_weight="1">
 
-            <TextView
+<!--            <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
                 android:text="Seller"
                 android:textSize="16sp"
-                />
+                />-->
 
             <EditText
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.7"
-                android:layout_marginLeft="4dp"
+                android:id="@+id/seller"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:hint="Seller Details.."
+
                 android:background="@color/white"
-                android:gravity="end"
-                android:layout_gravity="end"/>
+                android:gravity="top|left"
+                android:inputType="textMultiLine|textCapSentences"
+
+                />
 
 
         </LinearLayout>
