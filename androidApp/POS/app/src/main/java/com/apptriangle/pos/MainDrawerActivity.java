@@ -21,10 +21,11 @@ import android.widget.TextView;
 
 import com.apptriangle.pos.dashboard.fragment.AdminDashboardFragment;
 import com.apptriangle.pos.dashboard.fragment.DashboardFragment;
+import com.apptriangle.pos.reports.fragment.ReportsFragment;
 
 
 public class MainDrawerActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, AdminDashboardFragment.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener, AdminDashboardFragment.OnFragmentInteractionListener,ReportsFragment.OnFragmentInteractionListener {
 
     private boolean fromPlagFragment = false;
     private static String TAG_PLAG = "plagFrag";
@@ -102,7 +103,7 @@ public class MainDrawerActivity extends AppCompatActivity
 
         if (id == R.id.nav_home) {
             Fragment fragment =  new AdminDashboardFragment();
-            replaceFragment(fragment,"asd");
+            replaceFragment(fragment,"adminDashboardFragment");
         /*    Fragment fragment = new PlagiarismCheckerFragment();
             replaceFragment(fragment,TAG_PLAG);
             // Handle the camera action
@@ -114,6 +115,9 @@ public class MainDrawerActivity extends AppCompatActivity
             replaceFragment(fragment, TAG_PLANS);
         } else if (id == R.id.nav_logout) {
             logout();*/
+        } else if (id == R.id.nav_account) {
+            Fragment fragment = new ReportsFragment();
+            replaceFragment(fragment,"reportsFragment");
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
