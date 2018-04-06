@@ -1,8 +1,10 @@
 package com.apptriangle.pos;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -17,15 +19,26 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ExpandableListView;
 import android.widget.TextView;
 
 import com.apptriangle.pos.dashboard.fragment.AdminDashboardFragment;
 import com.apptriangle.pos.dashboard.fragment.DashboardFragment;
 import com.apptriangle.pos.reports.fragment.ReportsFragment;
+import com.apptriangle.pos.util.expandableListAdapter.ExpandableAdapter;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 
 public class MainDrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, AdminDashboardFragment.OnFragmentInteractionListener,ReportsFragment.OnFragmentInteractionListener {
+
+    ExpandableAdapter listAdapter;
+    ExpandableListView expListView;
+    List<String> listDataHeader;
+    HashMap<String, List<String>> listDataChild;
 
     private boolean fromPlagFragment = false;
     private static String TAG_PLAG = "plagFrag";
@@ -53,9 +66,46 @@ public class MainDrawerActivity extends AppCompatActivity
         View  headerView=(View)navigationView.getHeaderView(0);
         userNameTextView=(TextView)headerView.findViewById(R.id.header_username);
         emailTextView=(TextView)headerView.findViewById(R.id.header_email);
+
+       /* // get the listview
+        expListView = (ExpandableListView) findViewById(R.id.navigationmenu);
+
+        // preparing list data
+        prepareListData();
+
+        listAdapter = new ExpandableAdapter(this, listDataHeader, listDataChild);
+
+        // setting list adapter
+        expListView.setAdapter(listAdapter);
+*/
 //        getSavedHeaderData();
         replaceFragment(new AdminDashboardFragment(),"asd");
     }
+
+    private void prepareListData() {
+        listDataHeader = new ArrayList<String>();
+        listDataChild = new HashMap<String, List<String>>();
+
+        // Adding child data
+        listDataHeader.add("Dashboard");
+        listDataHeader.add("Inventory");
+        listDataHeader.add("Reports");
+        listDataHeader.add("Logout");
+
+        // Adding child data
+        List<String> top250 = new ArrayList<String>();
+        top250.add("Daily Report");
+        top250.add("Monthly Report");
+        top250.add("Customize Report");
+
+
+
+
+        // Header, Child data
+
+        listDataChild.put(listDataHeader.get(2), top250);
+    }
+
 
     private void getSavedHeaderData()
     {
@@ -104,26 +154,63 @@ public class MainDrawerActivity extends AppCompatActivity
         if (id == R.id.nav_home) {
             Fragment fragment =  new AdminDashboardFragment();
             replaceFragment(fragment,"adminDashboardFragment");
-        /*    Fragment fragment = new PlagiarismCheckerFragment();
-            replaceFragment(fragment,TAG_PLAG);
-            // Handle the camera action
-        } else if (id == R.id.nav_account) {
-            Fragment fragment = new AccountInfoFragment();
-            replaceFragment(fragment,TAG_ACCOUNT_INFO);
-        }else if (id == R.id.nav_plans) {
-            Fragment fragment = new PlansFragment();
-            replaceFragment(fragment, TAG_PLANS);
-        } else if (id == R.id.nav_logout) {
-            logout();*/
-        } else if (id == R.id.nav_account) {
+        } else if (id == R.id.nav_daily_sales) {
             Fragment fragment = new ReportsFragment();
             replaceFragment(fragment,"reportsFragment");
+        }else if (id == R.id.nav_monthly_sales) {
+            Fragment fragment = new ReportsFragment();
+            replaceFragment(fragment,"reportsFragment");
+        } else if (id == R.id.nav_cust_sales) {
+            Fragment fragment = new ReportsFragment();
+            replaceFragment(fragment,"reportsFragment");
+        }else if (id == R.id.nav_daily_stock) {
+            Fragment fragment = new ReportsFragment();
+            replaceFragment(fragment,"reportsFragment");
+        }else if (id == R.id.nav_monthly_stock) {
+            Fragment fragment = new ReportsFragment();
+            replaceFragment(fragment,"reportsFragment");
+        }else if (id == R.id.nav_cust_stock) {
+            Fragment fragment = new ReportsFragment();
+            replaceFragment(fragment,"reportsFragment");
+        } else if (id == R.id.nav_account) {
+
+        }else if (id == R.id.nav_logout) {
+            confirmAndLogout(this);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    public  void confirmAndLogout(final Activity activity) {
+        if (!activity.isFinishing()) {
+            android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(activity);
+            alertDialogBuilder.setTitle("Are you sure you want to logout?")
+                    // set dialog message
+                    .setCancelable(false).setPositiveButton("Logout", new DialogInterface.OnClickListener() {
+
+                public void onClick(DialogInterface dialog, int id) {
+
+                    logout();
+
+                }
+            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+
+                    dialog.cancel();
+                }
+            });
+
+            android.app.AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.setCanceledOnTouchOutside(false);
+//		alertDialog.setOutsideTouchable(true);
+
+            alertDialog.show();
+        }
+
+    }
+
     void logout()
     {
         deleteApiKey();
@@ -135,7 +222,7 @@ public class MainDrawerActivity extends AppCompatActivity
 
     public void deleteApiKey() {
         SharedPreferences prefs = this.getSharedPreferences(
-                "com.prepostseo.plagiarismchecker", Context.MODE_PRIVATE);
+                "com.appTriangle.pos", Context.MODE_PRIVATE);
 
         prefs.edit().putString("api_key", "").apply();
     }

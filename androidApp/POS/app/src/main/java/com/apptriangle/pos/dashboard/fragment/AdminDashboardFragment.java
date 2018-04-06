@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -36,8 +37,11 @@ public class AdminDashboardFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private RecyclerView recyclerView;
     private View contentView;
+    MyPagerAdapter adaptor;
+    TabLayout tabLayout;
+    ViewPager pager;
     private SalesAdminAdapter adapter;
-    String[] listItems = {"item 1", "item 2 ", "list", "android" };
+    String[] listItems = {"item 1", "item 2 ", "list", "android"};
 
 
     public AdminDashboardFragment() {
@@ -48,9 +52,10 @@ public class AdminDashboardFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ViewPager pager = (ViewPager) contentView.findViewById(R.id.viewPager);
-        pager.setAdapter(new MyPagerAdapter(((AppCompatActivity)getActivity()).getSupportFragmentManager()));
-        TabLayout tabLayout = (TabLayout) contentView.findViewById(R.id.tabs);
+        pager = (ViewPager) contentView.findViewById(R.id.viewPager);
+        adaptor = new MyPagerAdapter(((AppCompatActivity) getActivity()).getSupportFragmentManager());
+        pager.setAdapter(adaptor);
+        tabLayout = (TabLayout) contentView.findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(pager);
         initialize();
 
@@ -66,13 +71,13 @@ public class AdminDashboardFragment extends Fragment {
     }
 
 
-    public void initialize(){
+    public void initialize() {
         List<SalesResponse> list = new ArrayList<>();
-        for (int i = 0; i <10 ; i++) {
+        for (int i = 0; i < 10; i++) {
             SalesResponse tmp = new SalesResponse();
             list.add(tmp);
         }
-        recyclerView = (RecyclerView)contentView.findViewById(R.id.recyclerView);
+        recyclerView = (RecyclerView) contentView.findViewById(R.id.recyclerView);
         adapter = new SalesAdminAdapter(getActivity(), list);
 
         recyclerView.setVisibility(View.VISIBLE);
@@ -89,8 +94,6 @@ public class AdminDashboardFragment extends Fragment {
             mListener.onFragmentInteraction();
         }
     }
-
-
 
 
     @Override
@@ -125,7 +128,16 @@ public class AdminDashboardFragment extends Fragment {
         void onFragmentInteraction();
     }
 
-    private class MyPagerAdapter extends FragmentPagerAdapter {
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (adaptor != null)
+           adaptor.notifyDataSetChanged();
+        if (tabLayout != null && pager != null)
+            tabLayout.setupWithViewPager(pager);
+    }
+
+    private class MyPagerAdapter extends FragmentStatePagerAdapter {
 
         private final List<String> mFragmentTitleList = new ArrayList<>();
 
@@ -137,12 +149,15 @@ public class AdminDashboardFragment extends Fragment {
 
         @Override
         public android.support.v4.app.Fragment getItem(int pos) {
-            switch(pos) {
+            switch (pos) {
 
-                case 0: return PieChartFragment.newInstance("FirstFragment, Instance 1");
-                case 1: return BarChartFragment.newInstance("SecondFragment, Instance 1");
+                case 0:
+                    return PieChartFragment.newInstance("FirstFragment, Instance 1");
+                case 1:
+                    return BarChartFragment.newInstance("SecondFragment, Instance 1");
 
-                default: return PieChartFragment.newInstance("ThirdFragment, Default");
+                default:
+                    return PieChartFragment.newInstance("ThirdFragment, Default");
             }
         }
 

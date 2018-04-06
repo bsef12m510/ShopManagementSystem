@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
+<com.apptriangle.pos.tableview.TableView android:id="@+id/content_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    app:column_header_height="@dimen/default_column_header_height"
+    app:row_header_width="@dimen/default_row_header_width"
+    app:selected_color="@color/table_view_default_selected_background_color"
+    app:shadow_color="@color/table_view_default_shadow_background_color"
+    app:unselected_color="@color/table_view_default_unselected_background_color"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    />
+<!--
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:background="@color/body_background_color"
@@ -156,4 +168,4 @@
 
         </HorizontalScrollView>
 
-</ScrollView>
+</ScrollView>-->

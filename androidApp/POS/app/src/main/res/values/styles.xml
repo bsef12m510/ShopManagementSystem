@@ -54,4 +54,16 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+
+    <declare-styleable name="TableView">
+        <attr name="row_header_width" format="dimension"/>
+        <attr name="column_header_height" format="dimension"/>
+        <attr name="selected_color" format="color"/>
+        <attr name="unselected_color" format="color"/>
+        <attr name="shadow_color" format="color"/>
+        <attr name="separator_color" format="color"/>
+        <attr name="show_vertical_separator" format="boolean"/>
+        <attr name="show_horizontal_separator" format="boolean"/>
+    </declare-styleable>
 </resources>

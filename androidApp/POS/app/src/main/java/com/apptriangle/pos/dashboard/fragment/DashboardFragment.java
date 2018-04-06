@@ -4,9 +4,13 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +18,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 
 
+import com.apptriangle.pos.MainDrawerActivity;
+import com.apptriangle.pos.PublicActivity;
 import com.apptriangle.pos.R;
 
 
@@ -43,6 +49,7 @@ public class DashboardFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         contentView = inflater.inflate(R.layout.fragment_dashboard, container, false);
+        setOnBackListener();
         return contentView;
     }
 
@@ -129,6 +136,65 @@ public class DashboardFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+
+    private void setOnBackListener() {
+        contentView.setFocusableInTouchMode(true);
+        contentView.requestFocus();
+        contentView.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                if (i == KeyEvent.KEYCODE_BACK)
+                    confirmAndLogout(getActivity());
+                return false;
+            }
+        });
+    }
+
+
+    public  void confirmAndLogout(final Activity activity) {
+        if (!activity.isFinishing()) {
+            android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(activity);
+            alertDialogBuilder.setTitle("Are you sure you want to logout?")
+                    // set dialog message
+                    .setCancelable(false).setPositiveButton("Logout", new DialogInterface.OnClickListener() {
+
+                public void onClick(DialogInterface dialog, int id) {
+
+                    logout();
+
+                }
+            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+
+                    dialog.cancel();
+                }
+            });
+
+            android.app.AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.setCanceledOnTouchOutside(false);
+//		alertDialog.setOutsideTouchable(true);
+
+            alertDialog.show();
+        }
+
+    }
+
+    void logout()
+    {
+        deleteApiKey();
+        Intent intent=new Intent(getActivity(), PublicActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        getActivity().finish();
+    }
+
+    public void deleteApiKey() {
+        SharedPreferences prefs = getActivity().getSharedPreferences(
+                "com.appTriangle.pos", Context.MODE_PRIVATE);
+
+        prefs.edit().putString("api_key", "").apply();
     }
 
     /**
