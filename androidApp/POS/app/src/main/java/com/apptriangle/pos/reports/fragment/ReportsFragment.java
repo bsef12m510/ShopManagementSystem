@@ -1,14 +1,20 @@
 package com.apptriangle.pos.reports.fragment;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.LinearLayout;
+import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import com.apptriangle.pos.R;
 import com.apptriangle.pos.reports.adaptor.ReportsAdaptor;
@@ -19,15 +25,26 @@ import com.apptriangle.pos.reports.model.RowHeader;
 import com.apptriangle.pos.sales.response.SalesResponse;
 import com.apptriangle.pos.tableview.TableView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 /**
  * Created by zeeshan on 4/5/2018.
  */
 public class ReportsFragment  extends Fragment {
-
+    public static String HALF_MONTH_DATE_FORMAT = "MMM dd, yyyy";
+    String pickerDateSring;
+    private CardView customContainer;
+    private LinearLayout dateFromContainer, dateToContainer;
+    private Button btnGo;
+    private TextView txtDateFrom, txtDateTo;
+    private RadioGroup radioGroup;
     private List<RowHeader> mRowHeaderList;
     private List<ColumnHeader> mColumnHeaderList;
     private List<List<Cell>> mCellList;
@@ -71,21 +88,63 @@ public class ReportsFragment  extends Fragment {
     }
 
     public void initialize(){
+        tableView = (TableView)contentView.findViewById(R.id.content_container);
+        customContainer = (CardView)contentView.findViewById(R.id.customContainer);
+        dateFromContainer = (LinearLayout)contentView.findViewById(R.id.dateFromContainer);
+        dateToContainer = (LinearLayout)contentView.findViewById(R.id.dateToContainer);
+        btnGo =(Button)contentView.findViewById(R.id.btnGo);
+        txtDateFrom = (TextView)contentView.findViewById(R.id.txtDateFrom);
+        txtDateTo = (TextView)contentView.findViewById(R.id.txtDateTo);
+        dateFromContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDatePickerDialog(txtDateFrom);
+            }
+        });
+        dateToContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDatePickerDialog(txtDateTo);
+            }
+        });
+        btnGo.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                tableView.setVisibility(View.VISIBLE);
+                displayReport();
+            }
+        });
+
+        radioGroup =(RadioGroup)contentView.findViewById(R.id.radioGroup1);
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                switch(i){
+                    case R.id.radio0:
+                        customContainer.setVisibility(View.GONE);
+                        tableView.setVisibility(View.VISIBLE);
+                        displayReport();
+                        break;
+                    case R.id.radio1:
+                        customContainer.setVisibility(View.GONE);
+                        tableView.setVisibility(View.VISIBLE);
+                        displayReport();
+                        break;
+                    case R.id.radio2:
+                        customContainer.setVisibility(View.VISIBLE);
+                        tableView.setVisibility(View.GONE);
+                        break;
+                }
+            }
+        });
         List<SalesResponse> list = new ArrayList<>();
         for (int i = 0; i <20 ; i++) {
             SalesResponse tmp = new SalesResponse();
             list.add(tmp);
         }
-        tableView = (TableView)contentView.findViewById(R.id.content_container);
-        // Create our custom TableView Adapter
-        TableViewAdapter adapter = new TableViewAdapter(getActivity());
 
-        // Set this adapter to the our TableView
-        tableView.setAdapter(adapter);
-        initData();
-        loadData();
-        // Let's set datas of the TableView on the Adapter
-        adapter.setAllItems(mColumnHeaderList, mRowHeaderList, mCellList);
+
 
        /* recyclerView = (RecyclerView)contentView.findViewById(R.id.rcView);
         adapter = new ReportsAdaptor(getActivity(), list);
@@ -98,6 +157,18 @@ public class ReportsFragment  extends Fragment {
         recyclerView.setAdapter(adapter);*/
     }
 
+
+    public void displayReport(){
+        // Create our custom TableView Adapter
+        TableViewAdapter adapter = new TableViewAdapter(getActivity());
+
+        // Set this adapter to the our TableView
+        tableView.setAdapter(adapter);
+        initData();
+        loadData();
+        // Let's set datas of the TableView on the Adapter
+        adapter.setAllItems(mColumnHeaderList, mRowHeaderList, mCellList);
+    }
 
     private void initData() {
         mRowHeaderList = new ArrayList<>();
@@ -212,7 +283,13 @@ public class ReportsFragment  extends Fragment {
 
     void setTitle()
     {
-        ((Activity) getActivity()).setTitle(getResources().getString(R.string.app_name));
+        ((Activity) getActivity()).setTitle("REPORT");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setTitle();
     }
 
     @Override
@@ -223,6 +300,88 @@ public class ReportsFragment  extends Fragment {
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+
+
+    private void showDatePickerDialog(final TextView dateInputField) {
+        final Calendar current = Calendar.getInstance();
+        final Calendar dpdCalendar = Calendar.getInstance();
+        DatePickerDialog datePickerDailog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+                dpdCalendar.set(Calendar.YEAR, year);
+                dpdCalendar.set(Calendar.MONTH, monthOfYear);
+                dpdCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                if (dpdCalendar.compareTo(current) > -1) {
+                    final String myFormat = HALF_MONTH_DATE_FORMAT;
+                    SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+
+                    pickerDateSring = sdf.format(dpdCalendar.getTime());
+                    dateInputField.setText(pickerDateSring);
+
+//                    fragment.setDateFrom(dateFrom);
+
+                }
+
+
+            }
+        }, current.get(Calendar.YEAR), current.get(Calendar.MONTH), current.get(Calendar.DAY_OF_MONTH));
+        long minDate;
+
+        minDate = incrementDate(new SimpleDateFormat(HALF_MONTH_DATE_FORMAT).format(current.getTime()));
+        datePickerDailog.getDatePicker().setMinDate(minDate);
+        showSelectedDateOnPicker(datePickerDailog, pickerDateSring);
+        datePickerDailog.show();
+    }
+
+    public void showSelectedDateOnPicker(DatePickerDialog dpd, String date) {
+        try {
+            if (null != date && !date.equalsIgnoreCase("")) {
+                int dateDigits[] = {-1, -1, -1};
+                dateDigits = getDateInDigits(date);
+                for (int i : dateDigits) {
+                    if (i < 0)
+                        return;
+                }
+                dpd.updateDate(dateDigits[0], dateDigits[1], dateDigits[2]);
+                dpd.setTitle(null);
+            }
+        } catch (Exception e) {
+        }
+
+    }
+
+    public int[] getDateInDigits(String dateString) {
+        int dateDigits[] = {-1, -1, -1};
+        try {
+            Date date = new SimpleDateFormat(HALF_MONTH_DATE_FORMAT).parse(dateString);
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            dateDigits[0] = cal.get(Calendar.YEAR);
+            dateDigits[1] = cal.get(Calendar.MONTH);
+            dateDigits[2] = cal.get(Calendar.DAY_OF_MONTH);
+        } catch (Exception e) {
+        }
+
+        return dateDigits;
+    }
+
+    private long incrementDate(String date) {
+        try {
+            Date parsedDate = new SimpleDateFormat(HALF_MONTH_DATE_FORMAT, Locale.getDefault()).parse(date);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(parsedDate);
+            calendar.add(Calendar.DAY_OF_MONTH, 0);
+
+            Date finalDate = calendar.getTime();
+            return finalDate.getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return System.currentTimeMillis();
         }
     }
 

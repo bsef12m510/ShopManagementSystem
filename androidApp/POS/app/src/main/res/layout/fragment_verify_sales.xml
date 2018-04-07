@@ -41,6 +41,7 @@
                     android:layout_weight="0.7"
                     android:layout_marginLeft="4dp"
                     android:background="@color/white"
+                    android:hint="Enter customer name"
                     android:gravity="end"
                     android:layout_gravity="end"/>
             </LinearLayout>
@@ -72,6 +73,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="0.7"
                     android:layout_marginLeft="4dp"
+                    android:hint="Enter mobile no"
                     android:inputType="number"
                     android:background="@color/white"
                     android:gravity="end"
@@ -85,7 +87,7 @@
             android:layout_height="wrap_content"
             android:nestedScrollingEnabled="false"
 
-            android:background="@color/body_background_color"
+            android:background="@color/white"
             />
 
         <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -114,6 +116,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="0.6"
                     android:layout_marginLeft="4dp"
+                    android:hint="Enter total amount"
                     android:inputType="number"
                     android:background="@color/white"
                     android:gravity="end"
@@ -147,6 +150,7 @@
                     android:layout_weight="0.7"
                     android:layout_marginLeft="4dp"
                     android:background="@color/white"
+                    android:hint="Enter paid amount"
                     android:inputType="number"
                     android:gravity="end"
                     android:layout_gravity="end"/>
@@ -181,6 +185,7 @@
                     android:inputType="number"
                     android:background="@color/white"
                     android:gravity="end"
+                    android:hint="Enter due amount"
                     android:layout_gravity="end"/>
             </LinearLayout>
         </android.support.v7.widget.CardView>
@@ -207,7 +212,8 @@
             android:text="Print"
             style="@style/Widget.AppCompat.Button.Colored"
             android:textColor="@color/white"
-            android:id="@+id/printBtn" />
+            android:id="@+id/printBtn"
+            android:visibility="gone"/>
 
         </LinearLayout>
 

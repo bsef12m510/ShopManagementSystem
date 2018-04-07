@@ -86,9 +86,14 @@ public class StockFragment extends Fragment {
 
 
     void setTitle() {
-        ((Activity) getActivity()).setTitle(getResources().getString(R.string.app_name));
+        ((Activity) getActivity()).setTitle("STOCK");
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        setTitle();
+    }
 
     public void showEmptyView() {
         mRecyclerView.setVisibility(View.GONE);

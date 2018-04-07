@@ -172,7 +172,13 @@ public class PurchaseFragment extends Fragment {
     }
 
     void setTitle() {
-        ((Activity) getActivity()).setTitle(getResources().getString(R.string.app_name));
+        ((Activity) getActivity()).setTitle("PURCHASE");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setTitle();
     }
 
     public void showDialog(final int identifier) {

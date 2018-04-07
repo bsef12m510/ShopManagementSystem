@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.apptriangle.pos.R;
 import com.apptriangle.pos.sales.adaptor.VerifySaleAdaptor;
@@ -57,9 +58,11 @@ public class InvoiceFragment extends Fragment {
         searchContainer1 =(CardView) contentView.findViewById(R.id.searchContainer1);
         searchContainer2 =(CardView) contentView.findViewById(R.id.searchContainer2);
         saleDescContainer =(NestedScrollView) contentView.findViewById(R.id.saleDescContainer);
+        Button printBtn = (Button)contentView.findViewById(R.id.printBtn);
         if(!fromHome) {
             searchContainer1.setVisibility(View.GONE);
             searchContainer2.setVisibility(View.GONE);
+            printBtn.setVisibility(View.VISIBLE);
         }else{
             saleDescContainer.setVisibility(View.GONE);
         }
@@ -85,7 +88,13 @@ public class InvoiceFragment extends Fragment {
 
     void setTitle()
     {
-        ((Activity) getActivity()).setTitle(getResources().getString(R.string.app_name));
+        ((Activity) getActivity()).setTitle("INVOICE");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setTitle();
     }
 
     @Override

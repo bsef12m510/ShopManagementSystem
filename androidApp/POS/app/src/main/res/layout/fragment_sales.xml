@@ -24,14 +24,17 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
                 android:text="Product"
+                android:layout_gravity="center"
                 android:textSize="16sp"
                 />
 
                 <Spinner
+                    android:id="@+id/productsDropdown"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.7"
                     android:layout_marginLeft="4dp"
+
                     android:spinnerMode="dialog"
                     android:layout_gravity="end">
 
@@ -52,10 +55,12 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
                 android:text="Brand"
+                android:layout_gravity="center"
                 android:textSize="16sp"
                 />
 
             <Spinner
+                android:id="@+id/brandsDropdown"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.7"
@@ -84,13 +89,14 @@
                 />
 
             <EditText
+                android:id="@+id/edtQty"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.7"
                 android:layout_marginLeft="4dp"
                 android:background="@color/white"
                 android:gravity="end"
-
+                android:hint="Enter quantity"
                 android:inputType="number"
                 android:layout_gravity="end"/>
 
@@ -115,13 +121,14 @@
                 />
 
             <EditText
+                android:id="@+id/edtPrice"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.7"
                 android:layout_marginLeft="4dp"
                 android:background="@color/white"
                 android:gravity="end"
-
+                android:hint="Enter price"
                 android:inputType="number"
                 android:layout_gravity="end"/>
 
@@ -146,13 +153,14 @@
                 />
 
             <EditText
+                android:id="@+id/edtDiscount"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.7"
                 android:layout_marginLeft="4dp"
                 android:background="@color/white"
                 android:gravity="end"
-
+                android:hint="Enter discount"
                 android:inputType="number"
                 android:layout_gravity="end"/>
 
@@ -177,13 +185,14 @@
                 />
 
             <EditText
+                android:id="@+id/edtTotalPrice"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.7"
                 android:layout_marginLeft="4dp"
                 android:background="@color/white"
                 android:gravity="end"
-
+                android:hint="Enter total price"
                 android:inputType="number"
                 android:layout_gravity="end"/>
 
@@ -191,6 +200,7 @@
         </LinearLayout>
 
         <Button
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop = "10dp"
@@ -200,12 +210,12 @@
             android:text="Add More Products"
             style="@style/Widget.AppCompat.Button.Colored"
             android:textColor="@color/white"
-            android:id="@+id/more" />
+            android:id="@+id/btnMore" />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop = "10dp"
+
             android:layout_marginBottom = "10dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"

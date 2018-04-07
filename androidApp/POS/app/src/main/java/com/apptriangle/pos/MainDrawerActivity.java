@@ -154,22 +154,10 @@ public class MainDrawerActivity extends AppCompatActivity
         if (id == R.id.nav_home) {
             Fragment fragment =  new AdminDashboardFragment();
             replaceFragment(fragment,"adminDashboardFragment");
-        } else if (id == R.id.nav_daily_sales) {
+        } else if (id == R.id.nav_sales) {
             Fragment fragment = new ReportsFragment();
             replaceFragment(fragment,"reportsFragment");
-        }else if (id == R.id.nav_monthly_sales) {
-            Fragment fragment = new ReportsFragment();
-            replaceFragment(fragment,"reportsFragment");
-        } else if (id == R.id.nav_cust_sales) {
-            Fragment fragment = new ReportsFragment();
-            replaceFragment(fragment,"reportsFragment");
-        }else if (id == R.id.nav_daily_stock) {
-            Fragment fragment = new ReportsFragment();
-            replaceFragment(fragment,"reportsFragment");
-        }else if (id == R.id.nav_monthly_stock) {
-            Fragment fragment = new ReportsFragment();
-            replaceFragment(fragment,"reportsFragment");
-        }else if (id == R.id.nav_cust_stock) {
+        }else if (id == R.id.nav_inventory) {
             Fragment fragment = new ReportsFragment();
             replaceFragment(fragment,"reportsFragment");
         } else if (id == R.id.nav_account) {

@@ -187,6 +187,7 @@
                 android:layout_weight="0.7"
                 android:layout_marginLeft="4dp"
                 android:background="@color/white"
+                android:hint="Enter model no"
                 android:gravity="end"
                 android:layout_gravity="end"/>
 
@@ -217,6 +218,7 @@
                 android:layout_marginLeft="4dp"
                 android:background="@color/white"
                 android:gravity="end"
+                android:hint="Enter specifications"
                 android:layout_gravity="end"/>
 
 
@@ -246,7 +248,7 @@
                 android:layout_marginLeft="4dp"
                 android:background="@color/white"
                 android:gravity="end"
-
+                android:hint="Enter quantity"
                 android:inputType="number"
                 android:layout_gravity="end"/>
 
@@ -277,7 +279,7 @@
                 android:layout_marginLeft="4dp"
                 android:background="@color/white"
                 android:gravity="end"
-
+                android:hint="Enter UoM"
                 android:inputType="number"
                 android:layout_gravity="end"/>
 
@@ -308,7 +310,7 @@
                 android:layout_marginLeft="4dp"
                 android:background="@color/white"
                 android:gravity="end"
-
+                android:hint="Enter price"
                 android:inputType="number"
                 android:layout_gravity="end"/>
 
@@ -339,7 +341,7 @@
                 android:layout_marginLeft="4dp"
                 android:background="@color/white"
                 android:gravity="end"
-
+                android:hint="Enter total price"
                 android:inputType="number"
                 android:layout_gravity="end"/>
 

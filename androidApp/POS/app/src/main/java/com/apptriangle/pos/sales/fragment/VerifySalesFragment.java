@@ -80,7 +80,7 @@ public class VerifySalesFragment extends Fragment {
 
     void setTitle()
     {
-        ((Activity) getActivity()).setTitle(getResources().getString(R.string.app_name));
+        ((Activity) getActivity()).setTitle("VERIFY SALE");
     }
 
     @Override
@@ -92,6 +92,12 @@ public class VerifySalesFragment extends Fragment {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setTitle();
     }
 
     @Override

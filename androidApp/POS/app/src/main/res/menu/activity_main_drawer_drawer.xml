@@ -12,30 +12,13 @@
 
             android:title="Inventory" />
         <item
-            android:id="@+id/nav_daily_sales"
+            android:id="@+id/nav_sales"
 
-            android:title="Daily Sales Report" />
+            android:title="Sales Reports" />
         <item
-            android:id="@+id/nav_monthly_sales"
+            android:id="@+id/nav_inventory"
 
-            android:title="Monthly Sales Report" />
-        <item
-            android:id="@+id/nav_cust_sales"
-
-            android:title="Customize Sales Report" />
-
-        <item
-            android:id="@+id/nav_daily_stock"
-
-            android:title="Daily Stock Report" />
-        <item
-            android:id="@+id/nav_monthly_stock"
-
-            android:title="Monthly Stock Report" />
-        <item
-            android:id="@+id/nav_cust_stock"
-
-            android:title="Customize Stock Report" />
+            android:title="Inventory Reports" />
 
         <item
             android:id="@+id/nav_logout"

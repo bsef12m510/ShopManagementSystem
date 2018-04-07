@@ -22,7 +22,8 @@
             android:layout_height="wrap_content"
             android:textColor="@color/black"
             android:layout_marginLeft="3dp"
-
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             />
 
     </RelativeLayout>
