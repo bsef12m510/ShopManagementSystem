@@ -10,6 +10,8 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.apptriangle.pos.R;
+import com.apptriangle.pos.model.Product;
+import com.apptriangle.pos.sales.fragment.VerifySalesFragment;
 import com.apptriangle.pos.sales.response.SalesResponse;
 import com.apptriangle.pos.stock.response.StockResponse;
 
@@ -20,11 +22,14 @@ import java.util.List;
  */
 public class VerifySaleAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final Context mContext;
-    private List<SalesResponse> transactionsList;
+    private List<Product> transactionsList;
     private LayoutInflater mLayoutInflater;
     private int count;
     private boolean invoiceScreen;
-    public VerifySaleAdaptor(Context _mContext, List<SalesResponse> _transactionsList, boolean invoiceScreen) {
+    public Double totalAmount;
+    public VerifySalesFragment parentFrag;
+
+    public VerifySaleAdaptor(Context _mContext, List<Product> _transactionsList, boolean invoiceScreen) {
         this.mContext = _mContext;
         this.transactionsList = _transactionsList;
         this.invoiceScreen = invoiceScreen;
@@ -41,10 +46,21 @@ public class VerifySaleAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         final MyViewHolder viewHolder = (MyViewHolder) holder;
-        final SalesResponse transactionInfo = transactionsList.get(position);
-        viewHolder.product.setText("product");
+        final Product product = transactionsList.get(position);
+        viewHolder.product.setText(product.getProductName());
         if(invoiceScreen)
             viewHolder.checkbox.setVisibility(View.GONE);
+        else{
+            if(viewHolder.checkbox.isChecked()) {
+                product.setChecked(true);
+                totalAmount = totalAmount + (product.getOtherThanCurrentInventoryQty() * product.getQty());
+            }else {
+                product.setChecked(false);
+                totalAmount = totalAmount - (product.getOtherThanCurrentInventoryQty() * product.getQty());
+            }
+            parentFrag.totalAmount = totalAmount;
+            parentFrag.edtTotalAmnt.setText(totalAmount.toString());
+        }
     }
 
     @Override
@@ -59,7 +75,7 @@ public class VerifySaleAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHol
         notifyDataSetChanged();
     }
 
-    public List<SalesResponse> getItems() {
+    public List<Product> getItems() {
         return transactionsList;
     }
 

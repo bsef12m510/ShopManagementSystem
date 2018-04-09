@@ -7,16 +7,21 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.apptriangle.pos.R;
+import com.apptriangle.pos.model.Product;
 import com.apptriangle.pos.sales.adaptor.VerifySaleAdaptor;
 import com.apptriangle.pos.sales.response.SalesResponse;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by zeeshan on 3/31/2018.
@@ -28,6 +33,22 @@ public class VerifySalesFragment extends Fragment {
     private RecyclerView recyclerView;
     String[] listItems = {"item 1", "item 2 ", "list", "android" };
     private VerifySaleAdaptor adaptor;
+    private List<Product> cart;
+    public Double totalAmount, paidAmount, dueAmount;
+    public EditText edtCustName, edtCustNo,edtTotalAmnt, edtPaidAmnt, edtDueAmnt;
+
+    TextWatcher inputTextWatcher = new TextWatcher() {
+        public void afterTextChanged(Editable s) {
+            if(s != null && !s.toString().trim().equalsIgnoreCase("")) {
+                dueAmount = totalAmount - paidAmount;
+                edtDueAmnt.setText(dueAmount.toString());
+            }
+        }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after){
+        }
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
+    };
 
     public VerifySalesFragment() {
         // Required empty public constructor
@@ -51,9 +72,14 @@ public class VerifySalesFragment extends Fragment {
 
     public void initialize(){
         finishBtn = (Button)contentView.findViewById(R.id.finishButton);
+        edtTotalAmnt = (EditText) contentView.findViewById(R.id.edtTotalAmnt);
+        edtPaidAmnt = (EditText) contentView.findViewById(R.id.edtPaidAmnt);
+        edtDueAmnt = (EditText) contentView.findViewById(R.id.edtDueAmnt);
+        edtPaidAmnt.addTextChangedListener(inputTextWatcher);
         finishBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
+                updateCart();
                 onFinishPressed();
             }
         });
@@ -64,8 +90,9 @@ public class VerifySalesFragment extends Fragment {
             stockResponseArrayList.add(tmp);
         }
 
-        adaptor = new VerifySaleAdaptor(getActivity(), stockResponseArrayList, false);
-
+//        adaptor = new VerifySaleAdaptor(getActivity(), stockResponseArrayList, false);
+        adaptor = new VerifySaleAdaptor(getActivity(), cart, false);
+        adaptor.parentFrag = VerifySalesFragment.this;
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adaptor);
@@ -76,6 +103,16 @@ public class VerifySalesFragment extends Fragment {
         if (mListener != null) {
             mListener.onFinishClicked();
         }
+    }
+
+    public void updateCart(){
+
+        for (int i = 0; i < cart.size(); i++) {
+            if(!cart.get(i).isChecked())
+                cart.remove(i);
+        }
+
+        // create json for sales request here and send request
     }
 
     void setTitle()
@@ -104,6 +141,10 @@ public class VerifySalesFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    public void setCart(List<Product> cart) {
+        this.cart = cart;
     }
 
     /**

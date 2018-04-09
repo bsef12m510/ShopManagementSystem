@@ -128,7 +128,7 @@ public class SalesFragment extends Fragment {
     // TODO: Rename method, update argument and hook method into UI event
     public void onCheckoutButtonPressed() {
         if (mListener != null) {
-            mListener.onCheckoutListener();
+            mListener.onCheckoutListener(cart);
         }
     }
 
@@ -406,6 +406,6 @@ public class SalesFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onCheckoutListener();
+        void onCheckoutListener(List<Product> cart);
     }
 }

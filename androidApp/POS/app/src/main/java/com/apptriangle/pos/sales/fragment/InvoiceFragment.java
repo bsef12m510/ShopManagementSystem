@@ -9,16 +9,20 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.apptriangle.pos.R;
+import com.apptriangle.pos.model.Product;
 import com.apptriangle.pos.sales.adaptor.VerifySaleAdaptor;
 import com.apptriangle.pos.sales.response.SalesResponse;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by zeeshan on 4/1/2018.
@@ -33,6 +37,8 @@ public class InvoiceFragment extends Fragment {
     public boolean fromHome = false;
     private CardView searchContainer1, searchContainer2;
     private NestedScrollView saleDescContainer;
+    private List<Product> cart;
+
 
     public InvoiceFragment() {
         // Required empty public constructor
@@ -72,7 +78,7 @@ public class InvoiceFragment extends Fragment {
             stockResponseArrayList.add(tmp);
         }
 
-        adaptor = new VerifySaleAdaptor(getActivity(), stockResponseArrayList, true);
+        adaptor = new VerifySaleAdaptor(getActivity(), cart, true);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);

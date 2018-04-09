@@ -15,6 +15,7 @@ public class Product {
     private Object product_image;
     private Integer qty;
     private int otherThanCurrentInventoryQty;
+    private boolean isChecked;
 
     public Integer getProductId() {
         return product_id;
@@ -88,13 +89,21 @@ public class Product {
         this.qty = qty;
     }
 
-    public Object getOtherThanCurrentInventoryQty() {
+    public int getOtherThanCurrentInventoryQty() {
         return otherThanCurrentInventoryQty;
     }
 
     public void setOtherThanCurrentInventoryQty(int otherThanCurrentInventoryQty) {
         this.otherThanCurrentInventoryQty = otherThanCurrentInventoryQty;
     }
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
+    }
+
 
     public String title;
 

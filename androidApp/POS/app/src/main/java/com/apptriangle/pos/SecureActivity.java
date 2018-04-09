@@ -14,11 +14,14 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.apptriangle.pos.dashboard.fragment.DashboardFragment;
+import com.apptriangle.pos.model.Product;
 import com.apptriangle.pos.purchase.fragemnt.PurchaseFragment;
 import com.apptriangle.pos.sales.fragment.InvoiceFragment;
 import com.apptriangle.pos.sales.fragment.SalesFragment;
 import com.apptriangle.pos.sales.fragment.VerifySalesFragment;
 import com.apptriangle.pos.stock.fragment.StockFragment;
+
+import java.util.List;
 
 /**
  * Created by zeeshan on 3/28/2018.
@@ -156,7 +159,7 @@ public class SecureActivity extends AppCompatActivity implements DashboardFragme
     }
 
     @Override
-    public void onCheckoutListener() {
+    public void onCheckoutListener(List<Product> cart) {
         fm = getFragmentManager();
 
         // replace
@@ -165,7 +168,9 @@ public class SecureActivity extends AppCompatActivity implements DashboardFragme
                 R.anim.slide_out_right,R.anim.slide_in_left,
                 R.anim.slide_out_right);
 
-        ft.replace(R.id.fragmentContainer, new VerifySalesFragment(),"verifySalesFragment");
+        VerifySalesFragment frg =  new VerifySalesFragment();
+        frg.setCart(cart);
+        ft.replace(R.id.fragmentContainer, frg,"verifySalesFragment");
 
         ft.addToBackStack("verifySalesFragment");
         ft.commit();
