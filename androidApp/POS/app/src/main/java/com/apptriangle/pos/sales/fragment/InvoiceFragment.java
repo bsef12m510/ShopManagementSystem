@@ -65,10 +65,12 @@ public class InvoiceFragment extends Fragment {
         searchContainer2 =(CardView) contentView.findViewById(R.id.searchContainer2);
         saleDescContainer =(NestedScrollView) contentView.findViewById(R.id.saleDescContainer);
         Button printBtn = (Button)contentView.findViewById(R.id.printBtn);
+        Button smsBtn = (Button)contentView.findViewById(R.id.smsBtn);
         if(!fromHome) {
             searchContainer1.setVisibility(View.GONE);
             searchContainer2.setVisibility(View.GONE);
             printBtn.setVisibility(View.VISIBLE);
+            smsBtn.setVisibility(View.VISIBLE);
         }else{
             saleDescContainer.setVisibility(View.GONE);
         }
