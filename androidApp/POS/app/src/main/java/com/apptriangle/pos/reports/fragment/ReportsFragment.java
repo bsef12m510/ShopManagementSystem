@@ -3,6 +3,8 @@ package com.apptriangle.pos.reports.fragment;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Fragment;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,13 +12,18 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.apptriangle.pos.R;
+import com.apptriangle.pos.model.Brand;
+import com.apptriangle.pos.model.Product;
 import com.apptriangle.pos.reports.adaptor.ReportsAdaptor;
 import com.apptriangle.pos.reports.adaptor.TableViewAdapter;
 import com.apptriangle.pos.reports.model.Cell;
@@ -44,6 +51,7 @@ public class ReportsFragment  extends Fragment {
     private LinearLayout dateFromContainer, dateToContainer;
     private Button btnGo;
     private TextView txtDateFrom, txtDateTo;
+    private Spinner productsDropdown, brandsDropdown, usersDropdown;
     private RadioGroup radioGroup;
     private List<RowHeader> mRowHeaderList;
     private List<ColumnHeader> mColumnHeaderList;
@@ -90,11 +98,17 @@ public class ReportsFragment  extends Fragment {
     public void initialize(){
         tableView = (TableView)contentView.findViewById(R.id.content_container);
         customContainer = (CardView)contentView.findViewById(R.id.customContainer);
+        productsDropdown = (Spinner) contentView.findViewById(R.id.productsDropdown);
+        brandsDropdown = (Spinner) contentView.findViewById(R.id.brandsDropdown);
+        usersDropdown = (Spinner) contentView.findViewById(R.id.usersDropdown);
         dateFromContainer = (LinearLayout)contentView.findViewById(R.id.dateFromContainer);
         dateToContainer = (LinearLayout)contentView.findViewById(R.id.dateToContainer);
         btnGo =(Button)contentView.findViewById(R.id.btnGo);
         txtDateFrom = (TextView)contentView.findViewById(R.id.txtDateFrom);
         txtDateTo = (TextView)contentView.findViewById(R.id.txtDateTo);
+
+        setupDropdowns();
+
         dateFromContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -157,6 +171,41 @@ public class ReportsFragment  extends Fragment {
         recyclerView.setAdapter(adapter);*/
     }
 
+
+    public void setupDropdowns(){
+        List<Product> products = new ArrayList<>();
+        Product placeholder = new Product();
+        placeholder.title = "Product";
+        products.add(placeholder);
+        for (int i = 0; i < 10; i++) {
+            Product tmp = new Product();
+            tmp.title = "Product";
+            products.add(tmp);
+        }
+        setDropdown(products, productsDropdown);
+
+        List<Brand> brands = new ArrayList<>();
+        Brand brandPlaceholder = new Brand();
+        brandPlaceholder.title = "Brand";
+        brands.add(brandPlaceholder);
+        for (int i = 0; i < 10; i++) {
+            Brand tmp = new Brand();
+            tmp.title = "Brand";
+            brands.add(tmp);
+        }
+        setBrandDropdown(brands, brandsDropdown);
+
+        List<Brand> users = new ArrayList<>();
+        Brand user = new Brand();
+        user.title = "User";
+        users.add(user);
+        for (int i = 0; i < 10; i++) {
+            Brand tmp = new Brand();
+            tmp.title = "User";
+            users.add(tmp);
+        }
+        setBrandDropdown(users, usersDropdown);
+    }
 
     public void displayReport(){
         // Create our custom TableView Adapter
@@ -383,6 +432,152 @@ public class ReportsFragment  extends Fragment {
             e.printStackTrace();
             return System.currentTimeMillis();
         }
+    }
+
+
+    public void setDropdown(final List<Product> list, Spinner dropdown) {
+        final ArrayAdapter<Product> spinnerArrayAdapter = new ArrayAdapter<Product>(
+                getActivity(), R.layout.spinner_item, list) {
+            @Override
+            public boolean isEnabled(int position) {
+                return position != 0;
+            }
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                LayoutInflater inflater = LayoutInflater.from(getContext());
+                View view = inflater.inflate(R.layout.collapsed_spinner_reports, parent, false);
+//                View view = super.getDropDownView(position, convertView, parent);
+
+//                TextView label = (TextView) view.findViewById(R.id.label);
+                TextView value = (TextView) view.findViewById(R.id.value);
+
+//                label.setText(text);
+//                label.setMaxLines(1);
+                value.setText(list.get(position).title);
+                return view;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView,
+                                        ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                if (position == 0) {
+                    // Set the hint text color gray
+                    tv.setTextColor(Color.GRAY);
+                } else {
+                    tv.setTextColor(Color.BLACK);
+                }
+                return view;
+            }
+        };
+        spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_item);
+        dropdown.setAdapter(spinnerArrayAdapter);
+        dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                Product selectedItemText = (Product) parent.getItemAtPosition(position);
+                // If user change the default selection
+                // First item is disable and it is used for hint
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        dropdown.setAdapter(spinnerArrayAdapter);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            dropdown.setLayoutMode(android.R.layout.select_dialog_item);
+        }
+
+
+            /*if (currentForeignId != null) {
+                // list.indexOf()
+                for (int i = 0; i < list.size(); i++) {
+                    if (list.get(i).getValue().equalsIgnoreCase(currentForeignId) || list.get(i).getKey().equalsIgnoreCase(currentForeignId)) { //getkey()
+                        dropdown.setSelection(i);
+                        break;
+                    }
+                }
+            }*/
+
+    }
+
+    public void setBrandDropdown(final List<Brand> list, Spinner dropdown) {
+        final ArrayAdapter<Brand> spinnerArrayAdapter = new ArrayAdapter<Brand>(
+                getActivity(), R.layout.spinner_item, list) {
+            @Override
+            public boolean isEnabled(int position) {
+                return position != 0;
+            }
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                LayoutInflater inflater = LayoutInflater.from(getContext());
+                View view = inflater.inflate(R.layout.collapsed_spinner_reports, parent, false);
+//                View view = super.getDropDownView(position, convertView, parent);
+
+//                TextView label = (TextView) view.findViewById(R.id.label);
+                TextView value = (TextView) view.findViewById(R.id.value);
+
+//                label.setText(text);
+//                label.setMaxLines(1);
+                value.setText(list.get(position).title);
+                return view;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView,
+                                        ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                if (position == 0) {
+                    // Set the hint text color gray
+                    tv.setTextColor(Color.GRAY);
+                } else {
+                    tv.setTextColor(Color.BLACK);
+                }
+                return view;
+            }
+        };
+        spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_item);
+        dropdown.setAdapter(spinnerArrayAdapter);
+        dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                Brand selectedItemText = (Brand) parent.getItemAtPosition(position);
+                // If user change the default selection
+                // First item is disable and it is used for hint
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        dropdown.setAdapter(spinnerArrayAdapter);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            dropdown.setLayoutMode(android.R.layout.select_dialog_item);
+        }
+
+
+            /*if (currentForeignId != null) {
+                // list.indexOf()
+                for (int i = 0; i < list.size(); i++) {
+                    if (list.get(i).getValue().equalsIgnoreCase(currentForeignId) || list.get(i).getKey().equalsIgnoreCase(currentForeignId)) { //getkey()
+                        dropdown.setSelection(i);
+                        break;
+                    }
+                }
+            }*/
     }
 
     @Override

@@ -108,9 +108,9 @@ public class LoginFragment extends Fragment {
             @Override
             public void onClick(View view) {
 //                takeScreenshot();
-                bitmap = getBitmapFromView(container, container.getChildAt(0).getHeight(), container.getChildAt(0).getWidth());
-                doPhotoPrint();
-//                callLoginService();
+//                bitmap = getBitmapFromView(container, container.getChildAt(0).getHeight(), container.getChildAt(0).getWidth());
+//                doPhotoPrint();
+                callLoginService();
             }
         });
     }

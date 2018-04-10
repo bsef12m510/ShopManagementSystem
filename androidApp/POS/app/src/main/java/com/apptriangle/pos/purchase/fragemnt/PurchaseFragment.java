@@ -234,7 +234,7 @@ public class PurchaseFragment extends Fragment {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 LayoutInflater inflater = LayoutInflater.from(getContext());
-                View view = inflater.inflate(R.layout.collapsed_spinner, parent, false);
+                View view = inflater.inflate(R.layout.collapsed_spinner_reports, parent, false);
 //                View view = super.getDropDownView(position, convertView, parent);
 
 //                TextView label = (TextView) view.findViewById(R.id.label);
@@ -307,7 +307,7 @@ public class PurchaseFragment extends Fragment {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 LayoutInflater inflater = LayoutInflater.from(getContext());
-                View view = inflater.inflate(R.layout.collapsed_spinner, parent, false);
+                View view = inflater.inflate(R.layout.collapsed_spinner_reports, parent, false);
 //                View view = super.getDropDownView(position, convertView, parent);
 
 //                TextView label = (TextView) view.findViewById(R.id.label);
