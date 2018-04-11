@@ -175,33 +175,33 @@ public class ReportsFragment  extends Fragment {
     public void setupDropdowns(){
         List<Product> products = new ArrayList<>();
         Product placeholder = new Product();
-        placeholder.title = "Product";
+        placeholder.setProductName("Product");
         products.add(placeholder);
         for (int i = 0; i < 10; i++) {
             Product tmp = new Product();
-            tmp.title = "Product";
+            tmp.setProductName("Product");
             products.add(tmp);
         }
         setDropdown(products, productsDropdown);
 
         List<Brand> brands = new ArrayList<>();
         Brand brandPlaceholder = new Brand();
-        brandPlaceholder.title = "Brand";
+        brandPlaceholder.setBrandName("Brand");
         brands.add(brandPlaceholder);
         for (int i = 0; i < 10; i++) {
             Brand tmp = new Brand();
-            tmp.title = "Brand";
+            tmp.setBrandName("Brand");
             brands.add(tmp);
         }
         setBrandDropdown(brands, brandsDropdown);
 
         List<Brand> users = new ArrayList<>();
         Brand user = new Brand();
-        user.title = "User";
+        user.setBrandName("User");
         users.add(user);
         for (int i = 0; i < 10; i++) {
             Brand tmp = new Brand();
-            tmp.title = "User";
+            tmp.setBrandName("User");
             users.add(tmp);
         }
         setBrandDropdown(users, usersDropdown);
@@ -454,7 +454,7 @@ public class ReportsFragment  extends Fragment {
 
 //                label.setText(text);
 //                label.setMaxLines(1);
-                value.setText(list.get(position).title);
+                value.setText(list.get(position).getProductName());
                 return view;
             }
 
@@ -527,7 +527,7 @@ public class ReportsFragment  extends Fragment {
 
 //                label.setText(text);
 //                label.setMaxLines(1);
-                value.setText(list.get(position).title);
+                value.setText(list.get(position).getBrandName());
                 return view;
             }
 

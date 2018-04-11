@@ -194,7 +194,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
-                android:text="Model"
+                android:text="Model*"
                 android:textSize="16sp"
                 />
 
@@ -224,7 +224,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
-                android:text="Specs"
+                android:text="Specs*"
                 android:textSize="16sp"
                 />
 
@@ -254,7 +254,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
-                android:text="Quantity"
+                android:text="Quantity*"
                 android:textSize="16sp"
                 />
 
@@ -285,7 +285,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
-                android:text="UoM"
+                android:text="UoM*"
                 android:textSize="16sp"
                 />
 
@@ -316,7 +316,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
-                android:text="Price"
+                android:text="Price*"
                 android:textSize="16sp"
                 />
 

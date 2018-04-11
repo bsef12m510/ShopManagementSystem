@@ -23,7 +23,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
-                android:text="Product"
+                android:text="Product*"
                 android:layout_gravity="center"
                 android:textSize="16sp"
                 />
@@ -54,7 +54,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
-                android:text="Brand"
+                android:text="Brand*"
                 android:layout_gravity="center"
                 android:textSize="16sp"
                 />
@@ -84,7 +84,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
-                android:text="Quantity"
+                android:text="Quantity*"
                 android:textSize="16sp"
                 />
 
@@ -116,7 +116,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
-                android:text="Price"
+                android:text="Price*"
                 android:textSize="16sp"
                 />
 
