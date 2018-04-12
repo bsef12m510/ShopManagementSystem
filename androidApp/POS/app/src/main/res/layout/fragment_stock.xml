@@ -93,6 +93,12 @@
                 android:layout_height="wrap_content"
                 android:text="Brand" />
 
+                <RadioButton
+                    android:id="@+id/radio2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Model" />
+
             </RadioGroup>
 
 
@@ -164,7 +170,7 @@
                 android:gravity="center"
                 android:text="PRODUCT"
                 android:textColor="@color/colorAccent"
-                android:layout_weight="0.4"
+                android:layout_weight="0.3"
                 android:layout_marginLeft="4dp"
                 android:layout_marginRight="4dp"/>
 
@@ -180,8 +186,17 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:id="@+id/model"
+                android:gravity="center"
+                android:textColor="@color/colorAccent"
+                android:text="MODEL"
+                android:layout_weight="0.2"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:id="@+id/stock"
-                android:layout_weight="0.3"
+                android:layout_weight="0.2"
                 android:text="STOCK"
                 android:textColor="@color/colorAccent"
                 android:gravity="center"

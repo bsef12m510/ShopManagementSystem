@@ -108,9 +108,17 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/round_button"
                 android:layout_gravity="center"
+                android:layout_marginRight="4dp"
                 android:padding="6dp"
                 android:src="@drawable/edit"/>
-
+            <ImageButton
+                android:id="@+id/deleteProductBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/round_button"
+                android:layout_gravity="center"
+                android:padding="6dp"
+                android:src="@drawable/delete"/>
 
         </LinearLayout>
 
@@ -159,8 +167,17 @@
                 android:layout_gravity="center"
                 android:background="@drawable/round_button"
                 android:padding="6dp"
+                android:layout_marginRight="4dp"
                 android:src="@drawable/edit"/>
 
+            <ImageButton
+                android:id="@+id/deleteBrandBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/round_button"
+                android:layout_gravity="center"
+                android:padding="6dp"
+                android:src="@drawable/delete"/>
 
         </LinearLayout>
 
@@ -177,7 +194,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
-                android:text="Model"
+                android:text="Model*"
                 android:textSize="16sp"
                 />
 
@@ -207,7 +224,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
-                android:text="Specs"
+                android:text="Specs*"
                 android:textSize="16sp"
                 />
 
@@ -237,7 +254,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
-                android:text="Quantity"
+                android:text="Quantity*"
                 android:textSize="16sp"
                 />
 
@@ -268,7 +285,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
-                android:text="UoM"
+                android:text="UoM*"
                 android:textSize="16sp"
                 />
 
@@ -299,7 +316,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
-                android:text="Price"
+                android:text="Price*"
                 android:textSize="16sp"
                 />
 
@@ -369,7 +386,7 @@
                 android:id="@+id/seller"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:hint="Seller Details.."
+                android:hint="Supplier Details.."
 
                 android:background="@color/white"
                 android:gravity="top|left"

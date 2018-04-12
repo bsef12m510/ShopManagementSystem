@@ -3,14 +3,23 @@ package com.apptriangle.pos.Login.fragment;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.v4.print.PrintHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 
@@ -18,6 +27,10 @@ import com.apptriangle.pos.Login.response.LoginResponse;
 import com.apptriangle.pos.Login.restInterface.LoginService;
 import com.apptriangle.pos.R;
 import com.apptriangle.pos.api.ApiClient;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.Date;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -32,7 +45,9 @@ import retrofit2.Response;
  * to handle interaction events.
  */
 public class LoginFragment extends Fragment {
-
+    ScrollView container;
+    File imageFile;
+    Bitmap bitmap;
     private EditText email,password;
     private LoginResponse loginResponseData;
     private OnLoginResponseListener mListener;
@@ -65,7 +80,7 @@ public class LoginFragment extends Fragment {
  }
 
     public void initialize(View contentView){
-
+        container = (ScrollView) contentView.findViewById(R.id.container);
         registerButton = (TextView) contentView.findViewById(R.id.registerTextView);
         underLineTetView(registerButton);
         loginButton = (Button)contentView.findViewById(R.id.loginButton);
@@ -92,7 +107,9 @@ public class LoginFragment extends Fragment {
         loginButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-
+//                takeScreenshot();
+//                bitmap = getBitmapFromView(container, container.getChildAt(0).getHeight(), container.getChildAt(0).getWidth());
+//                doPhotoPrint();
                 callLoginService();
             }
         });
@@ -155,6 +172,58 @@ public class LoginFragment extends Fragment {
             });
         }
     }
+
+    //create bitmap from the ScrollView
+    private Bitmap getBitmapFromView(View view, int height, int width) {
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        Drawable bgDrawable = view.getBackground();
+        if (bgDrawable != null)
+            bgDrawable.draw(canvas);
+        else
+            canvas.drawColor(Color.WHITE);
+        view.draw(canvas);
+        return bitmap;
+    }
+
+    private void takeScreenshot() {
+        Date now = new Date();
+        android.text.format.DateFormat.format("yyyy-MM-dd_hh:mm:ss", now);
+
+        try {
+            // image naming and path  to include sd card  appending name you choose for file
+            String mPath = Environment.getExternalStorageDirectory().toString() + "/" + now + ".jpg";
+
+            // create bitmap screen capture
+//            View v1 = getActivity().getWindow().getDecorView().getRootView();
+            View v1 = getActivity().getWindow().getDecorView().findViewById(R.id.container);
+
+            v1.setDrawingCacheEnabled(true);
+            bitmap = Bitmap.createBitmap(v1.getDrawingCache());
+            v1.setDrawingCacheEnabled(false);
+
+            imageFile = new File(mPath);
+
+            FileOutputStream outputStream = new FileOutputStream(imageFile);
+            int quality = 100;
+            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
+            outputStream.flush();
+            outputStream.close();
+
+        } catch (Throwable e) {
+            // Several error may come out with file handling or DOM
+            e.printStackTrace();
+        }
+    }
+
+    private void doPhotoPrint() {
+        PrintHelper photoPrinter = new PrintHelper(getActivity());
+        photoPrinter.setScaleMode(PrintHelper.SCALE_MODE_FIT);
+//        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
+//                R.drawable.logo);
+        photoPrinter.printBitmap("droids.jpg - test print", bitmap);
+    }
+
 
     /**
      * This interface must be implemented by activities that contain this

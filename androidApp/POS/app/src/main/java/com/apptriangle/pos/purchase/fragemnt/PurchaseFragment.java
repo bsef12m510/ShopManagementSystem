@@ -104,22 +104,22 @@ public class PurchaseFragment extends Fragment {
 
         List<Product> products = new ArrayList<>();
         Product placeholder = new Product();
-        placeholder.title = "Select Product";
+        placeholder.setProductName("Select Product");
         products.add(placeholder);
         for (int i = 0; i < 10; i++) {
             Product tmp = new Product();
-            tmp.title = "Product";
+            tmp.setProductName("Product");
             products.add(tmp);
         }
         setDropdown(products, productsDropdown);
 
         List<Brand> brands = new ArrayList<>();
         Brand brandPlaceholder = new Brand();
-        brandPlaceholder.title = "Select Brand";
+        brandPlaceholder.setBrandName("Select Brand");
         brands.add(brandPlaceholder);
         for (int i = 0; i < 10; i++) {
             Brand tmp = new Brand();
-            tmp.title = "Brand";
+            tmp.setBrandName("Brand");
             brands.add(tmp);
         }
         setBrandDropdown(brands, brandsDropdown);
@@ -196,7 +196,7 @@ public class PurchaseFragment extends Fragment {
 // Set up the input
         final EditText input = new EditText(getActivity());
 // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(input);
 
 // Set up the buttons
@@ -234,7 +234,7 @@ public class PurchaseFragment extends Fragment {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 LayoutInflater inflater = LayoutInflater.from(getContext());
-                View view = inflater.inflate(R.layout.collapsed_spinner, parent, false);
+                View view = inflater.inflate(R.layout.collapsed_spinner_reports, parent, false);
 //                View view = super.getDropDownView(position, convertView, parent);
 
 //                TextView label = (TextView) view.findViewById(R.id.label);
@@ -242,7 +242,7 @@ public class PurchaseFragment extends Fragment {
 
 //                label.setText(text);
 //                label.setMaxLines(1);
-                value.setText(list.get(position).title);
+                value.setText(list.get(position).getProductName());
                 return view;
             }
 
@@ -307,7 +307,7 @@ public class PurchaseFragment extends Fragment {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 LayoutInflater inflater = LayoutInflater.from(getContext());
-                View view = inflater.inflate(R.layout.collapsed_spinner, parent, false);
+                View view = inflater.inflate(R.layout.collapsed_spinner_reports, parent, false);
 //                View view = super.getDropDownView(position, convertView, parent);
 
 //                TextView label = (TextView) view.findViewById(R.id.label);
@@ -315,7 +315,7 @@ public class PurchaseFragment extends Fragment {
 
 //                label.setText(text);
 //                label.setMaxLines(1);
-                value.setText(list.get(position).title);
+                value.setText(list.get(position).getBrandName());
                 return view;
             }
 
