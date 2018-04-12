@@ -14,11 +14,13 @@ namespace WebSource.Models
     
     public partial class sale
     {
+        public int sr_no { get; set; }
         public int sale_id { get; set; }
         public int product_id { get; set; }
         public Nullable<int> shop_id { get; set; }
         public int prod_quant { get; set; }
         public string is_pmnt_clr { get; set; }
+        public string is_invoice { get; set; }
         public Nullable<double> total_amt { get; set; }
         public Nullable<double> paid_amt { get; set; }
         public Nullable<double> discount { get; set; }

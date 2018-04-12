@@ -232,6 +232,13 @@
     <Compile Include="Models\CShop.cs" />
     <Compile Include="Models\CUser.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\JBrand.cs" />
+    <Compile Include="Models\JInvoice.cs" />
+    <Compile Include="Models\JProduct.cs" />
+    <Compile Include="Models\JProductType.cs" />
+    <Compile Include="Models\JPurchase.cs" />
+    <Compile Include="Models\JSale.cs" />
+    <Compile Include="Models\SProduct.cs" />
     <Compile Include="TimeUuidGenerator\GuidGenerator.cs" />
     <Compile Include="TimeUuidGenerator\GuidVersion.cs" />
     <Compile Include="Models\inventory.cs">

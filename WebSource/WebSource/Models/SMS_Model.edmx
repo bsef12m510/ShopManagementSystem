@@ -44,13 +44,15 @@
         </EntityType>
         <EntityType Name="purchase">
           <Key>
-            <PropertyRef Name="purch_id" />
+            <PropertyRef Name="sr_no" />
           </Key>
-          <Property Name="purch_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="sr_no" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="purch_id" Type="int" Nullable="false" />
           <Property Name="prod_id" Type="int" Nullable="false" />
           <Property Name="prod_quant" Type="int" Nullable="false" />
           <Property Name="shop_id" Type="int" Nullable="false" />
           <Property Name="is_pmnt_clr" Type="nchar" MaxLength="1" Nullable="false" />
+          <Property Name="is_invoice" Type="nchar" MaxLength="1" Nullable="false" />
           <Property Name="total_amt" Type="float" />
           <Property Name="paid_amt" Type="float" />
           <Property Name="agent_id" Type="varchar" MaxLength="50" />
@@ -61,13 +63,15 @@
         </EntityType>
         <EntityType Name="sales">
           <Key>
-            <PropertyRef Name="sale_id" />
+            <PropertyRef Name="sr_no" />
           </Key>
-          <Property Name="sale_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="sr_no" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="sale_id" Type="int" Nullable="false" />
           <Property Name="product_id" Type="int" Nullable="false" />
           <Property Name="shop_id" Type="int" />
           <Property Name="prod_quant" Type="int" Nullable="false" />
           <Property Name="is_pmnt_clr" Type="nchar" MaxLength="1" Nullable="false" />
+          <Property Name="is_invoice" Type="nchar" MaxLength="1" Nullable="false" />
           <Property Name="total_amt" Type="float" />
           <Property Name="paid_amt" Type="float" />
           <Property Name="discount" Type="float" />
@@ -283,6 +287,10 @@
             <End Role="brand" EntitySet="brands" />
             <End Role="product" EntitySet="products" />
           </AssociationSet>
+          <AssociationSet Name="fk_inv_pid" Association="SMS_DBModel.fk_inv_pid">
+            <End Role="product" EntitySet="products" />
+            <End Role="inventory" EntitySet="inventories" />
+          </AssociationSet>
           <AssociationSet Name="fk_prod_type_id" Association="SMS_DBModel.fk_prod_type_id">
             <End Role="product_types" EntitySet="product_types" />
             <End Role="product" EntitySet="products" />
@@ -314,10 +322,6 @@
           <AssociationSet Name="fk_users_shid" Association="SMS_DBModel.fk_users_shid">
             <End Role="shop" EntitySet="shops" />
             <End Role="user" EntitySet="users" />
-          </AssociationSet>
-          <AssociationSet Name="fk_inv_pid" Association="SMS_DBModel.fk_inv_pid">
-            <End Role="product" EntitySet="products" />
-            <End Role="inventory" EntitySet="inventories" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="brand">
@@ -360,20 +364,22 @@
           <Property Name="unit_price" Type="Double" Nullable="false" />
           <Property Name="product_image" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="brand" Relationship="SMS_DBModel.fk_prod_br_id" FromRole="product" ToRole="brand" />
+          <NavigationProperty Name="inventories" Relationship="SMS_DBModel.fk_inv_pid" FromRole="product" ToRole="inventory" />
           <NavigationProperty Name="product_types" Relationship="SMS_DBModel.fk_prod_type_id" FromRole="product" ToRole="product_types" />
           <NavigationProperty Name="purchases" Relationship="SMS_DBModel.fk_pur_pid" FromRole="product" ToRole="purchase" />
           <NavigationProperty Name="sales" Relationship="SMS_DBModel.fk_sales_pid" FromRole="product" ToRole="sale" />
-          <NavigationProperty Name="inventories" Relationship="SMS_DBModel.fk_inv_pid" FromRole="product" ToRole="inventory" />
         </EntityType>
         <EntityType Name="purchase">
           <Key>
-            <PropertyRef Name="purch_id" />
+            <PropertyRef Name="sr_no" />
           </Key>
-          <Property Name="purch_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="sr_no" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="purch_id" Type="Int32" Nullable="false" />
           <Property Name="prod_id" Type="Int32" Nullable="false" />
           <Property Name="prod_quant" Type="Int32" Nullable="false" />
           <Property Name="shop_id" Type="Int32" Nullable="false" />
           <Property Name="is_pmnt_clr" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="true" />
+          <Property Name="is_invoice" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="true" />
           <Property Name="total_amt" Type="Double" />
           <Property Name="paid_amt" Type="Double" />
           <Property Name="agent_id" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
@@ -387,13 +393,15 @@
         </EntityType>
         <EntityType Name="sale">
           <Key>
-            <PropertyRef Name="sale_id" />
+            <PropertyRef Name="sr_no" />
           </Key>
-          <Property Name="sale_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="sr_no" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="sale_id" Type="Int32" Nullable="false" />
           <Property Name="product_id" Type="Int32" Nullable="false" />
           <Property Name="shop_id" Type="Int32" />
           <Property Name="prod_quant" Type="Int32" Nullable="false" />
           <Property Name="is_pmnt_clr" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="true" />
+          <Property Name="is_invoice" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="true" />
           <Property Name="total_amt" Type="Double" />
           <Property Name="paid_amt" Type="Double" />
           <Property Name="discount" Type="Double" />
@@ -440,6 +448,18 @@
             </Principal>
             <Dependent Role="product">
               <PropertyRef Name="brand_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_inv_pid">
+          <End Type="SMS_DBModel.product" Role="product" Multiplicity="1" />
+          <End Type="SMS_DBModel.inventory" Role="inventory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="product">
+              <PropertyRef Name="product_id" />
+            </Principal>
+            <Dependent Role="inventory">
+              <PropertyRef Name="product_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -539,18 +559,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="fk_inv_pid">
-          <End Type="SMS_DBModel.product" Role="product" Multiplicity="1" />
-          <End Type="SMS_DBModel.inventory" Role="inventory" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="product">
-              <PropertyRef Name="product_id" />
-            </Principal>
-            <Dependent Role="inventory">
-              <PropertyRef Name="product_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -607,11 +615,13 @@
                 <ScalarProperty Name="agent_id" ColumnName="agent_id" />
                 <ScalarProperty Name="paid_amt" ColumnName="paid_amt" />
                 <ScalarProperty Name="total_amt" ColumnName="total_amt" />
+                <ScalarProperty Name="is_invoice" ColumnName="is_invoice" />
                 <ScalarProperty Name="is_pmnt_clr" ColumnName="is_pmnt_clr" />
                 <ScalarProperty Name="shop_id" ColumnName="shop_id" />
                 <ScalarProperty Name="prod_quant" ColumnName="prod_quant" />
                 <ScalarProperty Name="prod_id" ColumnName="prod_id" />
                 <ScalarProperty Name="purch_id" ColumnName="purch_id" />
+                <ScalarProperty Name="sr_no" ColumnName="sr_no" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -626,11 +636,13 @@
                 <ScalarProperty Name="discount" ColumnName="discount" />
                 <ScalarProperty Name="paid_amt" ColumnName="paid_amt" />
                 <ScalarProperty Name="total_amt" ColumnName="total_amt" />
+                <ScalarProperty Name="is_invoice" ColumnName="is_invoice" />
                 <ScalarProperty Name="is_pmnt_clr" ColumnName="is_pmnt_clr" />
                 <ScalarProperty Name="prod_quant" ColumnName="prod_quant" />
                 <ScalarProperty Name="shop_id" ColumnName="shop_id" />
                 <ScalarProperty Name="product_id" ColumnName="product_id" />
                 <ScalarProperty Name="sale_id" ColumnName="sale_id" />
+                <ScalarProperty Name="sr_no" ColumnName="sr_no" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

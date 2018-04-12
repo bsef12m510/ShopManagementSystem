@@ -39,13 +39,15 @@
   </EntityType>
   <EntityType Name="purchase">
     <Key>
-      <PropertyRef Name="purch_id" />
+      <PropertyRef Name="sr_no" />
     </Key>
-    <Property Name="purch_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="sr_no" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="purch_id" Type="int" Nullable="false" />
     <Property Name="prod_id" Type="int" Nullable="false" />
     <Property Name="prod_quant" Type="int" Nullable="false" />
     <Property Name="shop_id" Type="int" Nullable="false" />
     <Property Name="is_pmnt_clr" Type="nchar" MaxLength="1" Nullable="false" />
+    <Property Name="is_invoice" Type="nchar" MaxLength="1" Nullable="false" />
     <Property Name="total_amt" Type="float" />
     <Property Name="paid_amt" Type="float" />
     <Property Name="agent_id" Type="varchar" MaxLength="50" />
@@ -56,13 +58,15 @@
   </EntityType>
   <EntityType Name="sales">
     <Key>
-      <PropertyRef Name="sale_id" />
+      <PropertyRef Name="sr_no" />
     </Key>
-    <Property Name="sale_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="sr_no" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="sale_id" Type="int" Nullable="false" />
     <Property Name="product_id" Type="int" Nullable="false" />
     <Property Name="shop_id" Type="int" />
     <Property Name="prod_quant" Type="int" Nullable="false" />
     <Property Name="is_pmnt_clr" Type="nchar" MaxLength="1" Nullable="false" />
+    <Property Name="is_invoice" Type="nchar" MaxLength="1" Nullable="false" />
     <Property Name="total_amt" Type="float" />
     <Property Name="paid_amt" Type="float" />
     <Property Name="discount" Type="float" />

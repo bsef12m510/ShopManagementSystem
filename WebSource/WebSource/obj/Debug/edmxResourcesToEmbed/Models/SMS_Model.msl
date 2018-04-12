@@ -51,11 +51,13 @@
           <ScalarProperty Name="agent_id" ColumnName="agent_id" />
           <ScalarProperty Name="paid_amt" ColumnName="paid_amt" />
           <ScalarProperty Name="total_amt" ColumnName="total_amt" />
+          <ScalarProperty Name="is_invoice" ColumnName="is_invoice" />
           <ScalarProperty Name="is_pmnt_clr" ColumnName="is_pmnt_clr" />
           <ScalarProperty Name="shop_id" ColumnName="shop_id" />
           <ScalarProperty Name="prod_quant" ColumnName="prod_quant" />
           <ScalarProperty Name="prod_id" ColumnName="prod_id" />
           <ScalarProperty Name="purch_id" ColumnName="purch_id" />
+          <ScalarProperty Name="sr_no" ColumnName="sr_no" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -70,11 +72,13 @@
           <ScalarProperty Name="discount" ColumnName="discount" />
           <ScalarProperty Name="paid_amt" ColumnName="paid_amt" />
           <ScalarProperty Name="total_amt" ColumnName="total_amt" />
+          <ScalarProperty Name="is_invoice" ColumnName="is_invoice" />
           <ScalarProperty Name="is_pmnt_clr" ColumnName="is_pmnt_clr" />
           <ScalarProperty Name="prod_quant" ColumnName="prod_quant" />
           <ScalarProperty Name="shop_id" ColumnName="shop_id" />
           <ScalarProperty Name="product_id" ColumnName="product_id" />
           <ScalarProperty Name="sale_id" ColumnName="sale_id" />
+          <ScalarProperty Name="sr_no" ColumnName="sr_no" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

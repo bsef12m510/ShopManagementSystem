@@ -13,6 +13,10 @@
       <End Role="brand" EntitySet="brands" />
       <End Role="product" EntitySet="products" />
     </AssociationSet>
+    <AssociationSet Name="fk_inv_pid" Association="SMS_DBModel.fk_inv_pid">
+      <End Role="product" EntitySet="products" />
+      <End Role="inventory" EntitySet="inventories" />
+    </AssociationSet>
     <AssociationSet Name="fk_prod_type_id" Association="SMS_DBModel.fk_prod_type_id">
       <End Role="product_types" EntitySet="product_types" />
       <End Role="product" EntitySet="products" />
@@ -44,10 +48,6 @@
     <AssociationSet Name="fk_users_shid" Association="SMS_DBModel.fk_users_shid">
       <End Role="shop" EntitySet="shops" />
       <End Role="user" EntitySet="users" />
-    </AssociationSet>
-    <AssociationSet Name="fk_inv_pid" Association="SMS_DBModel.fk_inv_pid">
-      <End Role="product" EntitySet="products" />
-      <End Role="inventory" EntitySet="inventories" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="brand">
@@ -90,20 +90,22 @@
     <Property Name="unit_price" Type="Double" Nullable="false" />
     <Property Name="product_image" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
     <NavigationProperty Name="brand" Relationship="SMS_DBModel.fk_prod_br_id" FromRole="product" ToRole="brand" />
+    <NavigationProperty Name="inventories" Relationship="SMS_DBModel.fk_inv_pid" FromRole="product" ToRole="inventory" />
     <NavigationProperty Name="product_types" Relationship="SMS_DBModel.fk_prod_type_id" FromRole="product" ToRole="product_types" />
     <NavigationProperty Name="purchases" Relationship="SMS_DBModel.fk_pur_pid" FromRole="product" ToRole="purchase" />
     <NavigationProperty Name="sales" Relationship="SMS_DBModel.fk_sales_pid" FromRole="product" ToRole="sale" />
-    <NavigationProperty Name="inventories" Relationship="SMS_DBModel.fk_inv_pid" FromRole="product" ToRole="inventory" />
   </EntityType>
   <EntityType Name="purchase">
     <Key>
-      <PropertyRef Name="purch_id" />
+      <PropertyRef Name="sr_no" />
     </Key>
-    <Property Name="purch_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="sr_no" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="purch_id" Type="Int32" Nullable="false" />
     <Property Name="prod_id" Type="Int32" Nullable="false" />
     <Property Name="prod_quant" Type="Int32" Nullable="false" />
     <Property Name="shop_id" Type="Int32" Nullable="false" />
     <Property Name="is_pmnt_clr" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="true" />
+    <Property Name="is_invoice" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="true" />
     <Property Name="total_amt" Type="Double" />
     <Property Name="paid_amt" Type="Double" />
     <Property Name="agent_id" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
@@ -117,13 +119,15 @@
   </EntityType>
   <EntityType Name="sale">
     <Key>
-      <PropertyRef Name="sale_id" />
+      <PropertyRef Name="sr_no" />
     </Key>
-    <Property Name="sale_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="sr_no" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="sale_id" Type="Int32" Nullable="false" />
     <Property Name="product_id" Type="Int32" Nullable="false" />
     <Property Name="shop_id" Type="Int32" />
     <Property Name="prod_quant" Type="Int32" Nullable="false" />
     <Property Name="is_pmnt_clr" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="true" />
+    <Property Name="is_invoice" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="true" />
     <Property Name="total_amt" Type="Double" />
     <Property Name="paid_amt" Type="Double" />
     <Property Name="discount" Type="Double" />
@@ -170,6 +174,18 @@
       </Principal>
       <Dependent Role="product">
         <PropertyRef Name="brand_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_inv_pid">
+    <End Type="SMS_DBModel.product" Role="product" Multiplicity="1" />
+    <End Type="SMS_DBModel.inventory" Role="inventory" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="product">
+        <PropertyRef Name="product_id" />
+      </Principal>
+      <Dependent Role="inventory">
+        <PropertyRef Name="product_id" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -266,18 +282,6 @@
       </Principal>
       <Dependent Role="user">
         <PropertyRef Name="shop_id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="fk_inv_pid">
-    <End Type="SMS_DBModel.product" Role="product" Multiplicity="1" />
-    <End Type="SMS_DBModel.inventory" Role="inventory" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="product">
-        <PropertyRef Name="product_id" />
-      </Principal>
-      <Dependent Role="inventory">
-        <PropertyRef Name="product_id" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
