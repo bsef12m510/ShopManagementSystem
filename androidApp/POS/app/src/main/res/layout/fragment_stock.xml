@@ -7,54 +7,11 @@
     android:background="@color/body_background_color"
     >
 
-    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/card_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
 
-        >
-
-
-
-        <LinearLayout
-            android:id="@+id/searchContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingTop="16dp"
-            android:paddingBottom="16dp"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-
-            android:visibility="visible"
-
-            android:tag="invisible">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:scaleType="fitStart"
-                android:src="@drawable/ic_message_txtfield_search" />
-
-            <EditText
-                android:id="@+id/searchText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginLeft="12dp"
-                android:background="@color/transparent"
-                android:hint="Search Brand or Product"
-                android:maxLines="1" />
-
-
-        </LinearLayout>
-    </android.support.v7.widget.CardView>
     <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+
 
         >
 
@@ -116,6 +73,51 @@
 
         </LinearLayout>
     </android.support.v7.widget.CardView>
+    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        >
+
+
+
+        <LinearLayout
+            android:id="@+id/searchContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+
+            android:visibility="visible"
+
+            android:tag="invisible">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="fitStart"
+                android:src="@drawable/ic_message_txtfield_search" />
+
+            <EditText
+                android:id="@+id/searchText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginLeft="12dp"
+                android:background="@color/transparent"
+                android:hint="Search Brand or Product"
+                android:maxLines="1" />
+
+
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
 
     <LinearLayout
         android:id="@+id/lytEmpty"

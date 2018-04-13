@@ -224,7 +224,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
-                android:text="Specs*"
+                android:text="UoM*"
                 android:textSize="16sp"
                 />
 
@@ -235,7 +235,8 @@
                 android:layout_marginLeft="4dp"
                 android:background="@color/white"
                 android:gravity="end"
-                android:hint="Enter specifications"
+                android:hint="Enter UoM"
+                android:inputType="number"
                 android:layout_gravity="end"/>
 
 
@@ -272,36 +273,7 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:orientation="horizontal"
-            android:padding="12dp"
-            android:layout_marginBottom="12dp"
-            android:layout_weight="1">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.3"
-                android:text="UoM*"
-                android:textSize="16sp"
-                />
-
-            <EditText
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.7"
-                android:layout_marginLeft="4dp"
-                android:background="@color/white"
-                android:gravity="end"
-                android:hint="Enter UoM"
-                android:inputType="number"
-                android:layout_gravity="end"/>
-
-
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -360,6 +332,36 @@
                 android:gravity="end"
                 android:hint="Enter total price"
                 android:inputType="number"
+                android:layout_gravity="end"/>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp"
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.3"
+                android:text="Specs*"
+                android:textSize="16sp"
+                />
+
+            <EditText
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.7"
+                android:layout_marginLeft="4dp"
+                android:background="@color/white"
+                android:gravity="end"
+                android:hint="Enter specifications"
                 android:layout_gravity="end"/>
 
 
