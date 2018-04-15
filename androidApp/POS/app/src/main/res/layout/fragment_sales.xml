@@ -84,6 +84,36 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
+                android:text="Model*"
+                android:layout_gravity="center"
+                android:textSize="16sp"
+                />
+
+            <Spinner
+                android:id="@+id/modelsDropdown"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.7"
+                android:layout_marginLeft="4dp"
+                android:spinnerMode="dialog"
+                android:layout_gravity="end">
+
+            </Spinner>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp"
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.3"
                 android:text="Quantity*"
                 android:textSize="16sp"
                 />

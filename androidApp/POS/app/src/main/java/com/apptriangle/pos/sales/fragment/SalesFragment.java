@@ -28,7 +28,9 @@ import com.apptriangle.pos.api.ApiClient;
 import com.apptriangle.pos.dashboard.fragment.DashboardFragment;
 import com.apptriangle.pos.model.Brand;
 import com.apptriangle.pos.model.Product;
+import com.apptriangle.pos.model.ProductType;
 import com.apptriangle.pos.sales.response.GetProductsResponse;
+import com.apptriangle.pos.sales.response.SalesResponse;
 import com.apptriangle.pos.sales.restInterface.SalesService;
 
 import java.util.ArrayList;
@@ -46,10 +48,12 @@ import retrofit2.Response;
 
 public class SalesFragment extends Fragment {
     private String apiKey;
-    private Spinner productsDropdown, brandsDropdown;
+    SalesResponse sale;
+    private Spinner productTypesDropdown, brandsDropdown, modelsDropdown;
     private OnFragmentInteractionListener mListener;
     private View contentView;
-    private GetProductsResponse selectedProduct;
+    private Product selectedProduct;
+    private ProductType selectedProductType;
     private Brand selectedBrand;
     private Button checkoutBtn, btnMore;
     private ProgressDialog pd;
@@ -59,7 +63,7 @@ public class SalesFragment extends Fragment {
     TextWatcher inputTextWatcher = new TextWatcher() {
         public void afterTextChanged(Editable s) {
             if(s != null && !s.toString().trim().equalsIgnoreCase("")) {
-                price = Integer.parseInt(s.toString()) * selectedProduct.getProduct().getUnitPrice();
+                price = Integer.parseInt(s.toString()) * selectedProduct.getUnitPrice();
                 edtPrice.setText(price.toString());
                 totalPrice = lastTotalPrice + price;
                 edtTotalPrice.setText(totalPrice.toString());
@@ -93,15 +97,17 @@ public class SalesFragment extends Fragment {
     }
 
     public void initialize(View view){
-
+        sale = new SalesResponse();
         cart = new ArrayList<>();
+
         getApiKey();
         pd = new ProgressDialog(getActivity());
         pd.setMessage("Processing...");
         pd.setCanceledOnTouchOutside(false);
 
-        productsDropdown = (Spinner) view.findViewById(R.id.productsDropdown);
+        productTypesDropdown = (Spinner) view.findViewById(R.id.productsDropdown);
         brandsDropdown = (Spinner) view.findViewById(R.id.brandsDropdown);
+        modelsDropdown = (Spinner) view.findViewById(R.id.modelsDropdown);
         checkoutBtn = (Button)view.findViewById(R.id.checkoutBtn);
         btnMore =(Button)view.findViewById(R.id.btnMore);
         edtQty = (EditText)view.findViewById(R.id.edtQty);
@@ -113,31 +119,46 @@ public class SalesFragment extends Fragment {
         checkoutBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                onCheckoutButtonPressed();
+                if(validate()) {
+                    addProductToCart();
+                    onCheckoutButtonPressed();
+                }else{
+                    Toast.makeText(getActivity(),"Provide all information..",Toast.LENGTH_SHORT).show();
+                }
             }
         });
         btnMore.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                addProductToCart();
+                if(validate())
+                    addProductToCart();
+                else
+                    Toast.makeText(getActivity(),"Provide all information..",Toast.LENGTH_SHORT).show();
             }
         });
-        getAllProducts();
+        getAllProductTypes();
     }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onCheckoutButtonPressed() {
         if (mListener != null) {
-            mListener.onCheckoutListener(cart);
+            sale.products = new ArrayList<>();
+            sale.products.addAll(cart);
+            sale.total_amount = totalPrice;
+            sale.apiKey = apiKey;
+            mListener.onCheckoutListener(sale);
         }
     }
 
     public void addProductToCart(){
         lastTotalPrice = totalPrice;
-        Product product = selectedProduct.getProduct();
+        Product product = selectedProduct;
+        product.setBrand(selectedBrand);
+        product.setProductType(selectedProductType);
         product.setOtherThanCurrentInventoryQty(Integer.parseInt(edtQty.getText().toString()));
-        productsDropdown.setSelection(0);
+        productTypesDropdown.setSelection(0);
         brandsDropdown.setSelection(0);
+        modelsDropdown.setSelection(0);
         edtQty.setText("");
         edtPrice.setText("");
         edtDiscount.setText("");
@@ -155,29 +176,60 @@ public class SalesFragment extends Fragment {
 
     }
 
-    public void getAllProducts(){
+    public void getAllProductTypes(){
         SalesService service =
                 ApiClient.getClient().create(SalesService.class);
 
-        Call<List<GetProductsResponse>> call = service.getAllProducts(apiKey);
+        Call<List<ProductType>> call = service.getAllProductTypes(apiKey);
         pd.show();
-        call.enqueue(new Callback<List<GetProductsResponse>>() {
+        call.enqueue(new Callback<List<ProductType>>() {
             @Override
-            public void onResponse(Call<List<GetProductsResponse>> call, Response<List<GetProductsResponse>> response) {
+            public void onResponse(Call<List<ProductType>> call, Response<List<ProductType>> response) {
                 pd.hide();
                 if (response != null) {
-                    ArrayList<GetProductsResponse> productsList = (ArrayList<GetProductsResponse>) response.body();
-                    GetProductsResponse tmp = new GetProductsResponse();
-                    tmp.setProduct(new Product());
-                    tmp.getProduct().setProductName("Select Product");
+                    ArrayList<ProductType> productsList = (ArrayList<ProductType>) response.body();
+                    ProductType tmp = new ProductType();
+
+                    tmp.setTypeName("Select Product Type");
                     productsList.add(0,tmp);
-                    setDropdown(productsList, productsDropdown);
+                    setProductTypesDropdown(productsList, productTypesDropdown);
 
                 }
             }
 
             @Override
-            public void onFailure(Call<List<GetProductsResponse>> call, Throwable t) {
+            public void onFailure(Call<List<ProductType>> call, Throwable t) {
+                // Log error here since request failed
+                Log.e("failure", "failure");
+                pd.hide();
+
+            }
+        });
+    }
+
+    public void getAllModelsForProductType(){
+        SalesService service =
+                ApiClient.getClient().create(SalesService.class);
+
+        Call<List<Product>> call = service.getModels(apiKey,selectedProductType.getTypeId(),selectedBrand.getBrandId());
+        pd.show();
+        call.enqueue(new Callback<List<Product>>() {
+            @Override
+            public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
+                pd.hide();
+                if (response != null) {
+                    ArrayList<Product> productsList = (ArrayList<Product>) response.body();
+                    Product tmp = new Product();
+
+                    tmp.setProductName("Select Model");
+                    productsList.add(0,tmp);
+                    setModelsDropdown(productsList, modelsDropdown);
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Product>> call, Throwable t) {
                 // Log error here since request failed
                 Log.e("failure", "failure");
                 pd.hide();
@@ -190,7 +242,7 @@ public class SalesFragment extends Fragment {
         SalesService service =
                 ApiClient.getClient().create(SalesService.class);
 
-        Call<List<Brand>> call = service.getBrands(apiKey, selectedProduct.getProduct().getProductType().getTypeId());
+        Call<List<Brand>> call = service.getBrands(apiKey, selectedProductType.getTypeId());
         pd.show();
         call.enqueue(new Callback<List<Brand>>() {
             @Override
@@ -217,13 +269,27 @@ public class SalesFragment extends Fragment {
         });
     }
 
+
+    public boolean validate(){
+        if(selectedProductType == null || selectedProductType.getTypeId() == null)
+            return false;
+        else if(selectedBrand == null || selectedBrand.getBrandId() == null)
+            return false;
+        else if(selectedProduct == null ||selectedProduct.getProductId() == null)
+            return false;
+        else if(edtQty.getText().toString().trim().equalsIgnoreCase(""))
+            return false;
+        else
+            return true;
+    }
+
     void setTitle()
     {
         ((Activity) getActivity()).setTitle("SALE");
     }
 
-    public void setDropdown(final List<GetProductsResponse> list, Spinner dropdown) {
-        final ArrayAdapter<GetProductsResponse> spinnerArrayAdapter = new ArrayAdapter<GetProductsResponse>(
+    public void setProductTypesDropdown(final List<ProductType> list, Spinner dropdown) {
+        final ArrayAdapter<ProductType> spinnerArrayAdapter = new ArrayAdapter<ProductType>(
                 getActivity(), R.layout.spinner_item, list) {
             @Override
             public boolean isEnabled(int position) {
@@ -241,7 +307,7 @@ public class SalesFragment extends Fragment {
 
 //                label.setText(text);
 //                label.setMaxLines(1);
-                value.setText(list.get(position).getProduct().getProductName());
+                value.setText(list.get(position).getTypeName());
                 return view;
             }
 
@@ -265,9 +331,83 @@ public class SalesFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                selectedProduct = (GetProductsResponse) parent.getItemAtPosition(position);
+                selectedProductType = (ProductType) parent.getItemAtPosition(position);
                 if(position != 0)
                     getBrands();
+                // If user change the default selection
+                // First item is disable and it is used for hint
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        dropdown.setAdapter(spinnerArrayAdapter);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            dropdown.setLayoutMode(android.R.layout.select_dialog_item);
+        }
+
+
+            /*if (currentForeignId != null) {
+                // list.indexOf()
+                for (int i = 0; i < list.size(); i++) {
+                    if (list.get(i).getValue().equalsIgnoreCase(currentForeignId) || list.get(i).getKey().equalsIgnoreCase(currentForeignId)) { //getkey()
+                        dropdown.setSelection(i);
+                        break;
+                    }
+                }
+            }*/
+
+    }
+
+    public void setModelsDropdown(final List<Product> list, Spinner dropdown) {
+        final ArrayAdapter<Product> spinnerArrayAdapter = new ArrayAdapter<Product>(
+                getActivity(), R.layout.spinner_item, list) {
+            @Override
+            public boolean isEnabled(int position) {
+                return position != 0;
+            }
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                LayoutInflater inflater = LayoutInflater.from(getContext());
+                View view = inflater.inflate(R.layout.collapsed_spinner, parent, false);
+//                View view = super.getDropDownView(position, convertView, parent);
+
+//                TextView label = (TextView) view.findViewById(R.id.label);
+                TextView value = (TextView) view.findViewById(R.id.value);
+
+//                label.setText(text);
+//                label.setMaxLines(1);
+                value.setText(list.get(position).getProductName());
+                return view;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView,
+                                        ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                if (position == 0) {
+                    // Set the hint text color gray
+                    tv.setTextColor(Color.GRAY);
+                } else {
+                    tv.setTextColor(Color.BLACK);
+                }
+                return view;
+            }
+        };
+        spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_item);
+        dropdown.setAdapter(spinnerArrayAdapter);
+        dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                selectedProduct = (Product) parent.getItemAtPosition(position);
+
                 // If user change the default selection
                 // First item is disable and it is used for hint
 
@@ -341,6 +481,8 @@ public class SalesFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
                 selectedBrand = (Brand) parent.getItemAtPosition(position);
+                if(position != 0)
+                    getAllModelsForProductType();
                 // If user change the default selection
                 // First item is disable and it is used for hint
 
@@ -406,6 +548,6 @@ public class SalesFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onCheckoutListener(List<Product> cart);
+        void onCheckoutListener(SalesResponse sale);
     }
 }

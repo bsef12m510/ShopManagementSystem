@@ -37,7 +37,7 @@ public class InvoiceFragment extends Fragment {
     public boolean fromHome = false;
     private CardView searchContainer1, searchContainer2;
     private NestedScrollView saleDescContainer;
-    private List<Product> cart;
+    public SalesResponse cart;
 
 
     public InvoiceFragment() {
@@ -80,7 +80,7 @@ public class InvoiceFragment extends Fragment {
             stockResponseArrayList.add(tmp);
         }
 
-        adaptor = new VerifySaleAdaptor(getActivity(), cart, true);
+        adaptor = new VerifySaleAdaptor(getActivity(), cart.products, true);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);

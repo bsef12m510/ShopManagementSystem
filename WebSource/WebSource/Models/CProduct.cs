@@ -22,8 +22,10 @@ namespace WebSource.Models
         {
             product_id = p.product_id;
             product_name = p.product_name;
-            product_type = new CProductType(type);
-            brand = new CBrand(b);
+            if(null != type)
+                product_type = new CProductType(type);
+            if(null != brand)
+                brand = new CBrand(b);
             specs = p.specs;
             unit_of_msrmnt = p.unit_of_msrmnt;
             unit_price = p.unit_price;
@@ -36,8 +38,10 @@ namespace WebSource.Models
         {
             product_id = p.product_id;
             product_name = p.product_name;
-            product_type = new CProductType(type);
-            brand = new CBrand(b);
+            if (null != type)
+                product_type = new CProductType(type);
+            if (null != brand)
+                brand = new CBrand(b);
             specs = p.specs;
             unit_of_msrmnt = p.unit_of_msrmnt;
             unit_price = p.unit_price;

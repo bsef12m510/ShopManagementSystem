@@ -24,5 +24,9 @@ public class ProductType {
         this.type_name = typeName;
     }
 
+    public String toString()
+    {
+        return type_name;
+    }
 }
 

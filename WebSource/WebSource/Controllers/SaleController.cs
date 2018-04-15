@@ -12,14 +12,14 @@ namespace WebSource.Controllers
     {
         [HttpPost]
         [ActionName("SaleProduct")]
-        public IHttpActionResult saleProducts(String apiKey, JSale sale)
+        public IHttpActionResult saleProducts(JSale sale)
         {
             bool ok = true;
 
             try
             {
                 SMS_DBEntities1 db = new SMS_DBEntities1();
-                var user = db.users.FirstOrDefault(y => y.api_key.Equals(apiKey));
+                var user = db.users.FirstOrDefault(y => y.api_key.Equals(sale.apiKey));
                 if (null == user)
                 {
                     return Ok(false);

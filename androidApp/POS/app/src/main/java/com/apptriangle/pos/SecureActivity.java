@@ -19,6 +19,7 @@ import com.apptriangle.pos.purchase.fragemnt.PurchaseFragment;
 import com.apptriangle.pos.sales.fragment.InvoiceFragment;
 import com.apptriangle.pos.sales.fragment.SalesFragment;
 import com.apptriangle.pos.sales.fragment.VerifySalesFragment;
+import com.apptriangle.pos.sales.response.SalesResponse;
 import com.apptriangle.pos.stock.fragment.StockFragment;
 
 import java.util.List;
@@ -159,7 +160,7 @@ public class SecureActivity extends AppCompatActivity implements DashboardFragme
     }
 
     @Override
-    public void onCheckoutListener(List<Product> cart) {
+    public void onCheckoutListener(SalesResponse sale) {
         fm = getFragmentManager();
 
         // replace
@@ -169,7 +170,7 @@ public class SecureActivity extends AppCompatActivity implements DashboardFragme
                 R.anim.slide_out_right);
 
         VerifySalesFragment frg =  new VerifySalesFragment();
-        frg.setCart(cart);
+        frg.setCart(sale);
         ft.replace(R.id.fragmentContainer, frg,"verifySalesFragment");
 
         ft.addToBackStack("verifySalesFragment");
@@ -177,7 +178,7 @@ public class SecureActivity extends AppCompatActivity implements DashboardFragme
     }
 
     @Override
-    public void onFinishClicked() {
+    public void onFinishClicked(SalesResponse sale) {
         fm = getFragmentManager();
 
         // replace
@@ -186,7 +187,9 @@ public class SecureActivity extends AppCompatActivity implements DashboardFragme
                 R.anim.slide_out_right,R.anim.slide_in_left,
                 R.anim.slide_out_right);
 
-        ft.replace(R.id.fragmentContainer, new InvoiceFragment(),"invoiceFragment");
+        InvoiceFragment frg = new InvoiceFragment();
+        frg.cart =sale;
+        ft.replace(R.id.fragmentContainer,frg,"invoiceFragment");
 
         ft.addToBackStack("invoiceFragment");
         ft.commit();

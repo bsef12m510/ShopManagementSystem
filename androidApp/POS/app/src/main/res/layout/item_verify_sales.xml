@@ -22,6 +22,7 @@
             android:gravity="center"
             android:layout_weight="0.4"/>
         <TextView
+            android:id="@+id/qty"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="1"
@@ -30,6 +31,7 @@
             android:layout_marginRight="1dp"
             android:layout_weight="0.2"/>
         <TextView
+            android:id="@+id/price"
             android:layout_width="0dp"
             android:gravity="center"
             android:layout_height="wrap_content"

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.apptriangle.pos.R;
@@ -26,7 +27,7 @@ public class VerifySaleAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHol
     private LayoutInflater mLayoutInflater;
     private int count;
     private boolean invoiceScreen;
-    public Double totalAmount;
+    public Double totalAmount =0.0;
     public VerifySalesFragment parentFrag;
 
     public VerifySaleAdaptor(Context _mContext, List<Product> _transactionsList, boolean invoiceScreen) {
@@ -48,18 +49,40 @@ public class VerifySaleAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHol
         final MyViewHolder viewHolder = (MyViewHolder) holder;
         final Product product = transactionsList.get(position);
         viewHolder.product.setText(product.getProductName());
+        viewHolder.qty.setText(Integer.toString(product.getOtherThanCurrentInventoryQty()));
+        viewHolder.price.setText(Double.toString(product.getOtherThanCurrentInventoryQty() * product.getUnitPrice()));
         if(invoiceScreen)
             viewHolder.checkbox.setVisibility(View.GONE);
         else{
             if(viewHolder.checkbox.isChecked()) {
                 product.setChecked(true);
-                totalAmount = totalAmount + (product.getOtherThanCurrentInventoryQty() * product.getQty());
+                totalAmount = totalAmount + (product.getOtherThanCurrentInventoryQty() * product.getUnitPrice());
             }else {
                 product.setChecked(false);
-                totalAmount = totalAmount - (product.getOtherThanCurrentInventoryQty() * product.getQty());
+                totalAmount = totalAmount - (product.getOtherThanCurrentInventoryQty() * product.getUnitPrice());
+                if(totalAmount < 0)
+                    totalAmount = 0.0;
             }
             parentFrag.totalAmount = totalAmount;
             parentFrag.edtTotalAmnt.setText(totalAmount.toString());
+
+
+            viewHolder.checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    if(b){
+                        product.setChecked(true);
+                        totalAmount = totalAmount + (product.getOtherThanCurrentInventoryQty() * product.getUnitPrice());
+                    }else {
+                        product.setChecked(false);
+                        totalAmount = totalAmount - (product.getOtherThanCurrentInventoryQty() * product.getUnitPrice());
+                        if(totalAmount < 0)
+                            totalAmount = 0.0;
+                    }
+                    parentFrag.totalAmount = totalAmount;
+                    parentFrag.edtTotalAmnt.setText(totalAmount.toString());
+                }
+            });
         }
     }
 
@@ -80,13 +103,15 @@ public class VerifySaleAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     private class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView product, brand, stock;
+        TextView product, qty, price;
         CheckBox checkbox;
 
         MyViewHolder(View itemView) {
             super(itemView);
 
             product = (TextView) itemView.findViewById(R.id.verifyProduct);
+            qty = (TextView) itemView.findViewById(R.id.qty);
+            price = (TextView) itemView.findViewById(R.id.price);
             checkbox = (CheckBox) itemView.findViewById(R.id.checkbox);
 
 

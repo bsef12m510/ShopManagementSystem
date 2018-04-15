@@ -2,31 +2,47 @@ package com.apptriangle.pos.sales.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.apptriangle.pos.R;
+import com.apptriangle.pos.api.ApiClient;
 import com.apptriangle.pos.model.Product;
 import com.apptriangle.pos.sales.adaptor.VerifySaleAdaptor;
 import com.apptriangle.pos.sales.response.SalesResponse;
+import com.apptriangle.pos.sales.restInterface.SalesService;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by zeeshan on 3/31/2018.
  */
 public class VerifySalesFragment extends Fragment {
+    ProgressDialog pd;
+    String apiKey;
     private Button finishBtn;
     private OnFragmentInteractionListener mListener;
     private View contentView;
@@ -34,6 +50,7 @@ public class VerifySalesFragment extends Fragment {
     String[] listItems = {"item 1", "item 2 ", "list", "android" };
     private VerifySaleAdaptor adaptor;
     private List<Product> cart;
+    SalesResponse sale;
     public Double totalAmount, paidAmount, dueAmount;
     public EditText edtCustName, edtCustNo,edtTotalAmnt, edtPaidAmnt, edtDueAmnt;
 
@@ -71,6 +88,11 @@ public class VerifySalesFragment extends Fragment {
     }
 
     public void initialize(){
+
+        pd = new ProgressDialog(getActivity());
+        pd.setMessage("Processing...");
+        pd.setCanceledOnTouchOutside(false);
+
         finishBtn = (Button)contentView.findViewById(R.id.finishButton);
         edtTotalAmnt = (EditText) contentView.findViewById(R.id.edtTotalAmnt);
         edtPaidAmnt = (EditText) contentView.findViewById(R.id.edtPaidAmnt);
@@ -80,7 +102,8 @@ public class VerifySalesFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 updateCart();
-                onFinishPressed();
+                processSale();
+
             }
         });
         recyclerView = (RecyclerView) contentView.findViewById(R.id.sales_recycler_view);
@@ -91,25 +114,68 @@ public class VerifySalesFragment extends Fragment {
         }
 
 //        adaptor = new VerifySaleAdaptor(getActivity(), stockResponseArrayList, false);
-        adaptor = new VerifySaleAdaptor(getActivity(), cart, false);
+        adaptor = new VerifySaleAdaptor(getActivity(), sale.products, false);
         adaptor.parentFrag = VerifySalesFragment.this;
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adaptor);
     }
 
+    private void getApiKey()
+    {
+        SharedPreferences shared = getActivity().getSharedPreferences("com.appTriangle.pos", Context.MODE_PRIVATE);
+        apiKey = shared.getString("api_key", "");
+
+    }
+
+    public void processSale(){
+//        RequestBody emailParam = RequestBody.create(MediaType.parse("application/json"), sale);
+        sale.total_amount = totalAmount;
+        sale.discount = "0";
+        sale.cust_name = "abc";
+        sale.cust_phone="2222";
+
+        SalesService service =
+                ApiClient.getClient().create(SalesService.class);
+
+
+        Call<Object> call = service.processSale(sale);
+        pd.show();
+        call.enqueue(new Callback<Object>() {
+            @Override
+            public void onResponse(Call<Object> call, Response<Object> response) {
+                pd.hide();
+                if (response != null) {
+                   if((boolean)response.body()) {
+                       Toast.makeText(getActivity(), "DONE", Toast.LENGTH_SHORT).show();
+                       onFinishPressed();
+                   }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Object> call, Throwable t) {
+                // Log error here since request failed
+                Log.e("failure", "failure");
+                pd.hide();
+
+            }
+        });
+    }
+
     // TODO: Rename method, update argument and hook method into UI event
     public void onFinishPressed() {
         if (mListener != null) {
-            mListener.onFinishClicked();
+            mListener.onFinishClicked(sale);
         }
     }
 
     public void updateCart(){
 
-        for (int i = 0; i < cart.size(); i++) {
-            if(!cart.get(i).isChecked())
-                cart.remove(i);
+        for (int i = 0; i < sale.products.size(); i++) {
+            if(!sale.products.get(i).isChecked())
+                sale.products.remove(i);
         }
 
         // create json for sales request here and send request
@@ -143,8 +209,8 @@ public class VerifySalesFragment extends Fragment {
         mListener = null;
     }
 
-    public void setCart(List<Product> cart) {
-        this.cart = cart;
+    public void setCart(SalesResponse sale) {
+        this.sale = sale;
     }
 
     /**
@@ -159,6 +225,6 @@ public class VerifySalesFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFinishClicked();
+        void onFinishClicked(SalesResponse sale);
     }
 }

@@ -13,6 +13,68 @@ namespace WebSource.Controllers
     public class ProductController : ApiController
     {
         [HttpGet]
+        [ActionName("GetAllProductTypes")]
+        public IHttpActionResult GetAllProductTypes(String apiKey)
+        {
+            var prodTypeList = new List<CProductType>();
+            IEnumerable<CProductType> distinctList = null;
+            SMS_DBEntities1 db = new SMS_DBEntities1();
+            var user = db.users.FirstOrDefault(x => x.api_key.Equals(apiKey));
+            if (null != user)
+            {
+                var shop = db.shops.FirstOrDefault(x => x.shop_id == user.shop_id);
+                var inventory = db.inventories.Where(x => x.shop_id == shop.shop_id);
+                var cinventory = new List<CInventory>();
+                foreach (inventory i in inventory)
+                {
+                    var p = db.products.FirstOrDefault(y => y.product_id == i.product_id);
+                    var type = db.product_types.FirstOrDefault(y => y.type_id == p.product_type);
+                    prodTypeList.Add(new CProductType(type));
+                   // var brand = db.brands.FirstOrDefault(y => y.brand_id == p.brand_id);
+                   // cinventory.Add(new CInventory(i, new CProduct(p, type, brand, 0)));
+                }
+
+                distinctList = prodTypeList.GroupBy(x => x.type_id).Select(x => x.First());
+
+                return Ok(distinctList);
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        [ActionName("GetAllModelsForProductType")]
+        public IHttpActionResult GetAllModelsForProductTypeAndBrand(String apiKey, int productTypeId, int brandId)
+        {
+            SMS_DBEntities1 db = new SMS_DBEntities1();
+            var user = db.users.FirstOrDefault(x => x.api_key.Equals(apiKey));
+            if (null != user)
+            {
+                var shop = db.shops.FirstOrDefault(x => x.shop_id == user.shop_id);
+                var inventory = db.inventories.Where(x => x.shop_id == shop.shop_id);
+                var cbrands = new Dictionary<int, CBrand>();
+                var cproducts = new List<CProduct>();
+                IEnumerable<CProduct> distinctList = null;
+                foreach (inventory i in inventory)
+                {
+                    var p = db.products.FirstOrDefault(y => y.product_id == i.product_id && y.product_type == productTypeId && y.brand_id == brandId);
+                    if (null != p)
+                    {
+                        cproducts.Add(new CProduct(p,null,null,0));
+                    }
+                }
+
+                return Ok(cproducts);
+            }
+
+
+            return BadRequest();
+
+        }
+
+        [HttpGet]
         [ActionName("GetAllProducts")]
         public IHttpActionResult GetAllProducts(String apiKey)
         {
