@@ -95,7 +95,9 @@ public class VerifySalesFragment extends Fragment {
 
         finishBtn = (Button)contentView.findViewById(R.id.finishButton);
         edtTotalAmnt = (EditText) contentView.findViewById(R.id.edtTotalAmnt);
-        edtPaidAmnt = (EditText) contentView.findViewById(R.id.edtPaidAmnt);
+        edtCustName = (EditText) contentView.findViewById(R.id.edtCustName);
+        edtTotalAmnt = (EditText) contentView.findViewById(R.id.edtTotalAmnt);
+        edtCustNo = (EditText) contentView.findViewById(R.id.edtCustNo);
         edtDueAmnt = (EditText) contentView.findViewById(R.id.edtDueAmnt);
         edtPaidAmnt.addTextChangedListener(inputTextWatcher);
         finishBtn.setOnClickListener(new View.OnClickListener(){
