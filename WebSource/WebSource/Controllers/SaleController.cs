@@ -14,7 +14,7 @@ namespace WebSource.Controllers
         [ActionName("SaleProduct")]
         public IHttpActionResult saleProducts(JSale sale)
         {
-            bool ok = true;
+            int sale_id = -1;
 
             try
             {
@@ -22,12 +22,12 @@ namespace WebSource.Controllers
                 var user = db.users.FirstOrDefault(y => y.api_key.Equals(sale.apiKey));
                 if (null == user)
                 {
-                    return Ok(false);
+                    return Ok(sale_id);
                 }
                 var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
                 var inventory = db.inventories.Where(y => y.shop_id == shop.shop_id);
                 int i = 1;
-                int sale_id = 1;
+                sale_id = 1;
                 try {
                     sale_id = db.sales.Max(y => y.sale_id)+1;
                 }
@@ -40,7 +40,7 @@ namespace WebSource.Controllers
                     if (invObj != null)
                     {
                         if (invObj.prod_quant - product.qty < 0)
-                            return Ok(false);
+                            return Ok(-1);
                         invObj.prod_quant -= product.qty;
                         var isClr = "N";
                         if(i == sale.products.Length) { 
@@ -82,7 +82,7 @@ namespace WebSource.Controllers
                     }
                     else
                     {
-                        return Ok(false);
+                        return Ok(-1);
                     }
 
                     i++;
@@ -91,11 +91,11 @@ namespace WebSource.Controllers
             }
             catch (Exception ex)
             {
-                ok = false;
+                sale_id = -1;
             }
             finally { }
 
-            return Ok(ok);
+            return Ok(sale_id);
         }
     }
 }

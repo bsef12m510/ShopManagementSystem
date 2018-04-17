@@ -10,22 +10,23 @@ namespace WebSource.Controllers
     {
         [HttpPost]
         [ActionName("PurchaseProduct")]
-        public IHttpActionResult purchaseProducts(String apiKey, JPurchase purchase)
+        public IHttpActionResult purchaseProducts(JPurchase purchase)
         {
-            bool ok = true;
+            int purch_id = -1;
 
             try
             {
                 SMS_DBEntities1 db = new SMS_DBEntities1();
-                var user = db.users.FirstOrDefault(y => y.api_key.Equals(apiKey));
+                var user = db.users.FirstOrDefault(y => y.api_key.Equals(purchase.apiKey));
                 if (null == user)
                 {
-                    return Ok(false);
+                    return Ok(-1);
                 }
                 var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
                 var inventory = db.inventories.Where(y => y.shop_id == shop.shop_id);
                 int i = 1;
-                int purch_id = 1;
+                purch_id = 1;
+
                 List<purchase> purchases = new List<purchase>();
 
                 try {
@@ -142,11 +143,11 @@ namespace WebSource.Controllers
             }
             catch (Exception ex)
             {
-                ok = false;
+                purch_id = -1;
             }
             finally { }
 
-            return Ok(ok);
+            return Ok(purch_id);
         }
     }
 }

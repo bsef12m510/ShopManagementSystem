@@ -10,6 +10,7 @@ namespace WebSource.Models
         public int invoiceId{ get; set;}
         public int shopID { get; set; }
         public string agentID { get; set; }
+        public String apiKey { get; set; }
         public int productID { get; set; }
         public double amount_paid { get; set; }
         public double total_amount { get; set; }

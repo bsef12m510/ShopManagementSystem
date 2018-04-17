@@ -41,20 +41,20 @@ namespace WebSource.Controllers
         }
 
         [ActionName("GetAllInvoices")]
-        public IHttpActionResult getAllInvoices(String apiKey, JInvoice invoice)
+        public IHttpActionResult getAllInvoices(JInvoice invoice)
         {
             bool ok = true;
             try
             {
                 SMS_DBEntities1 db = new SMS_DBEntities1();
-                var user = db.users.FirstOrDefault(y => y.api_key.Equals(apiKey));
+                var user = db.users.FirstOrDefault(y => y.api_key.Equals(invoice.apiKey));
                 if (null == user)
                 {
                     return Ok();
                 }
                 var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
 
-                sale sInvoice = db.sales.FirstOrDefault(y => y.sale_id == invoice.invoiceId);
+                sale sInvoice = db.sales.FirstOrDefault(y => y.sale_id == invoice.invoiceId && y.is_invoice.equals("Y"));
                 if (sInvoice != null)
                 {
                     if (invoice.amount_paid == sInvoice.total_amt)
@@ -63,7 +63,7 @@ namespace WebSource.Controllers
                 }
                 else
                 {
-                    purchase pInvoice = db.purchases.FirstOrDefault(y => y.purch_id == invoice.invoiceId);
+                    purchase pInvoice = db.purchases.FirstOrDefault(y => y.purch_id == invoice.invoiceId && y.is_invoice.equals("Y"));
                     if (sInvoice != null)
                     {
                         if (invoice.amount_paid == pInvoice.total_amt)
