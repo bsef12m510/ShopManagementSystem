@@ -22,6 +22,13 @@
           <Property Name="product_id" Type="int" Nullable="false" />
           <Property Name="prod_quant" Type="int" />
         </EntityType>
+        <EntityType Name="msrmnt_units">
+          <Key>
+            <PropertyRef Name="sr_no" />
+          </Key>
+          <Property Name="sr_no" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="description" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
         <EntityType Name="product_types">
           <Key>
             <PropertyRef Name="type_id" />
@@ -223,6 +230,7 @@
         <EntityContainer Name="SMS_DBModelStoreContainer">
           <EntitySet Name="brands" EntityType="Self.brands" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="inventory" EntityType="Self.inventory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="msrmnt_units" EntityType="Self.msrmnt_units" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="product_types" EntityType="Self.product_types" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="products" EntityType="Self.products" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="purchase" EntityType="Self.purchase" Schema="dbo" store:Type="Tables" />
@@ -323,6 +331,7 @@
             <End Role="shop" EntitySet="shops" />
             <End Role="user" EntitySet="users" />
           </AssociationSet>
+          <EntitySet Name="msrmnt_units" EntityType="SMS_DBModel.msrmnt_units" />
         </EntityContainer>
         <EntityType Name="brand">
           <Key>
@@ -559,6 +568,13 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="msrmnt_units">
+          <Key>
+            <PropertyRef Name="sr_no" />
+          </Key>
+          <Property Name="sr_no" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="description" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -664,6 +680,14 @@
                 <ScalarProperty Name="role_id" ColumnName="role_id" />
                 <ScalarProperty Name="password" ColumnName="password" />
                 <ScalarProperty Name="user_id" ColumnName="user_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="msrmnt_units">
+            <EntityTypeMapping TypeName="SMS_DBModel.msrmnt_units">
+              <MappingFragment StoreEntitySet="msrmnt_units">
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="sr_no" ColumnName="sr_no" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

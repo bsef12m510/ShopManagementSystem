@@ -52,10 +52,10 @@ namespace WebSource.Controllers
 
         [HttpGet]
         [ActionName("SearchByBrand")]
-        public IHttpActionResult SearchBrand(string userId, string brandName)
+        public IHttpActionResult SearchBrand(string apiKey, string brandName)
         {
             SMS_DBEntities1 db = new SMS_DBEntities1();
-            var user = db.users.FirstOrDefault(y => y.user_id.Equals(userId));
+            var user = db.users.FirstOrDefault(y => y.api_key.Equals(apiKey));
             var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
             var inventory = db.inventories.Where(y => y.shop_id == shop.shop_id);
 
@@ -74,5 +74,17 @@ namespace WebSource.Controllers
             return Ok(cproducts);
 
         }
+
+        [HttpGet]
+        [ActionName("SearchByBrand")]
+        public IHttpActionResult getMeasurementUnits(string userId)
+        {
+            SMS_DBEntities1 db = new SMS_DBEntities1();
+            var user = db.users.FirstOrDefault(y => y.user_id.Equals(userId));
+            var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
+            
+            return Ok(db.msrmnt_units.ToArray());
+        }
+
     }
 }

@@ -23,6 +23,7 @@
         <AssociationConnector Association="SMS_DBModel.fk_sales_sh_id" />
         <AssociationConnector Association="SMS_DBModel.fk_sales_uid" />
         <AssociationConnector Association="SMS_DBModel.fk_users_shid" />
+        <EntityTypeShape EntityType="SMS_DBModel.msrmnt_units" Width="1.5" PointX="5.375" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -52,6 +52,10 @@ namespace WebSource.Controllers
                             db.product_types.Add(new product_types { type_name = product.product_type.type_name });
                             db.SaveChanges();
                         }
+                        if (null == db.msrmnt_units.FirstOrDefault(y => y.description.Equals(product.unit_of_msrmnt)))
+                        {
+                            db.msrmnt_units.Add(new msrmnt_units { description = product.unit_of_msrmnt });
+                        }
                         if (null == db.products.FirstOrDefault(y => y.product_id == product.product_id))
                         {
                             var brand_id = product.brand.brand_id;
