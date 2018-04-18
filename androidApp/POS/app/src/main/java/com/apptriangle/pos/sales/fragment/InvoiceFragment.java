@@ -3,6 +3,7 @@ package com.apptriangle.pos.sales.fragment;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.NestedScrollView;
@@ -15,8 +16,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.apptriangle.pos.R;
+import com.apptriangle.pos.SecureActivity;
 import com.apptriangle.pos.model.Product;
 import com.apptriangle.pos.sales.adaptor.VerifySaleAdaptor;
 import com.apptriangle.pos.sales.response.SalesResponse;
@@ -38,7 +41,9 @@ public class InvoiceFragment extends Fragment {
     private CardView searchContainer1, searchContainer2;
     private NestedScrollView saleDescContainer;
     public SalesResponse cart;
+    public Button finishBtn;
 
+    public EditText edtCustName, edtCustNo,edtTotalAmnt, edtPaidAmnt, edtDueAmnt;
 
     public InvoiceFragment() {
         // Required empty public constructor
@@ -60,6 +65,24 @@ public class InvoiceFragment extends Fragment {
     }
 
     public void initialize(){
+        finishBtn = (Button)contentView.findViewById(R.id.finishButton);
+        edtTotalAmnt = (EditText) contentView.findViewById(R.id.edtTotalAmnt);
+        edtCustName = (EditText) contentView.findViewById(R.id.edtCustName);
+        edtPaidAmnt = (EditText) contentView.findViewById(R.id.edtPaidAmnt);
+        edtCustNo = (EditText) contentView.findViewById(R.id.edtCustNo);
+        edtDueAmnt = (EditText) contentView.findViewById(R.id.edtDueAmnt);
+        if(!fromHome) {
+            edtTotalAmnt.setEnabled(false);
+            edtPaidAmnt.setEnabled(false);
+            edtDueAmnt.setEnabled(false);
+            edtCustName.setEnabled(false);
+            edtCustNo.setEnabled(false);
+            edtCustNo.setText(cart.cust_phone);
+            edtCustName.setText(cart.cust_name);
+            edtTotalAmnt.setText(cart.total_amount.toString());
+            edtPaidAmnt.setText(cart.amount_paid.toString());
+            edtDueAmnt.setText(Double.toString(cart.total_amount - cart.amount_paid));
+        }
         recyclerView = (RecyclerView) contentView.findViewById(R.id.sales_recycler_view);
         searchContainer1 =(CardView) contentView.findViewById(R.id.searchContainer1);
         searchContainer2 =(CardView) contentView.findViewById(R.id.searchContainer2);
@@ -80,11 +103,22 @@ public class InvoiceFragment extends Fragment {
             stockResponseArrayList.add(tmp);
         }
 
-        adaptor = new VerifySaleAdaptor(getActivity(), cart.products, true);
+        if(cart != null) {
+            adaptor = new VerifySaleAdaptor(getActivity(), cart.products, true);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(adaptor);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setAdapter(adaptor);
+        }
+
+        finishBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(),SecureActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            }
+        });
     }
 
     // TODO: Rename method, update argument and hook method into UI event

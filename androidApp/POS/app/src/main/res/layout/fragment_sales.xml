@@ -104,31 +104,75 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+
             android:orientation="horizontal"
-            android:padding="12dp"
+
             android:layout_marginBottom="12dp"
             android:layout_weight="1">
 
-            <TextView
+            <LinearLayout
+                android:background="@color/white"
+                android:padding="12dp"
+                android:orientation="horizontal"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.3"
-                android:text="Quantity*"
-                android:textSize="16sp"
-                />
+                android:layout_weight="0.5"
+                android:weightSum="1">
 
-            <EditText
-                android:id="@+id/edtQty"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.7"
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.3"
+                    android:text="Qty*"
+                    android:textSize="16sp"
+                    />
+
+                <EditText
+                    android:id="@+id/edtQty"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.7"
+                    android:layout_marginLeft="4dp"
+                    android:background="@color/white"
+                    android:gravity="end"
+                    android:hint="Quantity"
+                    android:inputType="number"
+                    android:layout_gravity="end"/>
+
+                </LinearLayout>
+
+
+            <LinearLayout
                 android:layout_marginLeft="4dp"
                 android:background="@color/white"
-                android:gravity="end"
-                android:hint="Enter quantity"
-                android:inputType="number"
-                android:layout_gravity="end"/>
+                android:padding="12dp"
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:weightSum="1">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.3"
+                    android:text="UoM"
+                    android:textSize="16sp"
+                    />
+
+                <EditText
+                    android:id="@+id/edtUoM"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.7"
+                    android:layout_marginLeft="4dp"
+                    android:background="@color/white"
+                    android:gravity="end"
+                    android:textColor="@drawable/edit_text_selector"
+                    android:inputType="number"
+                    android:layout_gravity="end"/>
+
+            </LinearLayout>
 
 
         </LinearLayout>
@@ -157,6 +201,8 @@
                 android:layout_weight="0.7"
                 android:layout_marginLeft="4dp"
                 android:background="@color/white"
+                android:enabled="false"
+                android:textColor="@drawable/edit_text_selector"
                 android:gravity="end"
                 android:hint="Enter price"
                 android:inputType="number"
@@ -222,6 +268,8 @@
                 android:layout_marginLeft="4dp"
                 android:background="@color/white"
                 android:gravity="end"
+                android:enabled="false"
+                android:textColor="@drawable/edit_text_selector"
                 android:hint="Enter total price"
                 android:inputType="number"
                 android:layout_gravity="end"/>

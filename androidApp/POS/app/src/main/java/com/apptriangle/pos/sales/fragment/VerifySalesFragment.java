@@ -57,7 +57,10 @@ public class VerifySalesFragment extends Fragment {
     TextWatcher inputTextWatcher = new TextWatcher() {
         public void afterTextChanged(Editable s) {
             if(s != null && !s.toString().trim().equalsIgnoreCase("")) {
+                paidAmount = Double.parseDouble(s.toString());
                 dueAmount = totalAmount - paidAmount;
+                if(dueAmount < 0)
+                    dueAmount = 0.0;
                 edtDueAmnt.setText(dueAmount.toString());
             }
         }
@@ -96,15 +99,21 @@ public class VerifySalesFragment extends Fragment {
         finishBtn = (Button)contentView.findViewById(R.id.finishButton);
         edtTotalAmnt = (EditText) contentView.findViewById(R.id.edtTotalAmnt);
         edtCustName = (EditText) contentView.findViewById(R.id.edtCustName);
-        edtTotalAmnt = (EditText) contentView.findViewById(R.id.edtTotalAmnt);
+        edtPaidAmnt = (EditText) contentView.findViewById(R.id.edtPaidAmnt);
         edtCustNo = (EditText) contentView.findViewById(R.id.edtCustNo);
         edtDueAmnt = (EditText) contentView.findViewById(R.id.edtDueAmnt);
+        edtTotalAmnt.setEnabled(false);
+        edtDueAmnt.setEnabled(false);
         edtPaidAmnt.addTextChangedListener(inputTextWatcher);
         finishBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                updateCart();
-                processSale();
+                if(validate()) {
+                    updateCart();
+                    processSale();
+                }else{
+                    Toast.makeText(getActivity(),"Please provide all information..",Toast.LENGTH_SHORT).show();
+                }
 
             }
         });
@@ -133,9 +142,10 @@ public class VerifySalesFragment extends Fragment {
     public void processSale(){
 //        RequestBody emailParam = RequestBody.create(MediaType.parse("application/json"), sale);
         sale.total_amount = totalAmount;
+        sale.amount_paid = paidAmount;
         sale.discount = "0";
-        sale.cust_name = "abc";
-        sale.cust_phone="2222";
+        sale.cust_name = edtCustName.getText().toString().trim();
+        sale.cust_phone = edtCustNo.getText().toString().trim();
 
         SalesService service =
                 ApiClient.getClient().create(SalesService.class);
@@ -148,8 +158,9 @@ public class VerifySalesFragment extends Fragment {
             public void onResponse(Call<Object> call, Response<Object> response) {
                 pd.hide();
                 if (response != null) {
-                   if((boolean)response.body()) {
-                       Toast.makeText(getActivity(), "DONE", Toast.LENGTH_SHORT).show();
+                   if((Double)response.body() > 0) {
+                       sale.sale_id = (Double)response.body();
+                       Toast.makeText(getActivity(), "DONE " + sale.sale_id, Toast.LENGTH_SHORT).show();
                        onFinishPressed();
                    }
 
@@ -164,6 +175,19 @@ public class VerifySalesFragment extends Fragment {
 
             }
         });
+    }
+
+    public boolean validate(){
+        if(edtCustName.getText().toString().trim().equals(""))
+            return false;
+        else if(edtCustNo.getText().toString().trim().equals(""))
+            return false;
+        else if(edtTotalAmnt.getText().toString().trim().equals(""))
+            return false;
+        else if(edtPaidAmnt.getText().toString().trim().equals(""))
+            return false;
+        else
+            return true;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

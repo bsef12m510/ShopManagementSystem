@@ -76,7 +76,7 @@ namespace WebSource.Controllers
         }
 
         [HttpGet]
-        [ActionName("SearchByBrand")]
+        [ActionName("getMeasurementUnits")]
         public IHttpActionResult getMeasurementUnits(string userId)
         {
             SMS_DBEntities1 db = new SMS_DBEntities1();

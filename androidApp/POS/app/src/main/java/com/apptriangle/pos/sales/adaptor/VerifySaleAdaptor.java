@@ -81,6 +81,16 @@ public class VerifySaleAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHol
                     }
                     parentFrag.totalAmount = totalAmount;
                     parentFrag.edtTotalAmnt.setText(totalAmount.toString());
+
+                    if(parentFrag.paidAmount != null && !parentFrag.edtPaidAmnt.getText().toString().trim().equals("")) {
+                        if( parentFrag.totalAmount - parentFrag.paidAmount < 0) {
+                            parentFrag.dueAmount = 0.0;
+                            parentFrag.edtDueAmnt.setText("0.0");
+                        }else {
+                            parentFrag.edtDueAmnt.setText(Double.toString(parentFrag.totalAmount - parentFrag.paidAmount));
+                            parentFrag.dueAmount = parentFrag.totalAmount - parentFrag.paidAmount;
+                        }
+                    }
                 }
             });
         }

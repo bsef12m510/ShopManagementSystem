@@ -12,6 +12,6 @@ public class SalesResponse {
             cust_name,
             cust_phone;
     public Double total_amount ,amount_paid;
-
+    public Double sale_id;
     public List<Product> products;
 }

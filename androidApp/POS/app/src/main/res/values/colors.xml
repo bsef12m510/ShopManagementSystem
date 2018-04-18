@@ -18,6 +18,9 @@
 
     <color name="transparent">#00000000</color>
 
+    <color name="enabled_color">#000000</color>
+    <color name="disabled_color">#000000</color>
+
 
     <color name="table_view_default_text_color">#0a0a0a</color>
     <color name="table_view_default_separator_color">#E7E7E7</color>

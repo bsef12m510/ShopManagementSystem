@@ -184,61 +184,116 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+
             android:orientation="horizontal"
-            android:padding="12dp"
+
             android:layout_marginBottom="12dp"
-            android:layout_weight="1">
+            >
 
-            <TextView
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.3"
-                android:text="Model*"
-                android:textSize="16sp"
-                />
-
-            <EditText
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.7"
-                android:layout_marginLeft="4dp"
                 android:background="@color/white"
-                android:hint="Enter model no"
-                android:gravity="end"
-                android:layout_gravity="end"/>
+                android:padding="10dp"
+                android:layout_marginRight="4dp"
+                android:layout_weight="1">
 
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/modelsDropdown"
+                    android:spinnerMode="dialog"
+                    >
+
+
+                </Spinner>
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/addModelBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/round_button"
+                android:layout_gravity="center"
+                android:padding="6dp"
+                android:layout_marginRight="4dp"
+                android:src="@drawable/plus"/>
+
+            <ImageButton
+                android:id="@+id/editModelBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/round_button"
+                android:layout_gravity="center"
+                android:layout_marginRight="4dp"
+                android:padding="6dp"
+                android:src="@drawable/edit"/>
+            <ImageButton
+                android:id="@+id/deleteModelBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/round_button"
+                android:layout_gravity="center"
+                android:padding="6dp"
+                android:src="@drawable/delete"/>
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+
             android:orientation="horizontal"
-            android:padding="12dp"
+
             android:layout_marginBottom="12dp"
-            android:layout_weight="1">
+            >
 
-            <TextView
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.3"
-                android:text="UoM*"
-                android:textSize="16sp"
-                />
-
-            <EditText
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.7"
-                android:layout_marginLeft="4dp"
                 android:background="@color/white"
-                android:gravity="end"
-                android:hint="Enter UoM"
-                android:inputType="number"
-                android:layout_gravity="end"/>
+                android:padding="10dp"
+                android:layout_marginRight="4dp"
+                android:layout_weight="1">
 
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/uoMDropdown"
+                    android:spinnerMode="dialog"
+                    >
+
+
+                </Spinner>
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/addUoMBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/round_button"
+                android:layout_gravity="center"
+                android:padding="6dp"
+                android:layout_marginRight="4dp"
+                android:src="@drawable/plus"/>
+
+            <ImageButton
+                android:id="@+id/editUoMBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/round_button"
+                android:layout_gravity="center"
+                android:layout_marginRight="4dp"
+                android:padding="6dp"
+                android:src="@drawable/edit"/>
+            <ImageButton
+                android:id="@+id/deleteUoMBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/round_button"
+                android:layout_gravity="center"
+                android:padding="6dp"
+                android:src="@drawable/delete"/>
 
         </LinearLayout>
 
@@ -260,6 +315,7 @@
                 />
 
             <EditText
+                android:id="@+id/edtQty"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.7"
@@ -293,6 +349,7 @@
                 />
 
             <EditText
+                android:id="@+id/edtPrice"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.7"
@@ -331,6 +388,7 @@
                 android:background="@color/white"
                 android:gravity="end"
                 android:hint="Enter total price"
+                android:id="@+id/edtTotalPrice"
                 android:inputType="number"
                 android:layout_gravity="end"/>
 
@@ -362,6 +420,7 @@
                 android:background="@color/white"
                 android:gravity="end"
                 android:hint="Enter specifications"
+                android:id="@+id/edtSpecs"
                 android:layout_gravity="end"/>
 
 
@@ -385,7 +444,7 @@
                 />-->
 
             <EditText
-                android:id="@+id/seller"
+                android:id="@+id/edtSupplierDetails"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:hint="Supplier Details.."
@@ -409,7 +468,7 @@
             android:text="Add More Products"
             style="@style/Widget.AppCompat.Button.Colored"
             android:textColor="@color/white"
-            android:id="@+id/more" />
+            android:id="@+id/btnMore" />
 
         <Button
             android:layout_width="match_parent"

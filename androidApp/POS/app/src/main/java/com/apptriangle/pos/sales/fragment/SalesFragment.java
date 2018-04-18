@@ -57,7 +57,7 @@ public class SalesFragment extends Fragment {
     private Brand selectedBrand;
     private Button checkoutBtn, btnMore;
     private ProgressDialog pd;
-    private EditText edtQty, edtPrice, edtDiscount, edtTotalPrice;
+    private EditText edtQty, edtPrice, edtDiscount, edtTotalPrice, edtUoM;
     private List<Product> cart;
     Double price = 0.0, totalPrice = 0.0, lastTotalPrice = 0.0;
     TextWatcher inputTextWatcher = new TextWatcher() {
@@ -111,6 +111,8 @@ public class SalesFragment extends Fragment {
         checkoutBtn = (Button)view.findViewById(R.id.checkoutBtn);
         btnMore =(Button)view.findViewById(R.id.btnMore);
         edtQty = (EditText)view.findViewById(R.id.edtQty);
+        edtUoM = (EditText)view.findViewById(R.id.edtUoM);
+        edtUoM.setEnabled(false);
         edtQty.addTextChangedListener(inputTextWatcher);
         edtPrice = (EditText)view.findViewById(R.id.edtPrice);
         edtDiscount = (EditText)view.findViewById(R.id.edtDiscount);
@@ -156,6 +158,7 @@ public class SalesFragment extends Fragment {
         product.setBrand(selectedBrand);
         product.setProductType(selectedProductType);
         product.setOtherThanCurrentInventoryQty(Integer.parseInt(edtQty.getText().toString()));
+        product.setQty(Integer.parseInt(edtQty.getText().toString()));
         productTypesDropdown.setSelection(0);
         brandsDropdown.setSelection(0);
         modelsDropdown.setSelection(0);
@@ -407,7 +410,7 @@ public class SalesFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
                 selectedProduct = (Product) parent.getItemAtPosition(position);
-
+                edtUoM.setText(selectedProduct.getUnitOfMsrmnt());
                 // If user change the default selection
                 // First item is disable and it is used for hint
 
@@ -528,6 +531,29 @@ public class SalesFragment extends Fragment {
     public void onResume() {
         super.onResume();
         setTitle();
+        if(productTypesDropdown != null)
+            productTypesDropdown.setSelection(0);
+        if(null != brandsDropdown)
+             brandsDropdown.setSelection(0);
+        if(null != modelsDropdown)
+             modelsDropdown.setSelection(0);
+        if(edtQty != null)
+            edtQty.setText("");
+        if(edtPrice != null) {
+
+            edtPrice.setText("");
+        }
+        if(edtDiscount != null) {
+
+            edtDiscount.setText("");
+        }
+        if(edtTotalPrice != null) {
+
+            edtTotalPrice.setText("");
+        }
+        price = 0.0;
+        totalPrice = 0.0;
+        lastTotalPrice = 0.0;
     }
 
     @Override

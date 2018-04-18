@@ -4,13 +4,17 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Fragment;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -28,8 +32,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.apptriangle.pos.R;
+import com.apptriangle.pos.api.ApiClient;
 import com.apptriangle.pos.model.Brand;
 import com.apptriangle.pos.model.Product;
+import com.apptriangle.pos.model.ProductType;
+import com.apptriangle.pos.model.UoM;
+import com.apptriangle.pos.purchase.service.PurchaseService;
+import com.apptriangle.pos.sales.restInterface.SalesService;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -39,24 +48,35 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 /**
  * Created by zeeshan on 4/4/2018.
  */
 public class PurchaseFragment extends Fragment {
+    private String apiKey;
     public static String HALF_MONTH_DATE_FORMAT = "MMM dd, yyyy";
     String m_Text = "Product";
     private OnFragmentInteractionListener mListener;
     private View contentView;
     String[] listItems = {"item 1", "item 2 ", "list", "android"};
-    private Button checkoutBtn;
-    private ImageButton addProductBtn, addBrandBtn, editProductBtn, editBrandBtn;
-    private Spinner productsDropdown, brandsDropdown;
+    private Button checkoutBtn, btnMore;
+    private ImageButton addProductBtn, addBrandBtn, editProductBtn, editBrandBtn, addModelBtn, editModelBtn, addUoMBtn, editUoMBtn;
+    private Spinner productTypesDropdown, brandsDropdown, modelsDropdown, uoMDropdown;
     private String pickerDateSring;
     private String newProductString, editProductSting, newBrandString, editBrandString;
     private TextView txtDate;
     private LinearLayout dateContainer;
-    private EditText seller;
+
+    private EditText edtSupplier,edtInvoice, edtQty,edtPrice, edtTotalPrice, edtSpecs;
     private ScrollView scrollView;
+    private ProgressDialog pd;
+    private Product selectedProduct;
+    private ProductType selectedProductType;
+    private Brand selectedBrand;
+    private UoM selectedUoM;
 
     public PurchaseFragment() {
         // Required empty public constructor
@@ -67,6 +87,8 @@ public class PurchaseFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initialize(contentView);
+        setBrandsDropdownLabel();
+        setModelsDropdownLabel();
         setTitle();
 
     }
@@ -80,21 +102,38 @@ public class PurchaseFragment extends Fragment {
     }
 
     public void initialize(View view) {
+        getApiKey();
+        pd = new ProgressDialog(getActivity());
+        pd.setMessage("Processing...");
+        pd.setCanceledOnTouchOutside(false);
+
         checkoutBtn = (Button) view.findViewById(R.id.checkoutBtn);
         addProductBtn = (ImageButton) view.findViewById(R.id.addProductBtn);
         addBrandBtn = (ImageButton) view.findViewById(R.id.addBrandBtn);
         editProductBtn = (ImageButton) view.findViewById(R.id.editProductBtn);
         editBrandBtn = (ImageButton) view.findViewById(R.id.editBrandBtn);
-        productsDropdown = (Spinner) view.findViewById(R.id.productsDropdown);
+        addModelBtn = (ImageButton) view.findViewById(R.id.addModelBtn);
+        addUoMBtn = (ImageButton) view.findViewById(R.id.addUoMBtn);
+        editModelBtn = (ImageButton) view.findViewById(R.id.editModelBtn);
+        editUoMBtn = (ImageButton) view.findViewById(R.id.editUoMBtn);
+        productTypesDropdown = (Spinner) view.findViewById(R.id.productsDropdown);
         brandsDropdown = (Spinner) view.findViewById(R.id.brandsDropdown);
+        modelsDropdown = (Spinner) view.findViewById(R.id.modelsDropdown);
+        uoMDropdown = (Spinner) view.findViewById(R.id.uoMDropdown);
         dateContainer = (LinearLayout) view.findViewById(R.id.dateContainer);
         txtDate = (TextView) view.findViewById(R.id.txtDate);
 
-        seller = (EditText) view.findViewById(R.id.seller);
+        edtSupplier = (EditText) view.findViewById(R.id.edtSupplierDetails);
+        edtInvoice = (EditText) view.findViewById(R.id.txtInvoiceNo);
+        edtQty = (EditText) view.findViewById(R.id.edtQty);
+        edtPrice = (EditText) view.findViewById(R.id.edtPrice);
+        edtTotalPrice = (EditText) view.findViewById(R.id.edtTotalPrice);
+        edtSpecs = (EditText) view.findViewById(R.id.edtSpecs);
+
         scrollView = (ScrollView) view.findViewById(R.id.scrollView);
-        seller.setSingleLine(false);
-        seller.setHorizontallyScrolling(false);
-        seller.setOnTouchListener(new View.OnTouchListener() {
+        edtSupplier.setSingleLine(false);
+        edtSupplier.setHorizontallyScrolling(false);
+        edtSupplier.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 scrollView.requestDisallowInterceptTouchEvent(true);
@@ -102,27 +141,8 @@ public class PurchaseFragment extends Fragment {
             }
         });
 
-        List<Product> products = new ArrayList<>();
-        Product placeholder = new Product();
-        placeholder.setProductName("Select Product");
-        products.add(placeholder);
-        for (int i = 0; i < 10; i++) {
-            Product tmp = new Product();
-            tmp.setProductName("Product");
-            products.add(tmp);
-        }
-        setDropdown(products, productsDropdown);
-
-        List<Brand> brands = new ArrayList<>();
-        Brand brandPlaceholder = new Brand();
-        brandPlaceholder.setBrandName("Select Brand");
-        brands.add(brandPlaceholder);
-        for (int i = 0; i < 10; i++) {
-            Brand tmp = new Brand();
-            tmp.setBrandName("Brand");
-            brands.add(tmp);
-        }
-        setBrandDropdown(brands, brandsDropdown);
+        getAllProductTypes();
+        getAllUoM();
 
         addProductBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -223,7 +243,315 @@ public class PurchaseFragment extends Fragment {
         builder.show();
     }
 
-    public void setDropdown(final List<Product> list, Spinner dropdown) {
+    private void getApiKey()
+    {
+        SharedPreferences shared = getActivity().getSharedPreferences("com.appTriangle.pos", Context.MODE_PRIVATE);
+        apiKey = shared.getString("api_key", "");
+
+    }
+
+    public void setProductsDropdownLabel(){
+        ArrayList<ProductType> productsList = new ArrayList();
+        ProductType tmp = new ProductType();
+
+        tmp.setTypeName("Select Product Type");
+        productsList.add(0,tmp);
+        setProductTypesDropdown(productsList, productTypesDropdown);
+    }
+
+    public void getAllUoM(){
+        PurchaseService service =
+                ApiClient.getClient().create(PurchaseService.class);
+
+        Call<List<UoM>> call = service.getMeasurementUnits("hrauf");
+        pd.show();
+        call.enqueue(new Callback<List<UoM>>() {
+            @Override
+            public void onResponse(Call<List<UoM>> call, Response<List<UoM>> response) {
+                pd.hide();
+                if (response != null) {
+                    ArrayList<UoM> productsList = (ArrayList<UoM>) response.body();
+
+                    UoM tmp= new UoM();
+                    tmp.description = "Select UoM";
+                    productsList.add(0,tmp);
+                    setUoMDropdown(productsList, uoMDropdown);
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<UoM>> call, Throwable t) {
+                // Log error here since request failed
+                Log.e("failure", "failure");
+                pd.hide();
+
+            }
+        });
+    }
+
+
+    public void getAllProductTypes(){
+        SalesService service =
+                ApiClient.getClient().create(SalesService.class);
+
+        Call<List<ProductType>> call = service.getAllProductTypes(apiKey);
+        pd.show();
+        call.enqueue(new Callback<List<ProductType>>() {
+            @Override
+            public void onResponse(Call<List<ProductType>> call, Response<List<ProductType>> response) {
+                pd.hide();
+                if (response != null) {
+                    ArrayList<ProductType> productsList = (ArrayList<ProductType>) response.body();
+                    ProductType tmp = new ProductType();
+
+                    tmp.setTypeName("Select Product Type");
+                    productsList.add(0,tmp);
+                    setProductTypesDropdown(productsList, productTypesDropdown);
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ProductType>> call, Throwable t) {
+                // Log error here since request failed
+                Log.e("failure", "failure");
+                pd.hide();
+
+            }
+        });
+    }
+
+    public void setModelsDropdownLabel(){
+        ArrayList<Product> productsList = new ArrayList<>();
+        Product tmp = new Product();
+
+        tmp.setProductName("Select Model");
+        productsList.add(0,tmp);
+        setModelsDropdown(productsList, modelsDropdown);
+    }
+
+    public void getAllModelsForProductType(){
+        SalesService service =
+                ApiClient.getClient().create(SalesService.class);
+
+        Call<List<Product>> call = service.getModels(apiKey,selectedProductType.getTypeId(),selectedBrand.getBrandId());
+        pd.show();
+        call.enqueue(new Callback<List<Product>>() {
+            @Override
+            public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
+                pd.hide();
+                if (response != null) {
+                    ArrayList<Product> productsList = (ArrayList<Product>) response.body();
+                    Product tmp = new Product();
+
+                    tmp.setProductName("Select Model");
+                    productsList.add(0,tmp);
+                    setModelsDropdown(productsList, modelsDropdown);
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Product>> call, Throwable t) {
+                // Log error here since request failed
+                Log.e("failure", "failure");
+                pd.hide();
+
+            }
+        });
+    }
+
+    public void setBrandsDropdownLabel(){
+        ArrayList<Brand> brandsList = new ArrayList<>();
+        Brand tmp = new Brand();
+        tmp.setBrandName("Select Brand");
+
+        brandsList.add(0,tmp);
+        setBrandDropdown(brandsList, brandsDropdown);
+    }
+
+    public void getBrands(){
+        SalesService service =
+                ApiClient.getClient().create(SalesService.class);
+
+        Call<List<Brand>> call = service.getBrands(apiKey, selectedProductType.getTypeId());
+        pd.show();
+        call.enqueue(new Callback<List<Brand>>() {
+            @Override
+            public void onResponse(Call<List<Brand>> call, Response<List<Brand>> response) {
+                pd.hide();
+                if (response != null) {
+                    ArrayList<Brand> brandsList = (ArrayList<Brand>) response.body();
+                    Brand tmp = new Brand();
+                    tmp.setBrandName("Select Brand");
+
+                    brandsList.add(0,tmp);
+                    setBrandDropdown(brandsList, brandsDropdown);
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Brand>> call, Throwable t) {
+                // Log error here since request failed
+                Log.e("failure", "failure");
+                pd.hide();
+
+            }
+        });
+    }
+
+    public void setUoMDropdown(final List<UoM> list, Spinner dropdown) {
+        final ArrayAdapter<UoM> spinnerArrayAdapter = new ArrayAdapter<UoM>(
+                getActivity(), R.layout.spinner_item, list) {
+            @Override
+            public boolean isEnabled(int position) {
+                return position != 0;
+            }
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                LayoutInflater inflater = LayoutInflater.from(getContext());
+                View view = inflater.inflate(R.layout.collapsed_spinner_reports, parent, false);
+//                View view = super.getDropDownView(position, convertView, parent);
+
+//                TextView label = (TextView) view.findViewById(R.id.label);
+                TextView value = (TextView) view.findViewById(R.id.value);
+
+//                label.setText(text);
+//                label.setMaxLines(1);
+                value.setText(list.get(position).description);
+                return view;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView,
+                                        ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                if (position == 0) {
+                    // Set the hint text color gray
+                    tv.setTextColor(Color.GRAY);
+                } else {
+                    tv.setTextColor(Color.BLACK);
+                }
+                return view;
+            }
+        };
+        spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_item);
+        dropdown.setAdapter(spinnerArrayAdapter);
+        dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                selectedUoM = (UoM) parent.getItemAtPosition(position);
+
+                // If user change the default selection
+                // First item is disable and it is used for hint
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        dropdown.setAdapter(spinnerArrayAdapter);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            dropdown.setLayoutMode(android.R.layout.select_dialog_item);
+        }
+
+
+            /*if (currentForeignId != null) {
+                // list.indexOf()
+                for (int i = 0; i < list.size(); i++) {
+                    if (list.get(i).getValue().equalsIgnoreCase(currentForeignId) || list.get(i).getKey().equalsIgnoreCase(currentForeignId)) { //getkey()
+                        dropdown.setSelection(i);
+                        break;
+                    }
+                }
+            }*/
+
+    }
+
+    public void setProductTypesDropdown(final List<ProductType> list, Spinner dropdown) {
+        final ArrayAdapter<ProductType> spinnerArrayAdapter = new ArrayAdapter<ProductType>(
+                getActivity(), R.layout.spinner_item, list) {
+            @Override
+            public boolean isEnabled(int position) {
+                return position != 0;
+            }
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                LayoutInflater inflater = LayoutInflater.from(getContext());
+                View view = inflater.inflate(R.layout.collapsed_spinner_reports, parent, false);
+//                View view = super.getDropDownView(position, convertView, parent);
+
+//                TextView label = (TextView) view.findViewById(R.id.label);
+                TextView value = (TextView) view.findViewById(R.id.value);
+
+//                label.setText(text);
+//                label.setMaxLines(1);
+                value.setText(list.get(position).getTypeName());
+                return view;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView,
+                                        ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                if (position == 0) {
+                    // Set the hint text color gray
+                    tv.setTextColor(Color.GRAY);
+                } else {
+                    tv.setTextColor(Color.BLACK);
+                }
+                return view;
+            }
+        };
+        spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_item);
+        dropdown.setAdapter(spinnerArrayAdapter);
+        dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                selectedProductType = (ProductType) parent.getItemAtPosition(position);
+                if(position != 0)
+                    getBrands();
+                // If user change the default selection
+                // First item is disable and it is used for hint
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        dropdown.setAdapter(spinnerArrayAdapter);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            dropdown.setLayoutMode(android.R.layout.select_dialog_item);
+        }
+
+
+            /*if (currentForeignId != null) {
+                // list.indexOf()
+                for (int i = 0; i < list.size(); i++) {
+                    if (list.get(i).getValue().equalsIgnoreCase(currentForeignId) || list.get(i).getKey().equalsIgnoreCase(currentForeignId)) { //getkey()
+                        dropdown.setSelection(i);
+                        break;
+                    }
+                }
+            }*/
+
+    }
+
+    public void setModelsDropdown(final List<Product> list, Spinner dropdown) {
         final ArrayAdapter<Product> spinnerArrayAdapter = new ArrayAdapter<Product>(
                 getActivity(), R.layout.spinner_item, list) {
             @Override
@@ -266,7 +594,8 @@ public class PurchaseFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                Product selectedItemText = (Product) parent.getItemAtPosition(position);
+                selectedProduct = (Product) parent.getItemAtPosition(position);
+//                edtUoM.setText(selectedProduct.getUnitOfMsrmnt());
                 // If user change the default selection
                 // First item is disable and it is used for hint
 
@@ -339,7 +668,9 @@ public class PurchaseFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                Brand selectedItemText = (Brand) parent.getItemAtPosition(position);
+                selectedBrand = (Brand) parent.getItemAtPosition(position);
+                if(position != 0)
+                    getAllModelsForProductType();
                 // If user change the default selection
                 // First item is disable and it is used for hint
 
@@ -368,6 +699,19 @@ public class PurchaseFragment extends Fragment {
             }*/
     }
 
+
+    public boolean validate(){
+        if(selectedProductType == null || selectedProductType.getTypeId() == null)
+            return false;
+        else if(selectedBrand == null || selectedBrand.getBrandId() == null)
+            return false;
+        else if(selectedProduct == null ||selectedProduct.getProductId() == null)
+            return false;
+        else if(edtQty.getText().toString().trim().equalsIgnoreCase(""))
+            return false;
+        else
+            return true;
+    }
 
     private void showDatePickerDialog(final TextView dateInputField) {
         final Calendar current = Calendar.getInstance();
