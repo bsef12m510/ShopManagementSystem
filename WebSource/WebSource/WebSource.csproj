@@ -238,6 +238,9 @@
     <Compile Include="Models\JProductType.cs" />
     <Compile Include="Models\JPurchase.cs" />
     <Compile Include="Models\JSale.cs" />
+    <Compile Include="Models\msrmnt_units.cs">
+      <DependentUpon>SMS_Model.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\SProduct.cs" />
     <Compile Include="TimeUuidGenerator\GuidGenerator.cs" />
     <Compile Include="TimeUuidGenerator\GuidVersion.cs" />
