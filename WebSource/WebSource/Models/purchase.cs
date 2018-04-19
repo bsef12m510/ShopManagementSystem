@@ -28,6 +28,7 @@ namespace WebSource.Models
         public string dlr_phone { get; set; }
         public System.DateTime pur_date { get; set; }
         public System.TimeSpan pur_time { get; set; }
+        public string dlr_dtls { get; set; }
     
         public virtual product product { get; set; }
         public virtual shop shop { get; set; }

@@ -120,15 +120,14 @@ namespace WebSource.Controllers
                         {
                             purch_id = purchase.purch_id,
                             prod_id = prod_id,
-                            dlr_name = purchase.dlr_name,
+                            dlr_dtls = purchase.dlr_info,
                             prod_quant = (int)product.qty,
                             pur_date = purchase.purch_dtime.Date,
                             pur_time = purchase.purch_dtime.TimeOfDay,
                             shop_id = shop.shop_id,
                             agent_id = user.user_id,
                             is_pmnt_clr = isClr,
-                            total_amt = purchase.total_amount,
-                            dlr_phone = purchase.dlr_phone,
+                            total_amt = purchase.total_amount,                         
                             paid_amt = purchase.amount_paid,
                             is_invoice = "Y"
 
@@ -139,10 +138,9 @@ namespace WebSource.Controllers
                         {
                             purch_id = purchase.purch_id,
                             prod_id = prod_id,
-                            dlr_name = purchase.dlr_name,
                             prod_quant = (int)product.qty,
-                            pur_date = DateTime.Today,
-                            pur_time = DateTime.Now.TimeOfDay,
+                            pur_date = purchase.purch_dtime.Date,
+                            pur_time = purchase.purch_dtime.TimeOfDay,
                             shop_id = shop.shop_id,
                             agent_id = user.user_id,
                             is_pmnt_clr = "N",

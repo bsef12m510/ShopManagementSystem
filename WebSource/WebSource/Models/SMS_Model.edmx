@@ -65,6 +65,7 @@
           <Property Name="agent_id" Type="varchar" MaxLength="50" />
           <Property Name="dlr_name" Type="varchar" MaxLength="50" />
           <Property Name="dlr_phone" Type="varchar" MaxLength="50" />
+          <Property Name="dlr_dtls" Type="varchar" MaxLength="150" />
           <Property Name="pur_date" Type="date" Nullable="false" />
           <Property Name="pur_time" Type="time" Precision="7" Nullable="false" />
         </EntityType>
@@ -420,6 +421,7 @@
           <NavigationProperty Name="product" Relationship="SMS_DBModel.fk_pur_pid" FromRole="purchase" ToRole="product" />
           <NavigationProperty Name="shop" Relationship="SMS_DBModel.fk_pur_sh_id" FromRole="purchase" ToRole="shop" />
           <NavigationProperty Name="user" Relationship="SMS_DBModel.fk_pur_uid" FromRole="purchase" ToRole="user" />
+          <Property Name="dlr_dtls" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="sale">
           <Key>
@@ -658,6 +660,7 @@
           <EntitySetMapping Name="purchases">
             <EntityTypeMapping TypeName="SMS_DBModel.purchase">
               <MappingFragment StoreEntitySet="purchase">
+                <ScalarProperty Name="dlr_dtls" ColumnName="dlr_dtls" />
                 <ScalarProperty Name="pur_time" ColumnName="pur_time" />
                 <ScalarProperty Name="pur_date" ColumnName="pur_date" />
                 <ScalarProperty Name="dlr_phone" ColumnName="dlr_phone" />
