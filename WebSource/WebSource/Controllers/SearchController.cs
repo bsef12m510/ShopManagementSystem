@@ -36,15 +36,18 @@ namespace WebSource.Controllers
             //}
            // return Ok(products);
 
-            var cproducts = new List<CProduct>();
+            var cproducts = new List<CInventory>();
             foreach (var i in inventory)
             {
                 var p = db.products.FirstOrDefault(y => y.product_id == i.product_id);
                 var type = db.product_types.FirstOrDefault(y => y.type_id == p.product_type);
                 var brand = db.brands.FirstOrDefault(y => y.brand_id == p.brand_id);
-                if (type.type_name.Equals(product)) {     
-                    cproducts.Add(new CProduct(p,type,brand,i.prod_quant));
+                if (type.type_name.IndexOf(product, 0, StringComparison.CurrentCultureIgnoreCase) != -1)
+                {
+                    // The string exists in the original
+                    cproducts.Add(new CInventory(i, new CProduct(p, type, brand, 0)));
                 }
+               
                  
             }
             return Ok(cproducts);
@@ -59,15 +62,40 @@ namespace WebSource.Controllers
             var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
             var inventory = db.inventories.Where(y => y.shop_id == shop.shop_id);
 
-            var cproducts = new List<CProduct>();
+            var cproducts = new List<CInventory>();
             foreach (var i in inventory)
             {
                 var p = db.products.FirstOrDefault(y => y.product_id == i.product_id);
                 var type = db.product_types.FirstOrDefault(y => y.type_id == p.product_type);
                 var brand = db.brands.FirstOrDefault(y => y.brand_id == p.brand_id);
-                if (brand.brand_name.Equals(brandName))
+                if (brand.brand_name.IndexOf(brandName, 0, StringComparison.CurrentCultureIgnoreCase) != -1)
                 {
-                    cproducts.Add(new CProduct(p, type, brand, i.prod_quant));
+                    cproducts.Add(new CInventory(i, new CProduct(p, type, brand, 0)));
+                }
+
+            }
+            return Ok(cproducts);
+
+        }
+
+        [HttpGet]
+        [ActionName("SearchByModel")]
+        public IHttpActionResult SearchModel(string apiKey, string model)
+        {
+            SMS_DBEntities1 db = new SMS_DBEntities1();
+            var user = db.users.FirstOrDefault(y => y.api_key.Equals(apiKey));
+            var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
+            var inventory = db.inventories.Where(y => y.shop_id == shop.shop_id);
+
+            var cproducts = new List<CInventory>();
+            foreach (var i in inventory)
+            {
+                var p = db.products.FirstOrDefault(y => y.product_id == i.product_id);
+                var type = db.product_types.FirstOrDefault(y => y.type_id == p.product_type);
+                var brand = db.brands.FirstOrDefault(y => y.brand_id == p.brand_id);
+                if (p.product_name.IndexOf(model, 0, StringComparison.CurrentCultureIgnoreCase) != -1)
+                {
+                    cproducts.Add(new CInventory(i, new CProduct(p, type, brand, 0)));
                 }
 
             }

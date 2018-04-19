@@ -24,17 +24,7 @@ public class StockAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private List<StockResponse> transactionsList;
     private LayoutInflater mLayoutInflater;
 
-    private String oldDate = "";
-    private int count;
-    private String currencySymbol="";
 
-    public String getCurrencySymbol() {
-        return currencySymbol;
-    }
-
-    public void setCurrencySymbol(String currencySymbol) {
-        this.currencySymbol = currencySymbol;
-    }
 
 
     public StockAdaptor(Context _mContext, List<StockResponse> _transactionsList) {
@@ -54,11 +44,14 @@ public class StockAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         final MyViewHolder viewHolder = (MyViewHolder) holder;
-        final StockResponse transactionInfo = transactionsList.get(position);
+        final StockResponse inventoryObj = transactionsList.get(position);
         String transactionDate ="";
 
 
-        viewHolder.product.setText("product");
+        viewHolder.product.setText(inventoryObj.product.getProductType().getTypeName());
+        viewHolder.brand.setText(inventoryObj.product.getBrand().getBrandName());
+        viewHolder.model.setText(inventoryObj.product.getProductName());
+        viewHolder.stock.setText(Integer.toString(inventoryObj.prod_quant));
 
 
 
@@ -72,17 +65,12 @@ public class StockAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
 
-    public void setCount(int count) {
-        this.count = count;
-        notifyDataSetChanged();
-    }
-
     public List<StockResponse> getItems() {
         return transactionsList;
     }
 
     private class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView product, brand, stock;
+        TextView product, brand, stock, model;
 
         MyViewHolder(View itemView) {
             super(itemView);
@@ -90,6 +78,7 @@ public class StockAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             product = (TextView) itemView.findViewById(R.id.product);
             brand = (TextView) itemView.findViewById(R.id.brand);
             stock = (TextView) itemView.findViewById(R.id.stock);
+            model = (TextView) itemView.findViewById(R.id.model);
 
         }
     }

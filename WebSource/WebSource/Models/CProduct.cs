@@ -24,7 +24,7 @@ namespace WebSource.Models
             product_name = p.product_name;
             if(null != type)
                 product_type = new CProductType(type);
-            if(null != brand)
+            if(null != b)
                 brand = new CBrand(b);
             specs = p.specs;
             unit_of_msrmnt = p.unit_of_msrmnt;
