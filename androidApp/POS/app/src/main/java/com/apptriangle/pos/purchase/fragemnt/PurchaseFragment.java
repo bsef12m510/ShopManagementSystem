@@ -70,13 +70,19 @@ public class PurchaseFragment extends Fragment {
     private TextView txtDate;
     private LinearLayout dateContainer;
 
-    private EditText edtSupplier,edtInvoice, edtQty,edtPrice, edtTotalPrice, edtSpecs;
+    private EditText edtSupplier, edtInvoice, edtQty, edtPrice, edtTotalPrice, edtSpecs;
     private ScrollView scrollView;
     private ProgressDialog pd;
     private Product selectedProduct;
     private ProductType selectedProductType;
     private Brand selectedBrand;
     private UoM selectedUoM;
+    Double price = 0.0, totalPrice = 0.0, lastTotalPrice = 0.0;
+    private List<Product> cart;
+    ArrayList<ProductType> productsTypeList;
+    ArrayList<Product> productsList;
+    ArrayList<Brand> brandsList;
+    ArrayList<UoM> uoMList;
 
     public PurchaseFragment() {
         // Required empty public constructor
@@ -108,6 +114,7 @@ public class PurchaseFragment extends Fragment {
         pd.setCanceledOnTouchOutside(false);
 
         checkoutBtn = (Button) view.findViewById(R.id.checkoutBtn);
+        btnMore = (Button) view.findViewById(R.id.btnMore);
         addProductBtn = (ImageButton) view.findViewById(R.id.addProductBtn);
         addBrandBtn = (ImageButton) view.findViewById(R.id.addBrandBtn);
         editProductBtn = (ImageButton) view.findViewById(R.id.editProductBtn);
@@ -182,6 +189,16 @@ public class PurchaseFragment extends Fragment {
                 onCheckoutButtonPressed();
             }
         });
+
+        btnMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (validate())
+                    addProductToCart();
+                else
+                    Toast.makeText(getActivity(), "Provide all information..", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -194,6 +211,27 @@ public class PurchaseFragment extends Fragment {
     void setTitle() {
         ((Activity) getActivity()).setTitle("PURCHASE");
     }
+
+
+    public void addProductToCart() {
+        lastTotalPrice = totalPrice;
+        Product product = selectedProduct;
+        product.setBrand(selectedBrand);
+        product.setProductType(selectedProductType);
+        product.setOtherThanCurrentInventoryQty(Integer.parseInt(edtQty.getText().toString()));
+        product.setQty(Integer.parseInt(edtQty.getText().toString()));
+        productTypesDropdown.setSelection(0);
+        brandsDropdown.setSelection(0);
+        modelsDropdown.setSelection(0);
+        edtQty.setText("");
+        edtPrice.setText("");
+        edtTotalPrice.setText(totalPrice.toString());
+
+        cart.add(product);
+        Toast.makeText(getActivity(), "Product added to card...", Toast.LENGTH_SHORT).show();
+
+    }
+
 
     @Override
     public void onResume() {
@@ -217,17 +255,46 @@ public class PurchaseFragment extends Fragment {
         final EditText input = new EditText(getActivity());
 // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
         input.setInputType(InputType.TYPE_CLASS_TEXT);
+        if (identifier == 2)
+            input.setText(selectedProductType != null ? selectedProductType.getTypeName() : "");
         builder.setView(input);
 
 // Set up the buttons
         builder.setPositiveButton((identifier == 1 || identifier == 3) ? "Add" : "Edit", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if (1 == identifier)
-                    newProductString = input.getText().toString();
-                else if (2 == identifier)
-                    editProductSting = input.getText().toString();
-                else if (3 == identifier)
+                if (1 == identifier) {
+
+                    newProductString = input.getText().toString().trim();
+                    ProductType tmp = new ProductType();
+                    tmp.setTypeName(newProductString);
+                    if (productsTypeList == null)
+                        productsTypeList = new ArrayList<>();
+                    productsTypeList.add(tmp);
+                    setProductTypesDropdown(productsTypeList, productTypesDropdown);
+
+                } else if (2 == identifier) {
+
+                    editProductSting = input.getText().toString().trim();
+                    if (selectedProductType != null && selectedProductType.getTypeId() != null) {
+                        for (int i = 0; i < productsTypeList.size(); i++) {
+                            if (productsTypeList.get(i).getTypeId() == selectedProductType.getTypeId()) {
+                                productsTypeList.get(i).setTypeName(editProductSting);
+                                setProductTypesDropdown(productsTypeList, productTypesDropdown);
+                                break;
+                            }
+                        }
+                    } else if (selectedProductType != null && selectedProductType.getTypeId() == null && (selectedProductType.getTypeName() != null || selectedProductType.getTypeName() != "")) {
+                        for (int i = 0; i < productsTypeList.size(); i++) {
+                            if (productsTypeList.get(i).getTypeName().equalsIgnoreCase(selectedProductType.getTypeName())) {
+                                productsTypeList.get(i).setTypeName(editProductSting);
+                                setProductTypesDropdown(productsTypeList, productTypesDropdown);
+                                break;
+                            }
+                        }
+                    }
+
+                } else if (3 == identifier)
                     newBrandString = input.getText().toString();
                 else if (4 == identifier)
                     editBrandString = input.getText().toString();
@@ -243,23 +310,13 @@ public class PurchaseFragment extends Fragment {
         builder.show();
     }
 
-    private void getApiKey()
-    {
+    private void getApiKey() {
         SharedPreferences shared = getActivity().getSharedPreferences("com.appTriangle.pos", Context.MODE_PRIVATE);
         apiKey = shared.getString("api_key", "");
 
     }
 
-    public void setProductsDropdownLabel(){
-        ArrayList<ProductType> productsList = new ArrayList();
-        ProductType tmp = new ProductType();
-
-        tmp.setTypeName("Select Product Type");
-        productsList.add(0,tmp);
-        setProductTypesDropdown(productsList, productTypesDropdown);
-    }
-
-    public void getAllUoM(){
+    public void getAllUoM() {
         PurchaseService service =
                 ApiClient.getClient().create(PurchaseService.class);
 
@@ -270,12 +327,12 @@ public class PurchaseFragment extends Fragment {
             public void onResponse(Call<List<UoM>> call, Response<List<UoM>> response) {
                 pd.hide();
                 if (response != null) {
-                    ArrayList<UoM> productsList = (ArrayList<UoM>) response.body();
+                    uoMList = (ArrayList<UoM>) response.body();
 
-                    UoM tmp= new UoM();
+                    UoM tmp = new UoM();
                     tmp.description = "Select UoM";
-                    productsList.add(0,tmp);
-                    setUoMDropdown(productsList, uoMDropdown);
+                    uoMList.add(0, tmp);
+                    setUoMDropdown(uoMList, uoMDropdown);
 
                 }
             }
@@ -290,8 +347,7 @@ public class PurchaseFragment extends Fragment {
         });
     }
 
-
-    public void getAllProductTypes(){
+    public void getAllProductTypes() {
         SalesService service =
                 ApiClient.getClient().create(SalesService.class);
 
@@ -302,12 +358,12 @@ public class PurchaseFragment extends Fragment {
             public void onResponse(Call<List<ProductType>> call, Response<List<ProductType>> response) {
                 pd.hide();
                 if (response != null) {
-                    ArrayList<ProductType> productsList = (ArrayList<ProductType>) response.body();
+                    productsTypeList = (ArrayList<ProductType>) response.body();
                     ProductType tmp = new ProductType();
 
                     tmp.setTypeName("Select Product Type");
-                    productsList.add(0,tmp);
-                    setProductTypesDropdown(productsList, productTypesDropdown);
+                    productsTypeList.add(0, tmp);
+                    setProductTypesDropdown(productsTypeList, productTypesDropdown);
 
                 }
             }
@@ -322,31 +378,31 @@ public class PurchaseFragment extends Fragment {
         });
     }
 
-    public void setModelsDropdownLabel(){
-        ArrayList<Product> productsList = new ArrayList<>();
+    public void setModelsDropdownLabel() {
+        productsList = new ArrayList<>();
         Product tmp = new Product();
 
         tmp.setProductName("Select Model");
-        productsList.add(0,tmp);
+        productsList.add(0, tmp);
         setModelsDropdown(productsList, modelsDropdown);
     }
 
-    public void getAllModelsForProductType(){
+    public void getAllModelsForProductType() {
         SalesService service =
                 ApiClient.getClient().create(SalesService.class);
 
-        Call<List<Product>> call = service.getModels(apiKey,selectedProductType.getTypeId(),selectedBrand.getBrandId());
+        Call<List<Product>> call = service.getModels(apiKey, selectedProductType.getTypeId(), selectedBrand.getBrandId());
         pd.show();
         call.enqueue(new Callback<List<Product>>() {
             @Override
             public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
                 pd.hide();
                 if (response != null) {
-                    ArrayList<Product> productsList = (ArrayList<Product>) response.body();
+                    productsList = (ArrayList<Product>) response.body();
                     Product tmp = new Product();
 
                     tmp.setProductName("Select Model");
-                    productsList.add(0,tmp);
+                    productsList.add(0, tmp);
                     setModelsDropdown(productsList, modelsDropdown);
 
                 }
@@ -362,31 +418,34 @@ public class PurchaseFragment extends Fragment {
         });
     }
 
-    public void setBrandsDropdownLabel(){
-        ArrayList<Brand> brandsList = new ArrayList<>();
+    public void setBrandsDropdownLabel() {
+        brandsList = new ArrayList<>();
         Brand tmp = new Brand();
         tmp.setBrandName("Select Brand");
 
-        brandsList.add(0,tmp);
+        brandsList.add(0, tmp);
         setBrandDropdown(brandsList, brandsDropdown);
     }
 
-    public void getBrands(){
+    public void getBrands() {
         SalesService service =
                 ApiClient.getClient().create(SalesService.class);
-
-        Call<List<Brand>> call = service.getBrands(apiKey, selectedProductType.getTypeId());
+        Call<List<Brand>> call;
+        if (selectedProductType.getTypeId() != null)
+            call = service.getBrands(apiKey, selectedProductType.getTypeId());
+        else
+            call = service.getBrands(apiKey, selectedProductType.getTypeId());// get all brands here for a shop
         pd.show();
         call.enqueue(new Callback<List<Brand>>() {
             @Override
             public void onResponse(Call<List<Brand>> call, Response<List<Brand>> response) {
                 pd.hide();
                 if (response != null) {
-                    ArrayList<Brand> brandsList = (ArrayList<Brand>) response.body();
+                    brandsList = (ArrayList<Brand>) response.body();
                     Brand tmp = new Brand();
                     tmp.setBrandName("Select Brand");
 
-                    brandsList.add(0,tmp);
+                    brandsList.add(0, tmp);
                     setBrandDropdown(brandsList, brandsDropdown);
 
                 }
@@ -520,7 +579,7 @@ public class PurchaseFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
                 selectedProductType = (ProductType) parent.getItemAtPosition(position);
-                if(position != 0)
+                if (position != 0)
                     getBrands();
                 // If user change the default selection
                 // First item is disable and it is used for hint
@@ -669,7 +728,7 @@ public class PurchaseFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
                 selectedBrand = (Brand) parent.getItemAtPosition(position);
-                if(position != 0)
+                if (position != 0)
                     getAllModelsForProductType();
                 // If user change the default selection
                 // First item is disable and it is used for hint
@@ -700,14 +759,14 @@ public class PurchaseFragment extends Fragment {
     }
 
 
-    public boolean validate(){
-        if(selectedProductType == null || selectedProductType.getTypeId() == null)
+    public boolean validate() {
+        if (selectedProductType == null || selectedProductType.getTypeId() == null)
             return false;
-        else if(selectedBrand == null || selectedBrand.getBrandId() == null)
+        else if (selectedBrand == null || selectedBrand.getBrandId() == null)
             return false;
-        else if(selectedProduct == null ||selectedProduct.getProductId() == null)
+        else if (selectedProduct == null || selectedProduct.getProductId() == null)
             return false;
-        else if(edtQty.getText().toString().trim().equalsIgnoreCase(""))
+        else if (edtQty.getText().toString().trim().equalsIgnoreCase(""))
             return false;
         else
             return true;
