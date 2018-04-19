@@ -12,8 +12,7 @@ namespace WebSource.Controllers
         [ActionName("PurchaseProduct")]
         public IHttpActionResult purchaseProducts(JPurchase purchase)
         {
-            int purch_id = -1;
-
+           
             try
             {
                 SMS_DBEntities1 db = new SMS_DBEntities1();
@@ -25,12 +24,14 @@ namespace WebSource.Controllers
                 var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
                 var inventory = db.inventories.Where(y => y.shop_id == shop.shop_id);
                 int i = 1;
-                purch_id = 1;
 
                 List<purchase> purchases = new List<purchase>();
 
                 try {
-                    purch_id = db.purchases.Max(p=>p.purch_id) + 1;
+                    if(null != db.purchases.FirstOrDefault(y => y.purch_id == purchase.purch_id))
+                    {
+                        return Ok(-1);
+                    }
                 }
                 catch (Exception ex) { }
 
@@ -46,10 +47,24 @@ namespace WebSource.Controllers
                             db.brands.Add(new brand { brand_name = product.brand.brand_name });
                             db.SaveChanges();
                         }
+                        else if(null != db.brands.FirstOrDefault(y => y.brand_id == product.brand.brand_id) &&
+                                product.brand.brand_name != null && !product.brand.brand_name.Equals(""))
+                        {
+                            brand b = db.brands.FirstOrDefault(y => y.brand_id == product.brand.brand_id);
+                            b.brand_name = product.brand.brand_name;
+                            db.SaveChanges();
+                        }
                         if (null == db.product_types.FirstOrDefault(y => y.type_id == product.product_type.type_id) &&
                             null == db.product_types.FirstOrDefault(y => y.type_name == product.product_type.type_name))
                         {
                             db.product_types.Add(new product_types { type_name = product.product_type.type_name });
+                            db.SaveChanges();
+                        }
+                        else if (null != db.product_types.FirstOrDefault(y => y.type_id == product.product_type.type_id) &&
+                                product.product_type.type_name != null && !product.product_type.type_name.Equals(""))
+                        {
+                            product_types p = db.product_types.FirstOrDefault(y => y.type_id == product.product_type.type_id);
+                            p.type_name = product.product_type.type_name;
                             db.SaveChanges();
                         }
                         if (null == db.msrmnt_units.FirstOrDefault(y => y.description.Equals(product.unit_of_msrmnt)))
@@ -103,17 +118,16 @@ namespace WebSource.Controllers
 
                         purchases.Add(new purchase
                         {
-                            purch_id = purch_id,
+                            purch_id = purchase.purch_id,
                             prod_id = prod_id,
-                            dlr_name = purchase.dlr_name,
+                            dlr_dtls = purchase.dlr_info,
                             prod_quant = (int)product.qty,
-                            pur_date = DateTime.Today,
-                            pur_time = DateTime.Now.TimeOfDay,
+                            pur_date = purchase.purch_dtime.Date,
+                            pur_time = purchase.purch_dtime.TimeOfDay,
                             shop_id = shop.shop_id,
                             agent_id = user.user_id,
                             is_pmnt_clr = isClr,
-                            total_amt = purchase.total_amount,
-                            dlr_phone = purchase.dlr_phone,
+                            total_amt = purchase.total_amount,                         
                             paid_amt = purchase.amount_paid,
                             is_invoice = "Y"
 
@@ -122,12 +136,11 @@ namespace WebSource.Controllers
                     else {
                         purchases.Add(new purchase
                         {
-                            purch_id = purch_id,
+                            purch_id = purchase.purch_id,
                             prod_id = prod_id,
-                            dlr_name = purchase.dlr_name,
                             prod_quant = (int)product.qty,
-                            pur_date = DateTime.Today,
-                            pur_time = DateTime.Now.TimeOfDay,
+                            pur_date = purchase.purch_dtime.Date,
+                            pur_time = purchase.purch_dtime.TimeOfDay,
                             shop_id = shop.shop_id,
                             agent_id = user.user_id,
                             is_pmnt_clr = "N",
@@ -147,11 +160,11 @@ namespace WebSource.Controllers
             }
             catch (Exception ex)
             {
-                purch_id = -1;
+                return Ok(-1);
             }
             finally { }
 
-            return Ok(purch_id);
+            return Ok(purchase.purch_id);
         }
     }
 }
