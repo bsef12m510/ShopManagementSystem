@@ -6,7 +6,7 @@
     <edmx:Diagrams>
       <Diagram DiagramId="cbed434ae3094be39ed465a873da7e87" Name="Diagram1" ZoomLevel="63">
         <EntityTypeShape EntityType="SMS_DBModel.brand" Width="1.5" PointX="0.75" PointY="6.5" />
-        <EntityTypeShape EntityType="SMS_DBModel.inventory" Width="1.5" PointX="5.25" PointY="11.625" />
+        <EntityTypeShape EntityType="SMS_DBModel.inventory" Width="1.5" PointX="11.375" PointY="11" />
         <EntityTypeShape EntityType="SMS_DBModel.product_types" Width="1.5" PointX="0.75" PointY="3.625" />
         <EntityTypeShape EntityType="SMS_DBModel.product" Width="1.5" PointX="3" PointY="5.75" />
         <EntityTypeShape EntityType="SMS_DBModel.purchase" Width="1.5" PointX="5.25" PointY="5.25" />
@@ -24,6 +24,7 @@
         <AssociationConnector Association="SMS_DBModel.fk_sales_uid" />
         <AssociationConnector Association="SMS_DBModel.fk_users_shid" />
         <EntityTypeShape EntityType="SMS_DBModel.msrmnt_units" Width="1.5" PointX="5.375" PointY="0.75" />
+        <AssociationConnector Association="SMS_DBModel.fk_inv_sid" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

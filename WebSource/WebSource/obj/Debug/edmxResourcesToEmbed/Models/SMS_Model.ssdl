@@ -17,6 +17,13 @@
     <Property Name="product_id" Type="int" Nullable="false" />
     <Property Name="prod_quant" Type="int" />
   </EntityType>
+  <EntityType Name="msrmnt_units">
+    <Key>
+      <PropertyRef Name="sr_no" />
+    </Key>
+    <Property Name="sr_no" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="description" Type="varchar" MaxLength="50" Nullable="false" />
+  </EntityType>
   <EntityType Name="product_types">
     <Key>
       <PropertyRef Name="type_id" />
@@ -104,6 +111,18 @@
       </Principal>
       <Dependent Role="inventory">
         <PropertyRef Name="product_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_inv_sid">
+    <End Role="shops" Type="Self.shops" Multiplicity="1" />
+    <End Role="inventory" Type="Self.inventory" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="shops">
+        <PropertyRef Name="shop_id" />
+      </Principal>
+      <Dependent Role="inventory">
+        <PropertyRef Name="shop_id" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -218,6 +237,7 @@
   <EntityContainer Name="SMS_DBModelStoreContainer">
     <EntitySet Name="brands" EntityType="Self.brands" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="inventory" EntityType="Self.inventory" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="msrmnt_units" EntityType="Self.msrmnt_units" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="product_types" EntityType="Self.product_types" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="products" EntityType="Self.products" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="purchase" EntityType="Self.purchase" Schema="dbo" store:Type="Tables" />
@@ -226,6 +246,10 @@
     <EntitySet Name="users" EntityType="Self.users" Schema="dbo" store:Type="Tables" />
     <AssociationSet Name="fk_inv_pid" Association="Self.fk_inv_pid">
       <End Role="products" EntitySet="products" />
+      <End Role="inventory" EntitySet="inventory" />
+    </AssociationSet>
+    <AssociationSet Name="fk_inv_sid" Association="Self.fk_inv_sid">
+      <End Role="shops" EntitySet="shops" />
       <End Role="inventory" EntitySet="inventory" />
     </AssociationSet>
     <AssociationSet Name="fk_prod_br_id" Association="Self.fk_prod_br_id">

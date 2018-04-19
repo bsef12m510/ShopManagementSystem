@@ -86,5 +86,47 @@ namespace WebSource.Controllers
             return Ok(db.msrmnt_units.ToArray());
         }
 
+        [HttpGet]
+        [ActionName("getBrandsByShop")]
+        public IHttpActionResult getBrandsByShop(string userId)
+        {
+            SMS_DBEntities1 db = new SMS_DBEntities1();
+            var user = db.users.FirstOrDefault(y => y.user_id.Equals(userId));
+            var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
+
+            //db.inventories.Where(y=>y.shop_id)
+            List<JBrand> brands = new List<JBrand>();
+            foreach (var inventory in shop.inventories)
+            {
+                brands.Add(new JBrand { brand_name = inventory.product.brand.brand_name,
+                 brand_id = inventory.product.brand.brand_id
+                });
+            }
+
+            return Ok(brands);
+        }
+
+        [HttpGet]
+        [ActionName("getProductTypeByShop")]
+        public IHttpActionResult getProductTypeByShop(string userId)
+        {
+            SMS_DBEntities1 db = new SMS_DBEntities1();
+            var user = db.users.FirstOrDefault(y => y.user_id.Equals(userId));
+            var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
+
+            //db.inventories.Where(y=>y.shop_id)
+            List<JProductType> pTypes = new List<JProductType>();
+            foreach (var inventory in shop.inventories)
+            {
+                pTypes.Add(new JProductType
+                {
+                    type_name = inventory.product.product_types.type_name,
+                    type_id = inventory.product.product_types.type_id
+                });
+            }
+
+            return Ok(pTypes);
+        }
+
     }
 }

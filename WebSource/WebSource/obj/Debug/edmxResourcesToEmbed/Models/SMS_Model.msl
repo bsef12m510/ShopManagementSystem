@@ -103,5 +103,13 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="msrmnt_units">
+      <EntityTypeMapping TypeName="SMS_DBModel.msrmnt_units">
+        <MappingFragment StoreEntitySet="msrmnt_units">
+          <ScalarProperty Name="description" ColumnName="description" />
+          <ScalarProperty Name="sr_no" ColumnName="sr_no" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
   </EntityContainerMapping>
 </Mapping>

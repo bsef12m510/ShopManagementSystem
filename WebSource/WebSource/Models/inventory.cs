@@ -19,5 +19,6 @@ namespace WebSource.Models
         public Nullable<int> prod_quant { get; set; }
     
         public virtual product product { get; set; }
+        public virtual shop shop { get; set; }
     }
 }

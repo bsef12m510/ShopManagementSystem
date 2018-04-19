@@ -119,6 +119,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="fk_inv_sid">
+          <End Role="shops" Type="Self.shops" Multiplicity="1" />
+          <End Role="inventory" Type="Self.inventory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="shops">
+              <PropertyRef Name="shop_id" />
+            </Principal>
+            <Dependent Role="inventory">
+              <PropertyRef Name="shop_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="fk_prod_br_id">
           <End Role="brands" Type="Self.brands" Multiplicity="1" />
           <End Role="products" Type="Self.products" Multiplicity="*" />
@@ -241,6 +253,10 @@
             <End Role="products" EntitySet="products" />
             <End Role="inventory" EntitySet="inventory" />
           </AssociationSet>
+          <AssociationSet Name="fk_inv_sid" Association="Self.fk_inv_sid">
+            <End Role="shops" EntitySet="shops" />
+            <End Role="inventory" EntitySet="inventory" />
+          </AssociationSet>
           <AssociationSet Name="fk_prod_br_id" Association="Self.fk_prod_br_id">
             <End Role="brands" EntitySet="brands" />
             <End Role="products" EntitySet="products" />
@@ -332,6 +348,10 @@
             <End Role="user" EntitySet="users" />
           </AssociationSet>
           <EntitySet Name="msrmnt_units" EntityType="SMS_DBModel.msrmnt_units" />
+          <AssociationSet Name="fk_inv_sid" Association="SMS_DBModel.fk_inv_sid">
+            <End Role="shop" EntitySet="shops" />
+            <End Role="inventory" EntitySet="inventories" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="brand">
           <Key>
@@ -351,6 +371,7 @@
           <Property Name="product_id" Type="Int32" Nullable="false" />
           <Property Name="prod_quant" Type="Int32" />
           <NavigationProperty Name="product" Relationship="SMS_DBModel.fk_inv_pid" FromRole="inventory" ToRole="product" />
+          <NavigationProperty Name="shop" Relationship="SMS_DBModel.fk_inv_sid" FromRole="inventory" ToRole="shop" />
         </EntityType>
         <EntityType Name="product_types">
           <Key>
@@ -433,6 +454,7 @@
           <NavigationProperty Name="purchases" Relationship="SMS_DBModel.fk_pur_sh_id" FromRole="shop" ToRole="purchase" />
           <NavigationProperty Name="sales" Relationship="SMS_DBModel.fk_sales_sh_id" FromRole="shop" ToRole="sale" />
           <NavigationProperty Name="users" Relationship="SMS_DBModel.fk_users_shid" FromRole="shop" ToRole="user" />
+          <NavigationProperty Name="inventories" Relationship="SMS_DBModel.fk_inv_sid" FromRole="shop" ToRole="inventory" />
         </EntityType>
         <EntityType Name="user">
           <Key>
@@ -575,6 +597,18 @@
           <Property Name="sr_no" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="description" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
+        <Association Name="fk_inv_sid">
+          <End Type="SMS_DBModel.shop" Role="shop" Multiplicity="1" />
+          <End Type="SMS_DBModel.inventory" Role="inventory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="shop">
+              <PropertyRef Name="shop_id" />
+            </Principal>
+            <Dependent Role="inventory">
+              <PropertyRef Name="shop_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
