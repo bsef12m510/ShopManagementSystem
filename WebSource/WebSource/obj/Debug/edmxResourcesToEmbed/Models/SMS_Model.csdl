@@ -122,6 +122,7 @@
     <NavigationProperty Name="product" Relationship="SMS_DBModel.fk_pur_pid" FromRole="purchase" ToRole="product" />
     <NavigationProperty Name="shop" Relationship="SMS_DBModel.fk_pur_sh_id" FromRole="purchase" ToRole="shop" />
     <NavigationProperty Name="user" Relationship="SMS_DBModel.fk_pur_uid" FromRole="purchase" ToRole="user" />
+    <Property Name="dlr_dtls" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
   </EntityType>
   <EntityType Name="sale">
     <Key>

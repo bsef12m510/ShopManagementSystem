@@ -44,6 +44,7 @@
     <EntitySetMapping Name="purchases">
       <EntityTypeMapping TypeName="SMS_DBModel.purchase">
         <MappingFragment StoreEntitySet="purchase">
+          <ScalarProperty Name="dlr_dtls" ColumnName="dlr_dtls" />
           <ScalarProperty Name="pur_time" ColumnName="pur_time" />
           <ScalarProperty Name="pur_date" ColumnName="pur_date" />
           <ScalarProperty Name="dlr_phone" ColumnName="dlr_phone" />

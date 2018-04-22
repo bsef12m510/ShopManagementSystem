@@ -7,7 +7,7 @@ namespace WebSource.Models
 {
     public class JPurchase
     {
-        public int purch_id { get; set; }
+        public String purch_id { get; set; }
         public JProduct[] products { get; set; }
         public String dlr_name { get; set; }
         public String dlr_phone { get; set; }

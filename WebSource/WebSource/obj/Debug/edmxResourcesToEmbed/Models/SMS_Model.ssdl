@@ -60,6 +60,7 @@
     <Property Name="agent_id" Type="varchar" MaxLength="50" />
     <Property Name="dlr_name" Type="varchar" MaxLength="50" />
     <Property Name="dlr_phone" Type="varchar" MaxLength="50" />
+    <Property Name="dlr_dtls" Type="varchar" MaxLength="150" />
     <Property Name="pur_date" Type="date" Nullable="false" />
     <Property Name="pur_time" Type="time" Precision="7" Nullable="false" />
   </EntityType>

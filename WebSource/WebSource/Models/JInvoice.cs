@@ -8,6 +8,7 @@ namespace WebSource.Models
     public class JInvoice
     {
         public int invoiceId{ get; set;}
+        public string str_invoiceId { get; set; }
         public int shopID { get; set; }
         public string agentID { get; set; }
         public String apiKey { get; set; }
@@ -28,7 +29,7 @@ namespace WebSource.Models
         public JInvoice(purchase invoice) {
             this.agentID = invoice.agent_id;
             this.shopID = (int)invoice.shop_id;
-            this.invoiceId = (int)invoice.purch_id;
+            this.str_invoiceId = invoice.purch_id;
             this.productID = (int)invoice.prod_id;
             this.amount_paid = (double)invoice.paid_amt;
             this.total_amount = (double)invoice.total_amt;

@@ -12,7 +12,7 @@ namespace WebSource.Models
         public JProductType product_type { get; set; }
         public JBrand brand { get; set; }
         public string specs { get; set; }
-        public string unit_of_msrmnt { get; set; }
+        public msrmnt_units unit_of_msrmnt { get; set; }
         public double unit_price { get; set; }
         public string product_image { get; set; }
         public int? qty { get; set; }

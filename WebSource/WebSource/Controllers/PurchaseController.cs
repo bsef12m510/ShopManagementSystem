@@ -67,9 +67,15 @@ namespace WebSource.Controllers
                             p.type_name = product.product_type.type_name;
                             db.SaveChanges();
                         }
-                        if (null == db.msrmnt_units.FirstOrDefault(y => y.description.Equals(product.unit_of_msrmnt)))
+                        if (null == db.msrmnt_units.FirstOrDefault(y => y.sr_no.Equals(product.unit_of_msrmnt.sr_no))){
+                            db.msrmnt_units.Add(new msrmnt_units { description = product.unit_of_msrmnt.description });
+                            db.SaveChanges();
+                        }
+                        else 
                         {
-                            db.msrmnt_units.Add(new msrmnt_units { description = product.unit_of_msrmnt });
+                            var msmnt_unit = db.msrmnt_units.FirstOrDefault(y => y.sr_no.Equals(product.unit_of_msrmnt.sr_no));
+                            msmnt_unit.description = product.unit_of_msrmnt.description;
+                            db.SaveChanges();
                         }
                         if (null == db.products.FirstOrDefault(y => y.product_id == product.product_id))
                         {
@@ -85,7 +91,7 @@ namespace WebSource.Controllers
                             {
                                 product_name = product.product_name,
                                 unit_price = product.unit_price,
-                                unit_of_msrmnt = product.unit_of_msrmnt,
+                                unit_of_msrmnt = product.unit_of_msrmnt.description,
                                 specs = product.specs,
                                 brand_id = brand_id,
                                 product_type = product_type
