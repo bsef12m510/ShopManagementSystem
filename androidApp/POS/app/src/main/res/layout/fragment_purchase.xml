@@ -355,6 +355,7 @@
                 android:layout_weight="0.7"
                 android:layout_marginLeft="4dp"
                 android:background="@color/white"
+
                 android:gravity="end"
                 android:hint="Enter price"
                 android:inputType="number"
@@ -388,6 +389,8 @@
                 android:background="@color/white"
                 android:gravity="end"
                 android:hint="Enter total price"
+                android:enabled="false"
+                android:textColor="@drawable/edit_text_selector"
                 android:id="@+id/edtTotalPrice"
                 android:inputType="number"
                 android:layout_gravity="end"/>

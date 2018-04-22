@@ -13,7 +13,9 @@ import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -37,9 +39,12 @@ import com.apptriangle.pos.model.Brand;
 import com.apptriangle.pos.model.Product;
 import com.apptriangle.pos.model.ProductType;
 import com.apptriangle.pos.model.UoM;
+import com.apptriangle.pos.purchase.response.JProduct;
+import com.apptriangle.pos.purchase.response.PurchaseResponse;
 import com.apptriangle.pos.purchase.service.PurchaseService;
 import com.apptriangle.pos.sales.restInterface.SalesService;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -66,23 +71,62 @@ public class PurchaseFragment extends Fragment {
     private ImageButton addProductBtn, addBrandBtn, editProductBtn, editBrandBtn, addModelBtn, editModelBtn, addUoMBtn, editUoMBtn;
     private Spinner productTypesDropdown, brandsDropdown, modelsDropdown, uoMDropdown;
     private String pickerDateSring;
-    private String newProductString, editProductSting, newBrandString, editBrandString;
+    private String newProductString, editProductSting, newBrandString, editBrandString, newModelString, editModelString, newUoMString, editUoMString;
     private TextView txtDate;
     private LinearLayout dateContainer;
 
     private EditText edtSupplier, edtInvoice, edtQty, edtPrice, edtTotalPrice, edtSpecs;
     private ScrollView scrollView;
     private ProgressDialog pd;
-    private Product selectedProduct;
+    private JProduct selectedProduct;
     private ProductType selectedProductType;
     private Brand selectedBrand;
     private UoM selectedUoM;
     Double price = 0.0, totalPrice = 0.0, lastTotalPrice = 0.0;
-    private List<Product> cart;
+    private List<JProduct> cart;
     ArrayList<ProductType> productsTypeList;
-    ArrayList<Product> productsList;
+    ArrayList<JProduct> productsList;
     ArrayList<Brand> brandsList;
     ArrayList<UoM> uoMList;
+    public PurchaseResponse purchase;
+
+
+    TextWatcher inputTextWatcher = new TextWatcher() {
+        public void afterTextChanged(Editable s) {
+            if(s != null && !s.toString().trim().equalsIgnoreCase("")) {
+                if(!edtPrice.getText().toString().equals("")) {
+                   /* price = Integer.parseInt(s.toString()) * selectedProduct.getUnitPrice();
+                    edtPrice.setText(price.toString());
+                    totalPrice = lastTotalPrice + price;
+                    edtTotalPrice.setText(totalPrice.toString());*/
+
+                    price = Double.parseDouble(edtPrice.getText().toString());
+                    totalPrice = lastTotalPrice + (price * Double.parseDouble(edtQty.getText().toString()));
+                    edtTotalPrice.setText(totalPrice.toString());
+                }
+            }
+        }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after){
+        }
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
+    };
+
+    TextWatcher priceTextWatcher = new TextWatcher() {
+        public void afterTextChanged(Editable s) {
+            if(s != null && !s.toString().trim().equalsIgnoreCase("")) {
+                    if(!edtQty.getText().toString().equals("")) {
+                        price = Double.parseDouble(edtPrice.getText().toString());
+                        totalPrice = lastTotalPrice + (price * Double.parseDouble(edtQty.getText().toString()));
+                        edtTotalPrice.setText(totalPrice.toString());
+                    }
+            }
+        }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after){
+        }
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
+    };
 
     public PurchaseFragment() {
         // Required empty public constructor
@@ -108,6 +152,9 @@ public class PurchaseFragment extends Fragment {
     }
 
     public void initialize(View view) {
+        cart = new ArrayList<>();
+        purchase = new PurchaseResponse();
+
         getApiKey();
         pd = new ProgressDialog(getActivity());
         pd.setMessage("Processing...");
@@ -133,7 +180,9 @@ public class PurchaseFragment extends Fragment {
         edtSupplier = (EditText) view.findViewById(R.id.edtSupplierDetails);
         edtInvoice = (EditText) view.findViewById(R.id.txtInvoiceNo);
         edtQty = (EditText) view.findViewById(R.id.edtQty);
+        edtQty.addTextChangedListener(inputTextWatcher);
         edtPrice = (EditText) view.findViewById(R.id.edtPrice);
+        edtPrice.addTextChangedListener(priceTextWatcher);
         edtTotalPrice = (EditText) view.findViewById(R.id.edtTotalPrice);
         edtSpecs = (EditText) view.findViewById(R.id.edtSpecs);
 
@@ -175,6 +224,30 @@ public class PurchaseFragment extends Fragment {
                 showDialog(4);
             }
         });
+        addModelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDialog(5);
+            }
+        });
+        editModelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDialog(6);
+            }
+        });
+        addUoMBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDialog(7);
+            }
+        });
+        editUoMBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDialog(8);
+            }
+        });
 
         dateContainer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -186,7 +259,11 @@ public class PurchaseFragment extends Fragment {
         checkoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onCheckoutButtonPressed();
+                if(validate()) {
+                    addProductToCart();
+                    processPurchase();
+                }
+
             }
         });
 
@@ -197,6 +274,76 @@ public class PurchaseFragment extends Fragment {
                     addProductToCart();
                 else
                     Toast.makeText(getActivity(), "Provide all information..", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    public void processPurchase(){
+        purchase.products = new ArrayList<>();
+        purchase.products.addAll(cart);
+        purchase.total_amount = totalPrice;
+        purchase.amount_paid = totalPrice;
+        purchase.dlr_info = edtSupplier.getText().toString();
+        purchase.purch_id = Integer.parseInt(edtInvoice.getText().toString());
+        try {
+            String dateString = txtDate.getText().toString();
+            Date dt = Calendar.getInstance().getTime();
+            int hours = dt.getHours();
+            int minutes = dt.getMinutes();
+            int seconds = dt.getSeconds();
+            dateString = dateString + " " + hours + ":" + minutes + ":" + seconds;
+            SimpleDateFormat sdf1 = new SimpleDateFormat("MMM dd,yyyy hh:mm:ss");
+            java.util.Date date = sdf1.parse(dateString);
+            Timestamp sqlStartDate = new Timestamp(date.getTime());
+            purchase.purch_dtime = sqlStartDate;
+        }catch (Exception e){}
+        purchase.apiKey = apiKey;
+
+
+        PurchaseService service =
+                ApiClient.getClient().create(PurchaseService.class);
+
+
+        Call<Object> call = service.processPurchase(purchase);
+        pd.show();
+        call.enqueue(new Callback<Object>() {
+            @Override
+            public void onResponse(Call<Object> call, Response<Object> response) {
+                pd.hide();
+                if (response != null) {
+                    if(response.body() instanceof  String) {
+                        if ((String) response.body() != null) {
+
+                            Toast.makeText(getActivity(), "DONE " + purchase.purch_id, Toast.LENGTH_SHORT).show();
+                            productTypesDropdown.setSelection(0);
+                            brandsDropdown.setSelection(0);
+                            modelsDropdown.setSelection(0);
+                            uoMDropdown.setSelection(0);
+                            edtQty.setText("");
+                            edtPrice.setText("");
+                            edtTotalPrice.setText(totalPrice.toString());
+                            edtSpecs.setText("");
+                            txtDate.setText("");
+                            edtInvoice.setText("");
+                            edtSupplier.setText("");
+                            price = 0.0;
+                            lastTotalPrice = 0.0;
+                            totalPrice = 0.0;
+                            edtTotalPrice.setText("");
+                            onCheckoutButtonPressed();
+                        }
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Object> call, Throwable t) {
+                // Log error here since request failed
+                Log.e("failure", "failure");
+                pd.hide();
+
             }
         });
     }
@@ -215,23 +362,27 @@ public class PurchaseFragment extends Fragment {
 
     public void addProductToCart() {
         lastTotalPrice = totalPrice;
-        Product product = selectedProduct;
+        JProduct product = selectedProduct;
         product.setBrand(selectedBrand);
         product.setProductType(selectedProductType);
+        product.setUnitOfMsrmnt(selectedUoM);
         product.setOtherThanCurrentInventoryQty(Integer.parseInt(edtQty.getText().toString()));
         product.setQty(Integer.parseInt(edtQty.getText().toString()));
+        product.setUnitPrice(Double.parseDouble(edtPrice.getText().toString()) / product.getQty());
+        product.setSpecs(edtSpecs.getText().toString());
         productTypesDropdown.setSelection(0);
         brandsDropdown.setSelection(0);
         modelsDropdown.setSelection(0);
+        uoMDropdown.setSelection(0);
         edtQty.setText("");
         edtPrice.setText("");
         edtTotalPrice.setText(totalPrice.toString());
+        edtSpecs.setText("");
 
         cart.add(product);
         Toast.makeText(getActivity(), "Product added to card...", Toast.LENGTH_SHORT).show();
 
     }
-
 
     @Override
     public void onResume() {
@@ -250,17 +401,30 @@ public class PurchaseFragment extends Fragment {
             builder.setTitle("New Brand");
         else if (4 == identifier)
             builder.setTitle("Edit Brand");
-
+        else if (5 == identifier)
+            builder.setTitle("New Model");
+        else if (6 == identifier)
+            builder.setTitle("Edit Model");
+        else if (7 == identifier)
+            builder.setTitle("New UoM");
+        else if (4 == identifier)
+            builder.setTitle("Edit UoM");
 // Set up the input
         final EditText input = new EditText(getActivity());
 // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         if (identifier == 2)
             input.setText(selectedProductType != null ? selectedProductType.getTypeName() : "");
+        else if (identifier == 4)
+            input.setText(selectedBrand != null ? selectedBrand.getBrandName() : "");
+        else if (identifier == 6)
+            input.setText(selectedProduct != null ? selectedProduct.getProductName() : "");
+        else if (identifier == 8)
+            input.setText(selectedUoM != null ? selectedUoM.description : "");
         builder.setView(input);
 
 // Set up the buttons
-        builder.setPositiveButton((identifier == 1 || identifier == 3) ? "Add" : "Edit", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton((identifier == 1 || identifier == 3 || identifier == 5 || identifier == 7) ? "Add" : "Edit", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (1 == identifier) {
@@ -271,7 +435,8 @@ public class PurchaseFragment extends Fragment {
                     if (productsTypeList == null)
                         productsTypeList = new ArrayList<>();
                     productsTypeList.add(tmp);
-                    setProductTypesDropdown(productsTypeList, productTypesDropdown);
+                    selectedProductType = tmp;
+                    setProductTypesDropdown(productsTypeList, productTypesDropdown, true);
 
                 } else if (2 == identifier) {
 
@@ -280,7 +445,7 @@ public class PurchaseFragment extends Fragment {
                         for (int i = 0; i < productsTypeList.size(); i++) {
                             if (productsTypeList.get(i).getTypeId() == selectedProductType.getTypeId()) {
                                 productsTypeList.get(i).setTypeName(editProductSting);
-                                setProductTypesDropdown(productsTypeList, productTypesDropdown);
+                                setProductTypesDropdown(productsTypeList, productTypesDropdown, true);
                                 break;
                             }
                         }
@@ -288,16 +453,98 @@ public class PurchaseFragment extends Fragment {
                         for (int i = 0; i < productsTypeList.size(); i++) {
                             if (productsTypeList.get(i).getTypeName().equalsIgnoreCase(selectedProductType.getTypeName())) {
                                 productsTypeList.get(i).setTypeName(editProductSting);
-                                setProductTypesDropdown(productsTypeList, productTypesDropdown);
+                                setProductTypesDropdown(productsTypeList, productTypesDropdown, true);
                                 break;
                             }
                         }
                     }
 
-                } else if (3 == identifier)
+                } else if (3 == identifier) {
                     newBrandString = input.getText().toString();
-                else if (4 == identifier)
+                    Brand tmp = new Brand();
+                    tmp.setBrandName(newBrandString);
+                    if (brandsList == null)
+                        brandsList = new ArrayList<>();
+                    brandsList.add(tmp);
+                    selectedBrand = tmp;
+                    setBrandDropdown(brandsList, brandsDropdown, true);
+                }else if (4 == identifier) {
                     editBrandString = input.getText().toString();
+                    if (selectedBrand != null && selectedBrand.getBrandId() != null) {
+                        for (int i = 0; i < brandsList.size(); i++) {
+                            if (brandsList.get(i).getBrandId() == selectedBrand.getBrandId()) {
+                                brandsList.get(i).setBrandName(editBrandString);
+                                setBrandDropdown(brandsList, brandsDropdown, true);
+                                break;
+                            }
+                        }
+                    } else if (selectedBrand != null && selectedBrand.getBrandId() == null && (selectedBrand.getBrandName() != null || selectedBrand.getBrandName() != "")) {
+                        for (int i = 0; i < brandsList.size(); i++) {
+                            if (brandsList.get(i).getBrandName().equalsIgnoreCase(selectedBrand.getBrandName())) {
+                                brandsList.get(i).setBrandName(editBrandString);
+                                setBrandDropdown(brandsList, brandsDropdown, true);
+                                break;
+                            }
+                        }
+                    }
+                }else if (5 == identifier) {
+                    newModelString = input.getText().toString();
+                    JProduct tmp = new JProduct();
+                    tmp.setProductName(newModelString);
+                    if (productsList == null)
+                        productsList = new ArrayList<>();
+                    productsList.add(tmp);
+                    selectedProduct = tmp;
+                    setModelsDropdown(productsList, modelsDropdown, true);
+                }else if (6 == identifier) {
+                    editModelString = input.getText().toString();
+                    if (selectedProduct != null && selectedProduct.getProductId() != null) {
+                        for (int i = 0; i < productsList.size(); i++) {
+                            if (productsList.get(i).getProductId() == selectedProduct.getProductId()) {
+                                productsList.get(i).setProductName(editModelString);
+                                setModelsDropdown(productsList, modelsDropdown, true);
+                                break;
+                            }
+                        }
+                    } else if (selectedProduct != null && selectedProduct.getProductId() == null && (selectedProduct.getProductName() != null || selectedProduct.getProductName() != "")) {
+                        for (int i = 0; i < productsList.size(); i++) {
+                            if (productsList.get(i).getProductName().equalsIgnoreCase(selectedProduct.getProductName())) {
+                                productsList.get(i).setProductName(editModelString);
+                                setModelsDropdown(productsList, modelsDropdown, true);
+                                break;
+                            }
+                        }
+                    }
+                }else if (7 == identifier) {
+                    newUoMString = input.getText().toString();
+                    UoM tmp = new UoM();
+                    tmp.setDescription(newUoMString);
+                    if (uoMList == null)
+                        uoMList = new ArrayList<>();
+                    uoMList.add(tmp);
+                    selectedUoM = tmp;
+                    setUoMDropdown(uoMList, uoMDropdown, true);
+                }else if (6 == identifier) {
+                    editUoMString = input.getText().toString();
+                    if (selectedUoM != null && selectedUoM.getSr_no() != null) {
+                        for (int i = 0; i < uoMList.size(); i++) {
+                            if (uoMList.get(i).getSr_no() == selectedUoM.getSr_no()) {
+                                uoMList.get(i).setDescription(editUoMString);
+                                setUoMDropdown(uoMList, uoMDropdown, true);
+                                break;
+                            }
+                        }
+                    } else if (selectedUoM != null && selectedUoM.getSr_no() == null && (selectedUoM.getDescription() != null || selectedUoM.getDescription() != "")) {
+                        for (int i = 0; i < uoMList.size(); i++) {
+                            if (uoMList.get(i).getDescription().equalsIgnoreCase(selectedUoM.getDescription())) {
+                                uoMList.get(i).setDescription(editUoMString);
+                                setUoMDropdown(uoMList, uoMDropdown, true);
+                                break;
+                            }
+                        }
+                    }
+                }
+
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -332,7 +579,7 @@ public class PurchaseFragment extends Fragment {
                     UoM tmp = new UoM();
                     tmp.description = "Select UoM";
                     uoMList.add(0, tmp);
-                    setUoMDropdown(uoMList, uoMDropdown);
+                    setUoMDropdown(uoMList, uoMDropdown, false);
 
                 }
             }
@@ -363,7 +610,7 @@ public class PurchaseFragment extends Fragment {
 
                     tmp.setTypeName("Select Product Type");
                     productsTypeList.add(0, tmp);
-                    setProductTypesDropdown(productsTypeList, productTypesDropdown);
+                    setProductTypesDropdown(productsTypeList, productTypesDropdown,false);
 
                 }
             }
@@ -380,11 +627,11 @@ public class PurchaseFragment extends Fragment {
 
     public void setModelsDropdownLabel() {
         productsList = new ArrayList<>();
-        Product tmp = new Product();
+        JProduct tmp = new JProduct();
 
         tmp.setProductName("Select Model");
         productsList.add(0, tmp);
-        setModelsDropdown(productsList, modelsDropdown);
+        setModelsDropdown(productsList, modelsDropdown, false);
     }
 
     public void getAllModelsForProductType() {
@@ -398,12 +645,18 @@ public class PurchaseFragment extends Fragment {
             public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
                 pd.hide();
                 if (response != null) {
-                    productsList = (ArrayList<Product>) response.body();
-                    Product tmp = new Product();
+                    List<Product> productsListTmp = (ArrayList<Product>) response.body();
 
+                    JProduct tmp = new JProduct();
+                    productsList = new ArrayList<JProduct>();
                     tmp.setProductName("Select Model");
                     productsList.add(0, tmp);
-                    setModelsDropdown(productsList, modelsDropdown);
+
+                    for(int i=0; i<productsListTmp.size(); i++){
+                        productsList.add(new JProduct(productsListTmp.get(i)));
+                    }
+
+                    setModelsDropdown(productsList, modelsDropdown,false);
 
                 }
             }
@@ -424,17 +677,17 @@ public class PurchaseFragment extends Fragment {
         tmp.setBrandName("Select Brand");
 
         brandsList.add(0, tmp);
-        setBrandDropdown(brandsList, brandsDropdown);
+        setBrandDropdown(brandsList, brandsDropdown, false);
     }
 
     public void getBrands() {
         SalesService service =
                 ApiClient.getClient().create(SalesService.class);
         Call<List<Brand>> call;
-        if (selectedProductType.getTypeId() != null)
+//        if (selectedProductType.getTypeId() != null)
             call = service.getBrands(apiKey, selectedProductType.getTypeId());
-        else
-            call = service.getBrands(apiKey, selectedProductType.getTypeId());// get all brands here for a shop
+//        else
+//            call = service.getBrands(apiKey, selectedProductType.getTypeId());// get all brands here for a shop
         pd.show();
         call.enqueue(new Callback<List<Brand>>() {
             @Override
@@ -446,7 +699,7 @@ public class PurchaseFragment extends Fragment {
                     tmp.setBrandName("Select Brand");
 
                     brandsList.add(0, tmp);
-                    setBrandDropdown(brandsList, brandsDropdown);
+                    setBrandDropdown(brandsList, brandsDropdown, false);
 
                 }
             }
@@ -461,7 +714,7 @@ public class PurchaseFragment extends Fragment {
         });
     }
 
-    public void setUoMDropdown(final List<UoM> list, Spinner dropdown) {
+    public void setUoMDropdown(final List<UoM> list, Spinner dropdown, boolean isAddeorEdited) {
         final ArrayAdapter<UoM> spinnerArrayAdapter = new ArrayAdapter<UoM>(
                 getActivity(), R.layout.spinner_item, list) {
             @Override
@@ -522,20 +775,12 @@ public class PurchaseFragment extends Fragment {
             dropdown.setLayoutMode(android.R.layout.select_dialog_item);
         }
 
-
-            /*if (currentForeignId != null) {
-                // list.indexOf()
-                for (int i = 0; i < list.size(); i++) {
-                    if (list.get(i).getValue().equalsIgnoreCase(currentForeignId) || list.get(i).getKey().equalsIgnoreCase(currentForeignId)) { //getkey()
-                        dropdown.setSelection(i);
-                        break;
-                    }
-                }
-            }*/
+        if(selectedUoM != null && isAddeorEdited)
+            dropdown.setSelection(list.size() - 1);
 
     }
 
-    public void setProductTypesDropdown(final List<ProductType> list, Spinner dropdown) {
+    public void setProductTypesDropdown(final List<ProductType> list, Spinner dropdown , boolean isAddedOrEdited) {
         final ArrayAdapter<ProductType> spinnerArrayAdapter = new ArrayAdapter<ProductType>(
                 getActivity(), R.layout.spinner_item, list) {
             @Override
@@ -579,8 +824,12 @@ public class PurchaseFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
                 selectedProductType = (ProductType) parent.getItemAtPosition(position);
-                if (position != 0)
+                if (position != 0 && selectedProductType.getTypeId() != null)
                     getBrands();
+                else{
+                    setBrandsDropdownLabel();
+                    setModelsDropdownLabel();
+                }
                 // If user change the default selection
                 // First item is disable and it is used for hint
 
@@ -597,21 +846,14 @@ public class PurchaseFragment extends Fragment {
             dropdown.setLayoutMode(android.R.layout.select_dialog_item);
         }
 
-
-            /*if (currentForeignId != null) {
-                // list.indexOf()
-                for (int i = 0; i < list.size(); i++) {
-                    if (list.get(i).getValue().equalsIgnoreCase(currentForeignId) || list.get(i).getKey().equalsIgnoreCase(currentForeignId)) { //getkey()
-                        dropdown.setSelection(i);
-                        break;
-                    }
-                }
-            }*/
+            if (selectedProductType != null && isAddedOrEdited) {
+             dropdown.setSelection(list.size()-1);
+            }
 
     }
 
-    public void setModelsDropdown(final List<Product> list, Spinner dropdown) {
-        final ArrayAdapter<Product> spinnerArrayAdapter = new ArrayAdapter<Product>(
+    public void setModelsDropdown(final List<JProduct> list, Spinner dropdown, boolean isAddedOrEdited) {
+        final ArrayAdapter<JProduct> spinnerArrayAdapter = new ArrayAdapter<JProduct>(
                 getActivity(), R.layout.spinner_item, list) {
             @Override
             public boolean isEnabled(int position) {
@@ -653,7 +895,10 @@ public class PurchaseFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                selectedProduct = (Product) parent.getItemAtPosition(position);
+                selectedProduct = (JProduct) parent.getItemAtPosition(position);
+                if(selectedProduct.getProductId() != null)
+                    edtPrice.setText(selectedProduct.getUnitPrice().toString());
+
 //                edtUoM.setText(selectedProduct.getUnitOfMsrmnt());
                 // If user change the default selection
                 // First item is disable and it is used for hint
@@ -671,20 +916,12 @@ public class PurchaseFragment extends Fragment {
             dropdown.setLayoutMode(android.R.layout.select_dialog_item);
         }
 
-
-            /*if (currentForeignId != null) {
-                // list.indexOf()
-                for (int i = 0; i < list.size(); i++) {
-                    if (list.get(i).getValue().equalsIgnoreCase(currentForeignId) || list.get(i).getKey().equalsIgnoreCase(currentForeignId)) { //getkey()
-                        dropdown.setSelection(i);
-                        break;
-                    }
-                }
-            }*/
+        if(selectedProduct != null && isAddedOrEdited)
+            dropdown.setSelection(list.size() - 1 );
 
     }
 
-    public void setBrandDropdown(final List<Brand> list, Spinner dropdown) {
+    public void setBrandDropdown(final List<Brand> list, Spinner dropdown, boolean isAddedOrEdited) {
         final ArrayAdapter<Brand> spinnerArrayAdapter = new ArrayAdapter<Brand>(
                 getActivity(), R.layout.spinner_item, list) {
             @Override
@@ -728,8 +965,10 @@ public class PurchaseFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
                 selectedBrand = (Brand) parent.getItemAtPosition(position);
-                if (position != 0)
+                if (position != 0 && selectedProductType.getTypeId() != null && selectedBrand.getBrandId() != null)
                     getAllModelsForProductType();
+                else
+                    setModelsDropdownLabel();
                 // If user change the default selection
                 // First item is disable and it is used for hint
 
@@ -746,27 +985,33 @@ public class PurchaseFragment extends Fragment {
             dropdown.setLayoutMode(android.R.layout.select_dialog_item);
         }
 
-
-            /*if (currentForeignId != null) {
-                // list.indexOf()
-                for (int i = 0; i < list.size(); i++) {
-                    if (list.get(i).getValue().equalsIgnoreCase(currentForeignId) || list.get(i).getKey().equalsIgnoreCase(currentForeignId)) { //getkey()
-                        dropdown.setSelection(i);
-                        break;
-                    }
-                }
-            }*/
+        if(selectedBrand != null && isAddedOrEdited)
+            dropdown.setSelection(list.size() - 1);
     }
 
 
     public boolean validate() {
-        if (selectedProductType == null || selectedProductType.getTypeId() == null)
+        if(txtDate.getText().toString().trim().equals(""))
             return false;
-        else if (selectedBrand == null || selectedBrand.getBrandId() == null)
+        else if (edtInvoice.getText().toString().trim().equals(""))
             return false;
-        else if (selectedProduct == null || selectedProduct.getProductId() == null)
+        else if (selectedProductType == null)
+            return false;
+        else if (selectedBrand == null)
+            return false;
+        else if (selectedProduct == null)
+            return false;
+        else if (selectedUoM == null)
             return false;
         else if (edtQty.getText().toString().trim().equalsIgnoreCase(""))
+            return false;
+        else if (edtPrice.getText().toString().trim().equalsIgnoreCase(""))
+            return false;
+        else if (edtTotalPrice.getText().toString().trim().equalsIgnoreCase(""))
+            return false;
+        else if (edtSpecs.getText().toString().trim().equalsIgnoreCase(""))
+            return false;
+        else if (edtSupplier.getText().toString().trim().equalsIgnoreCase(""))
             return false;
         else
             return true;

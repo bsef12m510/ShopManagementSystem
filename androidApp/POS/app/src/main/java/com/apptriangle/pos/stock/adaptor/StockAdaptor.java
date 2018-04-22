@@ -61,7 +61,9 @@ public class StockAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public int getItemCount() {
 //        return count;
-        return transactionsList.size();
+        if(transactionsList != null)
+            return transactionsList.size();
+        return 0;
     }
 
 
