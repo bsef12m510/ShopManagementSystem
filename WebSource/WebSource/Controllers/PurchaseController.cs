@@ -100,13 +100,16 @@ namespace WebSource.Controllers
 
                         db.SaveChanges();
                     }
-                    prod_id = db.products.First(y => y.product_name.Equals(product.product_name)).product_id;
+                    
 
                     if (0 != product.product_id) {
-                        var prod = db.products.First(y => y.product_name.Equals(product.product_name));
+                        prod_id = product.product_id;
+                        var prod = db.products.First(y => y.product_name.Equals(product.product_id));
                         prod.product_name = product.product_name;
                         db.SaveChanges();
                     }
+                    else
+                        prod_id = db.products.First(y => y.product_name.Equals(product.product_name)).product_id;
 
                     var invObj = inventory.FirstOrDefault(y => y.product_id == product.product_id);
                     if (invObj != null)
