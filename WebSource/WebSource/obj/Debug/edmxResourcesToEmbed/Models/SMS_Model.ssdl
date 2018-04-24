@@ -28,7 +28,7 @@
     <Key>
       <PropertyRef Name="type_id" />
     </Key>
-    <Property Name="type_id" Type="int" Nullable="false" />
+    <Property Name="type_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="type_name" Type="varchar" MaxLength="25" Nullable="false" />
   </EntityType>
   <EntityType Name="products">
@@ -49,7 +49,7 @@
       <PropertyRef Name="sr_no" />
     </Key>
     <Property Name="sr_no" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="purch_id" Type="int" Nullable="false" />
+    <Property Name="purch_id" Type="varchar" MaxLength="50" Nullable="false" />
     <Property Name="prod_id" Type="int" Nullable="false" />
     <Property Name="prod_quant" Type="int" Nullable="false" />
     <Property Name="shop_id" Type="int" Nullable="false" />

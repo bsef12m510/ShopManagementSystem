@@ -33,7 +33,7 @@
           <Key>
             <PropertyRef Name="type_id" />
           </Key>
-          <Property Name="type_id" Type="int" Nullable="false" />
+          <Property Name="type_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="type_name" Type="varchar" MaxLength="25" Nullable="false" />
         </EntityType>
         <EntityType Name="products">
