@@ -1,5 +1,6 @@
 package com.apptriangle.pos.purchase.service;
 
+import com.apptriangle.pos.model.Product;
 import com.apptriangle.pos.model.UoM;
 import com.apptriangle.pos.purchase.response.JProduct;
 import com.apptriangle.pos.purchase.response.PurchaseResponse;
@@ -8,6 +9,7 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
@@ -26,4 +28,8 @@ public interface PurchaseService {
 
     @POST("purchase/PurchaseProduct")
     Call<Object> processPurchase(@Body PurchaseResponse purchase);
+
+    @DELETE("product/DeleteModel")
+    Call<JProduct> deleteModel(@Query("apiKey") String apiKey, @Query("id") Integer id);
+
 }

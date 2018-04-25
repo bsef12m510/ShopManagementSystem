@@ -30,8 +30,8 @@ namespace WebSource.Controllers
                     var p = db.products.FirstOrDefault(y => y.product_id == i.product_id);
                     var type = db.product_types.FirstOrDefault(y => y.type_id == p.product_type);
                     prodTypeList.Add(new CProductType(type));
-                   // var brand = db.brands.FirstOrDefault(y => y.brand_id == p.brand_id);
-                   // cinventory.Add(new CInventory(i, new CProduct(p, type, brand, 0)));
+                    // var brand = db.brands.FirstOrDefault(y => y.brand_id == p.brand_id);
+                    // cinventory.Add(new CInventory(i, new CProduct(p, type, brand, 0)));
                 }
 
                 distinctList = prodTypeList.GroupBy(x => x.type_id).Select(x => x.First());
@@ -62,7 +62,7 @@ namespace WebSource.Controllers
                     var p = db.products.FirstOrDefault(y => y.product_id == i.product_id && y.product_type == productTypeId && y.brand_id == brandId);
                     if (null != p)
                     {
-                        cproducts.Add(new CProduct(p,null,null,0));
+                        cproducts.Add(new CProduct(p, null, null, 0));
                     }
                 }
 
@@ -132,10 +132,44 @@ namespace WebSource.Controllers
 
                 return Ok(distinctList);
             }
-            
-            
-                return BadRequest();
-            
+
+
+            return BadRequest();
+
+        }
+
+        [HttpDelete]
+        [ActionName("DeleteModel")]
+        public IHttpActionResult Delete(String apiKey, int id)
+        {
+            SMS_DBEntities1 db = new SMS_DBEntities1();
+            var user = db.users.FirstOrDefault(x => x.api_key.Equals(apiKey));
+            //if (user.role_id.Equals("admin"))
+            //{
+          
+            var shop = db.shops.FirstOrDefault(x => x.shop_id == user.shop_id);
+            var inventory = db.inventories.Where(x => x.shop_id == shop.shop_id);
+           
+            foreach (inventory i in inventory)
+            {
+                var p = db.products.FirstOrDefault(y => y.product_id == i.product_id);
+                if (null != p && p.product_id == id)
+                {
+                    //inventory.Remove(shop);
+                    db.Entry(p).State = System.Data.Entity.EntityState.Deleted;
+                    db.Entry(i).State = System.Data.Entity.EntityState.Deleted;
+                    db.SaveChanges();
+                    return Ok(new CProduct(p,null,null,0));
+                }
+
+            }
+            return Ok(-1);
+           
+            // }
+            // else
+            // {
+            //     return BadRequest();
+            // }
         }
 
 
@@ -144,7 +178,7 @@ namespace WebSource.Controllers
         public IHttpActionResult GetTopSellingProducts(String apiKey)
         {
             DateTime dateTo = DateTime.Now;
-            DateTime dateFrom = new DateTime(dateTo.Year, dateTo.Month, 1); 
+            DateTime dateFrom = new DateTime(dateTo.Year, dateTo.Month, 1);
             SMS_DBEntities1 db = new SMS_DBEntities1();
             var user = db.users.FirstOrDefault(x => x.api_key.Equals(apiKey));
             if (null != user && user.role_id.Equals("admin"))
@@ -153,10 +187,10 @@ namespace WebSource.Controllers
                 var cproducts = new List<CProduct>();
                 IEnumerable<CProduct> distinctList = null;
                 var shop = db.shops.FirstOrDefault(x => x.shop_id == user.shop_id);
-                if(null != shop)
+                if (null != shop)
                 {
                     var sales = db.sales.Where(x => x.shop_id == shop.shop_id && x.sale_date >= dateFrom && x.sale_date <= dateTo);
-                    foreach(var s in sales)
+                    foreach (var s in sales)
                     {
                         var product = db.products.FirstOrDefault(x => x.product_id == s.product_id);
                         var type = db.product_types.FirstOrDefault(y => y.type_id == product.product_type);
@@ -173,7 +207,7 @@ namespace WebSource.Controllers
                     }
 
                     distinctList = cproducts.GroupBy(x => x.product_id).Select(x => x.First());
-                    foreach(var p in distinctList)
+                    foreach (var p in distinctList)
                     {
                         p.qty = productsMap[p.product_id].qty;
                     }
@@ -201,7 +235,7 @@ namespace WebSource.Controllers
                     var p = db.products.FirstOrDefault(y => y.product_id == i.product_id);
                     var type = db.product_types.FirstOrDefault(y => y.type_id == p.product_type);
                     var brand = db.brands.FirstOrDefault(y => y.brand_id == p.brand_id);
-                    if(i.prod_quant <= 10)
+                    if (i.prod_quant <= 10)
                         cproducts.Add(new CProduct(p, type, brand, i.prod_quant));
                 }
                 IEnumerable<CProduct> list = cproducts.OrderBy(x => x.qty);
@@ -219,18 +253,18 @@ namespace WebSource.Controllers
         public IHttpActionResult GetProductsSoldToday(String apiKey)
         {
             DateTime dateToday = DateTime.Now.Date;
-          
+
             SMS_DBEntities1 db = new SMS_DBEntities1();
             var user = db.users.FirstOrDefault(x => x.api_key.Equals(apiKey));
             if (null != user && user.role_id.Equals("admin"))
             {
                 var shop = db.shops.FirstOrDefault(x => x.shop_id == user.shop_id);
-                if(shop != null)
+                if (shop != null)
                 {
                     var productsMap = new Dictionary<int, CProduct>();
                     var cproducts = new List<CProduct>();
                     IEnumerable<CProduct> distinctList = null;
-                    var sales = db.sales.Where(x => x.shop_id == shop.shop_id && DbFunctions.TruncateTime( x.sale_date) ==  dateToday);
+                    var sales = db.sales.Where(x => x.shop_id == shop.shop_id && DbFunctions.TruncateTime(x.sale_date) == dateToday);
                     foreach (var s in sales)
                     {
                         var product = db.products.FirstOrDefault(x => x.product_id == s.product_id);
@@ -255,10 +289,10 @@ namespace WebSource.Controllers
                     distinctList = distinctList.OrderBy(p => p.qty);
                     return Ok(distinctList);
                 }
-                
+
             }
             return BadRequest();
         }
     }
-        
+
 }
