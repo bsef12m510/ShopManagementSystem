@@ -67,7 +67,8 @@ namespace WebSource.Controllers
                         p.type_name = product.product_type.type_name;
                         db.SaveChanges();
                     }
-                    if (null == db.msrmnt_units.FirstOrDefault(y => y.sr_no.Equals(product.unit_of_msrmnt.sr_no)))
+                    if (null == db.msrmnt_units.FirstOrDefault(y => y.sr_no.Equals(product.unit_of_msrmnt.sr_no)) &&
+                        null == db.msrmnt_units.FirstOrDefault(y => y.description.Equals(product.unit_of_msrmnt.description)))
                     {
                         db.msrmnt_units.Add(new msrmnt_units { description = product.unit_of_msrmnt.description });
                         db.SaveChanges();
@@ -104,14 +105,14 @@ namespace WebSource.Controllers
 
                     if (0 != product.product_id) {
                         prod_id = product.product_id;
-                        var prod = db.products.First(y => y.product_name.Equals(product.product_id));
+                        var prod = db.products.First(y => y.product_id == product.product_id);
                         prod.product_name = product.product_name;
                         db.SaveChanges();
                     }
                     else
                         prod_id = db.products.First(y => y.product_name.Equals(product.product_name)).product_id;
 
-                    var invObj = inventory.FirstOrDefault(y => y.product_id == product.product_id);
+                    var invObj = inventory.FirstOrDefault(y => y.product_id == prod_id);
                     if (invObj != null)
                     {
                         invObj.prod_quant += product.qty;
