@@ -124,7 +124,7 @@ namespace WebSource.Controllers
 
             //db.inventories.Where(y=>y.shop_id)
             List<JBrand> brands = new List<JBrand>();
-            foreach (var inventory in shop.inventories)
+            foreach (var inventory in shop.inventories.Where(y=>y.is_brand_active.Equals("Y")))
             {
                 brands.Add(new JBrand { brand_name = inventory.product.brand.brand_name,
                  brand_id = inventory.product.brand.brand_id

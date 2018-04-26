@@ -91,5 +91,73 @@ namespace WebSource.Controllers
             }
             return BadRequest();
         }
+
+        [HttpGet]
+        [ActionName("deleteBrand")]
+        public IHttpActionResult deleteBrand(string apiKey, brand brand)
+        {
+            try
+            {
+                SMS_DBEntities1 db = new SMS_DBEntities1();
+                var user = db.users.FirstOrDefault(y => y.api_key.Equals(apiKey));
+                var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
+
+                foreach (var inventory in shop.inventories.Where(y=>y.product.brand_id == brand.brand_id)) {
+                    inventory.is_brand_active = "N";
+                    inventory.is_prod_active = "N";
+                }
+                
+                db.SaveChanges();
+            }
+            catch (Exception ex) {
+                return Ok(-1);
+            }
+        
+            return Ok(true);
+        }
+
+        [HttpGet]
+        [ActionName("deleteProductType")]
+        public IHttpActionResult deleteProductType(string apiKey, product_types p)
+        {
+            try
+            {
+                SMS_DBEntities1 db = new SMS_DBEntities1();
+                var user = db.users.FirstOrDefault(y => y.api_key.Equals(apiKey));
+                var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
+
+                db.inventories.RemoveRange(shop.inventories.Where(y => y.product.product_type == p.type_id));
+                db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                return Ok(-1);
+            }
+
+            return Ok(true);
+        }
+
+        [HttpGet]
+        [ActionName("deleteProduct")]
+        public IHttpActionResult deleteProduct(string apiKey, product p)
+        {
+            try
+            {
+                SMS_DBEntities1 db = new SMS_DBEntities1();
+                var user = db.users.FirstOrDefault(y => y.api_key.Equals(apiKey));
+                var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
+
+                foreach (var inventory in shop.inventories.Where(y => y.product.product_id == p.product_id)) {
+                    inventory.is_prod_active = "Y";
+                }
+                db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                return Ok(-1);
+            }
+
+            return Ok(true);
+        }
     }
 }

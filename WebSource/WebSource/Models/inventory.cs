@@ -17,6 +17,8 @@ namespace WebSource.Models
         public int shop_id { get; set; }
         public int product_id { get; set; }
         public Nullable<int> prod_quant { get; set; }
+        public string is_brand_active { get; set; }
+        public string is_prod_active { get; set; }
     
         public virtual shop shop { get; set; }
         public virtual product product { get; set; }

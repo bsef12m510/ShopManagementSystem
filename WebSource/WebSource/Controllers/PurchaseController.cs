@@ -119,6 +119,14 @@ namespace WebSource.Controllers
                     if (invObj != null)
                     {
                         invObj.prod_quant += product.qty;
+                        invObj.is_prod_active = "Y";
+                        if (0 != product.brand.brand_id)
+                        {
+                            foreach (var inv in inventory.Where(y => y.product.brand_id == product.brand.brand_id))
+                            {
+                                inv.is_brand_active = "Y";
+                            }
+                        }
                     }
                     else
                     {

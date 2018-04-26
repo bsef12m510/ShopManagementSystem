@@ -21,6 +21,8 @@
           <Property Name="shop_id" Type="int" Nullable="false" />
           <Property Name="product_id" Type="int" Nullable="false" />
           <Property Name="prod_quant" Type="int" />
+          <Property Name="is_brand_active" Type="nchar" MaxLength="1" Nullable="false" />
+          <Property Name="is_prod_active" Type="nchar" MaxLength="1" Nullable="false" />
         </EntityType>
         <EntityType Name="msrmnt_units">
           <Key>
@@ -373,6 +375,8 @@
           <Property Name="prod_quant" Type="Int32" />
           <NavigationProperty Name="shop" Relationship="SMS_DBModel.fk_inv_sid" FromRole="inventory" ToRole="shop" />
           <NavigationProperty Name="product" Relationship="SMS_DBModel.fk_inv_pid" FromRole="inventory" ToRole="product" />
+          <Property Name="is_brand_active" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="true" />
+          <Property Name="is_prod_active" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="true" />
         </EntityType>
         <EntityType Name="product_types">
           <Key>
@@ -629,6 +633,8 @@
           <EntitySetMapping Name="inventories">
             <EntityTypeMapping TypeName="SMS_DBModel.inventory">
               <MappingFragment StoreEntitySet="inventory">
+                <ScalarProperty Name="is_prod_active" ColumnName="is_prod_active" />
+                <ScalarProperty Name="is_brand_active" ColumnName="is_brand_active" />
                 <ScalarProperty Name="prod_quant" ColumnName="prod_quant" />
                 <ScalarProperty Name="product_id" ColumnName="product_id" />
                 <ScalarProperty Name="shop_id" ColumnName="shop_id" />
