@@ -29,7 +29,13 @@ public interface PurchaseService {
     @POST("purchase/PurchaseProduct")
     Call<Object> processPurchase(@Body PurchaseResponse purchase);
 
-    @DELETE("product/DeleteModel")
-    Call<JProduct> deleteModel(@Query("apiKey") String apiKey, @Query("id") Integer id);
+    @DELETE("values/deleteProductType")
+    Call<Object> deleteProductType(@Query("apiKey") String apiKey, @Query("id") Integer id);
+
+    @DELETE("values/deleteProduct")
+    Call<Object> deleteProduct(@Query("apiKey") String apiKey, @Query("id") Integer id);
+
+    @DELETE("values/deleteBrand")
+    Call<Object> deleteBrand(@Query("apiKey") String apiKey, @Query("id") Integer id);
 
 }

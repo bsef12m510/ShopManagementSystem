@@ -70,7 +70,7 @@ public class PurchaseFragment extends Fragment {
     private View contentView;
     String[] listItems = {"item 1", "item 2 ", "list", "android"};
     private Button checkoutBtn, btnMore;
-    private ImageButton addProductBtn, addBrandBtn, editProductBtn, editBrandBtn, addModelBtn, editModelBtn,deleteModelBtn, addUoMBtn, editUoMBtn;
+    private ImageButton addProductBtn, addBrandBtn, editProductBtn, editBrandBtn, addModelBtn, editModelBtn,deleteBrandBtn, deleteProductTypeBtn, deleteModelBtn, addUoMBtn, editUoMBtn;
     private Spinner productTypesDropdown, brandsDropdown, modelsDropdown, uoMDropdown;
     private String pickerDateSring;
     private String newProductString, editProductSting, newBrandString, editBrandString, newModelString, editModelString, newUoMString, editUoMString;
@@ -175,6 +175,8 @@ public class PurchaseFragment extends Fragment {
         editModelBtn = (ImageButton) view.findViewById(R.id.editModelBtn);
         editUoMBtn = (ImageButton) view.findViewById(R.id.editUoMBtn);
         deleteModelBtn = (ImageButton) view.findViewById(R.id.deleteModelBtn);
+        deleteBrandBtn = (ImageButton) view.findViewById(R.id.deleteBrandBtn);
+        deleteProductTypeBtn = (ImageButton) view.findViewById(R.id.deleteProductBtn);
         productTypesDropdown = (Spinner) view.findViewById(R.id.productsDropdown);
         brandsDropdown = (Spinner) view.findViewById(R.id.brandsDropdown);
         modelsDropdown = (Spinner) view.findViewById(R.id.modelsDropdown);
@@ -257,6 +259,18 @@ public class PurchaseFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 showDialog(11);
+            }
+        });
+        deleteBrandBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDialog(10);
+            }
+        });
+        deleteProductTypeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDialog(9);
             }
         });
 
@@ -421,6 +435,10 @@ public class PurchaseFragment extends Fragment {
             builder.setTitle("New UoM");
         else if (8 == identifier)
             builder.setTitle("Edit UoM");
+        else if (9 == identifier)
+            builder.setTitle("Delete Product");
+        else if (10 == identifier)
+            builder.setTitle("Delete Brand");
         else if (11 == identifier)
             builder.setTitle("Delete Model");
 // Set up the input
@@ -440,9 +458,17 @@ public class PurchaseFragment extends Fragment {
             input.setText(selectedProduct != null ? selectedProduct.getProductName() : "");
             input.setEnabled(false);
         }
+        else if(identifier == 10){
+            input.setText(selectedBrand != null ? selectedBrand.getBrandName() : "");
+            input.setEnabled(false);
+        }
+        else if(identifier == 9){
+            input.setText(selectedProductType != null ? selectedProductType.getTypeName() : "");
+            input.setEnabled(false);
+        }
         builder.setView(input);
        String btnLabel = (identifier == 1 || identifier == 3 || identifier == 5 || identifier == 7) ? "Add" : "Edit";
-        if(identifier == 11)
+        if(identifier == 11 || identifier == 10 || identifier == 9)
             btnLabel = "Delete";
 
 // Set up the buttons
@@ -593,7 +619,33 @@ public class PurchaseFragment extends Fragment {
                             }
                         }
                     }
-                } else if(11 == identifier){
+                } else if(9 == identifier){
+                    if(selectedProductType.getTypeId() != null)
+                        deleteProductType();
+                    else{
+                        for(int i =0; i< productsTypeList.size(); i++){
+                            if(productsTypeList.get(i).getTypeName().equalsIgnoreCase(selectedProductType.getTypeName())) {
+                                productsTypeList.remove(i);
+                                break;
+                            }
+                        }
+                        setProductTypesDropdown(productsTypeList,productTypesDropdown,false,false);
+                    }
+                }
+                else if(10 == identifier){
+                    if(selectedBrand.getBrandId() != null)
+                        deleteBrand();
+                    else{
+                        for(int i =0; i< brandsList.size(); i++){
+                            if(brandsList.get(i).getBrandName().equalsIgnoreCase(selectedBrand.getBrandName())) {
+                                brandsList.remove(i);
+                                break;
+                            }
+                        }
+                        setBrandDropdown(brandsList,brandsDropdown,false,false);
+                    }
+                }
+                else if(11 == identifier){
                     if(selectedProduct.getProductId() != null)
                         deleteModel();
                     else{
@@ -624,22 +676,22 @@ public class PurchaseFragment extends Fragment {
         PurchaseService service =
                 ApiClient.getClient().create(PurchaseService.class);
 
-        Call<JProduct> call = service.deleteModel(apiKey, selectedProduct.getProductId());
+        Call<Object> call = service.deleteBrand(apiKey, selectedProduct.getProductId());
         pd.show();
-        call.enqueue(new Callback<JProduct>() {
+        call.enqueue(new Callback<Object>() {
             @Override
-            public void onResponse(Call<JProduct> call, Response<JProduct> response) {
+            public void onResponse(Call<Object> call, Response<Object> response) {
                 pd.hide();
                 if (response != null) {
-                    if(response.body() instanceof JProduct){
-                        Toast.makeText(getActivity(),"Model deleted successfully.",Toast.LENGTH_SHORT).show();
+                    if((boolean)response.body()){
+                        Toast.makeText(getActivity(),"Brand deleted successfully.",Toast.LENGTH_SHORT).show();
                     }
 
                 }
             }
 
             @Override
-            public void onFailure(Call<JProduct> call, Throwable t) {
+            public void onFailure(Call<Object> call, Throwable t) {
                 // Log error here since request failed
                 Log.e("failure", "failure");
                 pd.hide();
@@ -648,6 +700,61 @@ public class PurchaseFragment extends Fragment {
         });
     }
 
+    public void deleteBrand(){
+        PurchaseService service =
+                ApiClient.getClient().create(PurchaseService.class);
+
+        Call<Object> call = service.deleteBrand(apiKey, selectedBrand.getBrandId());
+        pd.show();
+        call.enqueue(new Callback<Object>() {
+            @Override
+            public void onResponse(Call<Object> call, Response<Object> response) {
+                pd.hide();
+                if (response != null) {
+                    if((boolean)response.body()){
+                        Toast.makeText(getActivity(),"Model deleted successfully.",Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Object> call, Throwable t) {
+                // Log error here since request failed
+                Log.e("failure", "failure");
+                pd.hide();
+
+            }
+        });
+    }
+
+    public void deleteProductType(){
+        PurchaseService service =
+                ApiClient.getClient().create(PurchaseService.class);
+
+        Call<Object> call = service.deleteBrand(apiKey, selectedProductType.getTypeId());
+        pd.show();
+        call.enqueue(new Callback<Object>() {
+            @Override
+            public void onResponse(Call<Object> call, Response<Object> response) {
+                pd.hide();
+                if (response != null) {
+                    if((boolean)response.body()){
+                        Toast.makeText(getActivity(),"type deleted successfully.",Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Object> call, Throwable t) {
+                // Log error here since request failed
+                Log.e("failure", "failure");
+                pd.hide();
+
+            }
+        });
+    }
     private void getApiKey() {
         SharedPreferences shared = getActivity().getSharedPreferences("com.appTriangle.pos", Context.MODE_PRIVATE);
         apiKey = shared.getString("api_key", "");
