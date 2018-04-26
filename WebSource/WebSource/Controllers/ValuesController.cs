@@ -105,6 +105,7 @@ namespace WebSource.Controllers
                 foreach (var inventory in shop.inventories.Where(y=>y.product.brand_id == brand.brand_id)) {
                     inventory.is_brand_active = "N";
                     inventory.is_prod_active = "N";
+                    inventory.prod_quant = 0;
                 }
                 
                 db.SaveChanges();
@@ -149,6 +150,7 @@ namespace WebSource.Controllers
 
                 foreach (var inventory in shop.inventories.Where(y => y.product.product_id == p.product_id)) {
                     inventory.is_prod_active = "Y";
+                    inventory.prod_quant = 0;
                 }
                 db.SaveChanges();
             }

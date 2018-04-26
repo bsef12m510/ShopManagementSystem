@@ -53,7 +53,8 @@ namespace WebSource.Controllers
             if (null != user)
             {
                 var shop = db.shops.FirstOrDefault(x => x.shop_id == user.shop_id);
-                var inventory = db.inventories.Where(x => x.shop_id == shop.shop_id);
+                var inventory = db.inventories.Where(x => x.shop_id == shop.shop_id && x.is_prod_active.Equals("Y") 
+                                                                                    && x.is_brand_active.Equals("Y"));
                 var cbrands = new Dictionary<int, CBrand>();
                 var cproducts = new List<CProduct>();
                 IEnumerable<CProduct> distinctList = null;
