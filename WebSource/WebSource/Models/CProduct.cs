@@ -12,7 +12,7 @@ namespace WebSource.Models
         public CProductType product_type { get; set; }
         public CBrand brand { get; set; }
         public string specs { get; set; }
-        public string unit_of_msrmnt { get; set; }
+        public int unit_of_msrmnt { get; set; }
         public double unit_price { get; set; }
         public string product_image { get; set; }
         public int? qty { get; set; }

@@ -30,8 +30,8 @@ namespace WebSource.Models
         public System.DateTime pur_date { get; set; }
         public System.TimeSpan pur_time { get; set; }
     
-        public virtual product product { get; set; }
         public virtual shop shop { get; set; }
         public virtual user user { get; set; }
+        public virtual product product { get; set; }
     }
 }
