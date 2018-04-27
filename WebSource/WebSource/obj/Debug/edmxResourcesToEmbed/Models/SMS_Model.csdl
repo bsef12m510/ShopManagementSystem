@@ -4,26 +4,9 @@
     <EntitySet Name="brands" EntityType="SMS_DBModel.brand" />
     <EntitySet Name="inventories" EntityType="SMS_DBModel.inventory" />
     <EntitySet Name="product_types" EntityType="SMS_DBModel.product_types" />
-    <EntitySet Name="products" EntityType="SMS_DBModel.product" />
     <EntitySet Name="sales" EntityType="SMS_DBModel.sale" />
     <EntitySet Name="shops" EntityType="SMS_DBModel.shop" />
     <EntitySet Name="users" EntityType="SMS_DBModel.user" />
-    <AssociationSet Name="fk_prod_br_id" Association="SMS_DBModel.fk_prod_br_id">
-      <End Role="brand" EntitySet="brands" />
-      <End Role="product" EntitySet="products" />
-    </AssociationSet>
-    <AssociationSet Name="fk_inv_pid" Association="SMS_DBModel.fk_inv_pid">
-      <End Role="product" EntitySet="products" />
-      <End Role="inventory" EntitySet="inventories" />
-    </AssociationSet>
-    <AssociationSet Name="fk_prod_type_id" Association="SMS_DBModel.fk_prod_type_id">
-      <End Role="product_types" EntitySet="product_types" />
-      <End Role="product" EntitySet="products" />
-    </AssociationSet>
-    <AssociationSet Name="fk_sales_pid" Association="SMS_DBModel.fk_sales_pid">
-      <End Role="product" EntitySet="products" />
-      <End Role="sale" EntitySet="sales" />
-    </AssociationSet>
     <AssociationSet Name="fk_sales_sh_id" Association="SMS_DBModel.fk_sales_sh_id">
       <End Role="shop" EntitySet="shops" />
       <End Role="sale" EntitySet="sales" />
@@ -42,10 +25,6 @@
       <End Role="inventory" EntitySet="inventories" />
     </AssociationSet>
     <EntitySet Name="purchases" EntityType="SMS_DBModel.purchase" />
-    <AssociationSet Name="fk_pur_pid" Association="SMS_DBModel.fk_pur_pid">
-      <End Role="product" EntitySet="products" />
-      <End Role="purchase" EntitySet="purchases" />
-    </AssociationSet>
     <AssociationSet Name="fk_pur_sh_id" Association="SMS_DBModel.fk_pur_sh_id">
       <End Role="shop" EntitySet="shops" />
       <End Role="purchase" EntitySet="purchases" />
@@ -53,6 +32,27 @@
     <AssociationSet Name="fk_pur_uid" Association="SMS_DBModel.fk_pur_uid">
       <End Role="user" EntitySet="users" />
       <End Role="purchase" EntitySet="purchases" />
+    </AssociationSet>
+    <EntitySet Name="products" EntityType="SMS_DBModel.product" />
+    <AssociationSet Name="fk_prod_br_id" Association="SMS_DBModel.fk_prod_br_id">
+      <End Role="brand" EntitySet="brands" />
+      <End Role="product" EntitySet="products" />
+    </AssociationSet>
+    <AssociationSet Name="fk_inv_pid" Association="SMS_DBModel.fk_inv_pid">
+      <End Role="product" EntitySet="products" />
+      <End Role="inventory" EntitySet="inventories" />
+    </AssociationSet>
+    <AssociationSet Name="fk_prod_type_id" Association="SMS_DBModel.fk_prod_type_id">
+      <End Role="product_types" EntitySet="product_types" />
+      <End Role="product" EntitySet="products" />
+    </AssociationSet>
+    <AssociationSet Name="fk_pur_pid" Association="SMS_DBModel.fk_pur_pid">
+      <End Role="product" EntitySet="products" />
+      <End Role="purchase" EntitySet="purchases" />
+    </AssociationSet>
+    <AssociationSet Name="fk_sales_pid" Association="SMS_DBModel.fk_sales_pid">
+      <End Role="product" EntitySet="products" />
+      <End Role="sale" EntitySet="sales" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="brand">
@@ -72,8 +72,10 @@
     <Property Name="shop_id" Type="Int32" Nullable="false" />
     <Property Name="product_id" Type="Int32" Nullable="false" />
     <Property Name="prod_quant" Type="Int32" />
-    <NavigationProperty Name="product" Relationship="SMS_DBModel.fk_inv_pid" FromRole="inventory" ToRole="product" />
     <NavigationProperty Name="shop" Relationship="SMS_DBModel.fk_inv_sid" FromRole="inventory" ToRole="shop" />
+    <NavigationProperty Name="product" Relationship="SMS_DBModel.fk_inv_pid" FromRole="inventory" ToRole="product" />
+    <Property Name="is_brand_active" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="true" />
+    <Property Name="is_prod_active" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="true" />
   </EntityType>
   <EntityType Name="product_types">
     <Key>
@@ -82,24 +84,6 @@
     <Property Name="type_id" Type="Int32" Nullable="false" />
     <Property Name="type_name" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="false" />
     <NavigationProperty Name="products" Relationship="SMS_DBModel.fk_prod_type_id" FromRole="product_types" ToRole="product" />
-  </EntityType>
-  <EntityType Name="product">
-    <Key>
-      <PropertyRef Name="product_id" />
-    </Key>
-    <Property Name="product_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="product_name" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-    <Property Name="product_type" Type="Int32" Nullable="false" />
-    <Property Name="brand_id" Type="Int32" Nullable="false" />
-    <Property Name="specs" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-    <Property Name="unit_of_msrmnt" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-    <Property Name="unit_price" Type="Double" Nullable="false" />
-    <Property Name="product_image" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-    <NavigationProperty Name="brand" Relationship="SMS_DBModel.fk_prod_br_id" FromRole="product" ToRole="brand" />
-    <NavigationProperty Name="inventories" Relationship="SMS_DBModel.fk_inv_pid" FromRole="product" ToRole="inventory" />
-    <NavigationProperty Name="product_types" Relationship="SMS_DBModel.fk_prod_type_id" FromRole="product" ToRole="product_types" />
-    <NavigationProperty Name="sales" Relationship="SMS_DBModel.fk_sales_pid" FromRole="product" ToRole="sale" />
-    <NavigationProperty Name="purchases" Relationship="SMS_DBModel.fk_pur_pid" FromRole="product" ToRole="purchase" />
   </EntityType>
   <EntityType Name="sale">
     <Key>
@@ -120,9 +104,9 @@
     <Property Name="cust_phone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
     <Property Name="sale_date" Type="DateTime" Nullable="false" Precision="0" />
     <Property Name="sale_time" Type="Time" Nullable="false" Precision="7" />
-    <NavigationProperty Name="product" Relationship="SMS_DBModel.fk_sales_pid" FromRole="sale" ToRole="product" />
     <NavigationProperty Name="shop" Relationship="SMS_DBModel.fk_sales_sh_id" FromRole="sale" ToRole="shop" />
     <NavigationProperty Name="user" Relationship="SMS_DBModel.fk_sales_uid" FromRole="sale" ToRole="user" />
+    <NavigationProperty Name="product" Relationship="SMS_DBModel.fk_sales_pid" FromRole="sale" ToRole="product" />
   </EntityType>
   <EntityType Name="shop">
     <Key>
@@ -150,54 +134,6 @@
     <NavigationProperty Name="shop" Relationship="SMS_DBModel.fk_users_shid" FromRole="user" ToRole="shop" />
     <NavigationProperty Name="purchases" Relationship="SMS_DBModel.fk_pur_uid" FromRole="user" ToRole="purchase" />
   </EntityType>
-  <Association Name="fk_prod_br_id">
-    <End Type="SMS_DBModel.brand" Role="brand" Multiplicity="1" />
-    <End Type="SMS_DBModel.product" Role="product" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="brand">
-        <PropertyRef Name="brand_id" />
-      </Principal>
-      <Dependent Role="product">
-        <PropertyRef Name="brand_id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="fk_inv_pid">
-    <End Type="SMS_DBModel.product" Role="product" Multiplicity="1" />
-    <End Type="SMS_DBModel.inventory" Role="inventory" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="product">
-        <PropertyRef Name="product_id" />
-      </Principal>
-      <Dependent Role="inventory">
-        <PropertyRef Name="product_id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="fk_prod_type_id">
-    <End Type="SMS_DBModel.product_types" Role="product_types" Multiplicity="1" />
-    <End Type="SMS_DBModel.product" Role="product" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="product_types">
-        <PropertyRef Name="type_id" />
-      </Principal>
-      <Dependent Role="product">
-        <PropertyRef Name="product_type" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="fk_sales_pid">
-    <End Type="SMS_DBModel.product" Role="product" Multiplicity="1" />
-    <End Type="SMS_DBModel.sale" Role="sale" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="product">
-        <PropertyRef Name="product_id" />
-      </Principal>
-      <Dependent Role="sale">
-        <PropertyRef Name="product_id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <Association Name="fk_sales_sh_id">
     <End Type="SMS_DBModel.shop" Role="shop" Multiplicity="0..1" />
     <End Type="SMS_DBModel.sale" Role="sale" Multiplicity="*" />
@@ -272,22 +208,10 @@
     <Property Name="dlr_dtls" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
     <Property Name="pur_date" Type="DateTime" Nullable="false" Precision="0" />
     <Property Name="pur_time" Type="Time" Nullable="false" Precision="7" />
-    <NavigationProperty Name="product" Relationship="SMS_DBModel.fk_pur_pid" FromRole="purchase" ToRole="product" />
     <NavigationProperty Name="shop" Relationship="SMS_DBModel.fk_pur_sh_id" FromRole="purchase" ToRole="shop" />
     <NavigationProperty Name="user" Relationship="SMS_DBModel.fk_pur_uid" FromRole="purchase" ToRole="user" />
+    <NavigationProperty Name="product" Relationship="SMS_DBModel.fk_pur_pid" FromRole="purchase" ToRole="product" />
   </EntityType>
-  <Association Name="fk_pur_pid">
-    <End Type="SMS_DBModel.product" Role="product" Multiplicity="1" />
-    <End Type="SMS_DBModel.purchase" Role="purchase" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="product">
-        <PropertyRef Name="product_id" />
-      </Principal>
-      <Dependent Role="purchase">
-        <PropertyRef Name="prod_id" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <Association Name="fk_pur_sh_id">
     <End Type="SMS_DBModel.shop" Role="shop" Multiplicity="1" />
     <End Type="SMS_DBModel.purchase" Role="purchase" Multiplicity="*" />
@@ -309,6 +233,84 @@
       </Principal>
       <Dependent Role="purchase">
         <PropertyRef Name="agent_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="product">
+    <Key>
+      <PropertyRef Name="product_id" />
+    </Key>
+    <Property Name="product_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="product_name" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="product_type" Type="Int32" Nullable="false" />
+    <Property Name="brand_id" Type="Int32" Nullable="false" />
+    <Property Name="specs" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+    <Property Name="unit_of_msrmnt" Type="Int32" Nullable="false" />
+    <Property Name="unit_price" Type="Double" Nullable="false" />
+    <Property Name="product_image" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="brand" Relationship="SMS_DBModel.fk_prod_br_id" FromRole="product" ToRole="brand" />
+    <NavigationProperty Name="inventories" Relationship="SMS_DBModel.fk_inv_pid" FromRole="product" ToRole="inventory" />
+    <NavigationProperty Name="product_types" Relationship="SMS_DBModel.fk_prod_type_id" FromRole="product" ToRole="product_types" />
+    <NavigationProperty Name="purchases" Relationship="SMS_DBModel.fk_pur_pid" FromRole="product" ToRole="purchase" />
+    <NavigationProperty Name="sales" Relationship="SMS_DBModel.fk_sales_pid" FromRole="product" ToRole="sale" />
+  </EntityType>
+  <Association Name="fk_prod_br_id">
+    <End Type="SMS_DBModel.brand" Role="brand" Multiplicity="1" />
+    <End Type="SMS_DBModel.product" Role="product" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="brand">
+        <PropertyRef Name="brand_id" />
+      </Principal>
+      <Dependent Role="product">
+        <PropertyRef Name="brand_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_inv_pid">
+    <End Type="SMS_DBModel.product" Role="product" Multiplicity="1" />
+    <End Type="SMS_DBModel.inventory" Role="inventory" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="product">
+        <PropertyRef Name="product_id" />
+      </Principal>
+      <Dependent Role="inventory">
+        <PropertyRef Name="product_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_prod_type_id">
+    <End Type="SMS_DBModel.product_types" Role="product_types" Multiplicity="1" />
+    <End Type="SMS_DBModel.product" Role="product" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="product_types">
+        <PropertyRef Name="type_id" />
+      </Principal>
+      <Dependent Role="product">
+        <PropertyRef Name="product_type" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_pur_pid">
+    <End Type="SMS_DBModel.product" Role="product" Multiplicity="1" />
+    <End Type="SMS_DBModel.purchase" Role="purchase" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="product">
+        <PropertyRef Name="product_id" />
+      </Principal>
+      <Dependent Role="purchase">
+        <PropertyRef Name="prod_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_sales_pid">
+    <End Type="SMS_DBModel.product" Role="product" Multiplicity="1" />
+    <End Type="SMS_DBModel.sale" Role="sale" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="product">
+        <PropertyRef Name="product_id" />
+      </Principal>
+      <Dependent Role="sale">
+        <PropertyRef Name="product_id" />
       </Dependent>
     </ReferentialConstraint>
   </Association>

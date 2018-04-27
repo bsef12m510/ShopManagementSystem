@@ -120,13 +120,6 @@ namespace WebSource.Controllers
                     {
                         invObj.prod_quant += product.qty;
                         invObj.is_prod_active = "Y";
-                        if (0 != product.brand.brand_id)
-                        {
-                            foreach (var inv in inventory.Where(y => y.product.brand_id == product.brand.brand_id))
-                            {
-                                inv.is_brand_active = "Y";
-                            }
-                        }
                     }
                     else
                     {
@@ -134,8 +127,19 @@ namespace WebSource.Controllers
                         {
                             product_id = prod_id,
                             shop_id = shop.shop_id,
-                            prod_quant = product.qty
+                            prod_quant = product.qty,
+                            is_brand_active = "Y",
+                            is_prod_active = "Y"
                         });
+
+                    }
+
+                    if (0 != product.brand.brand_id)
+                    {
+                        foreach (var inv in inventory.Where(y => y.product.brand_id == product.brand.brand_id))
+                        {
+                            inv.is_brand_active = "Y";
+                        }
                     }
 
                     if (i == purchase.products.Length)

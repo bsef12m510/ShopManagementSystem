@@ -16,6 +16,8 @@
     <Property Name="shop_id" Type="int" Nullable="false" />
     <Property Name="product_id" Type="int" Nullable="false" />
     <Property Name="prod_quant" Type="int" />
+    <Property Name="is_brand_active" Type="nchar" MaxLength="1" Nullable="false" />
+    <Property Name="is_prod_active" Type="nchar" MaxLength="1" Nullable="false" />
   </EntityType>
   <EntityType Name="msrmnt_units">
     <Key>
@@ -40,7 +42,7 @@
     <Property Name="product_type" Type="int" Nullable="false" />
     <Property Name="brand_id" Type="int" Nullable="false" />
     <Property Name="specs" Type="varchar" MaxLength="255" />
-    <Property Name="unit_of_msrmnt" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="unit_of_msrmnt" Type="int" Nullable="false" />
     <Property Name="unit_price" Type="float" Nullable="false" />
     <Property Name="product_image" Type="varchar" MaxLength="255" />
   </EntityType>

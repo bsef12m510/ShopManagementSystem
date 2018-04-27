@@ -13,6 +13,8 @@
     <EntitySetMapping Name="inventories">
       <EntityTypeMapping TypeName="SMS_DBModel.inventory">
         <MappingFragment StoreEntitySet="inventory">
+          <ScalarProperty Name="is_prod_active" ColumnName="is_prod_active" />
+          <ScalarProperty Name="is_brand_active" ColumnName="is_brand_active" />
           <ScalarProperty Name="prod_quant" ColumnName="prod_quant" />
           <ScalarProperty Name="product_id" ColumnName="product_id" />
           <ScalarProperty Name="shop_id" ColumnName="shop_id" />
@@ -24,20 +26,6 @@
         <MappingFragment StoreEntitySet="product_types">
           <ScalarProperty Name="type_name" ColumnName="type_name" />
           <ScalarProperty Name="type_id" ColumnName="type_id" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="products">
-      <EntityTypeMapping TypeName="SMS_DBModel.product">
-        <MappingFragment StoreEntitySet="products">
-          <ScalarProperty Name="product_image" ColumnName="product_image" />
-          <ScalarProperty Name="unit_price" ColumnName="unit_price" />
-          <ScalarProperty Name="unit_of_msrmnt" ColumnName="unit_of_msrmnt" />
-          <ScalarProperty Name="specs" ColumnName="specs" />
-          <ScalarProperty Name="brand_id" ColumnName="brand_id" />
-          <ScalarProperty Name="product_type" ColumnName="product_type" />
-          <ScalarProperty Name="product_name" ColumnName="product_name" />
-          <ScalarProperty Name="product_id" ColumnName="product_id" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -109,6 +97,20 @@
           <ScalarProperty Name="prod_id" ColumnName="prod_id" />
           <ScalarProperty Name="purch_id" ColumnName="purch_id" />
           <ScalarProperty Name="sr_no" ColumnName="sr_no" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="products">
+      <EntityTypeMapping TypeName="SMS_DBModel.product">
+        <MappingFragment StoreEntitySet="products">
+          <ScalarProperty Name="product_image" ColumnName="product_image" />
+          <ScalarProperty Name="unit_price" ColumnName="unit_price" />
+          <ScalarProperty Name="unit_of_msrmnt" ColumnName="unit_of_msrmnt" />
+          <ScalarProperty Name="specs" ColumnName="specs" />
+          <ScalarProperty Name="brand_id" ColumnName="brand_id" />
+          <ScalarProperty Name="product_type" ColumnName="product_type" />
+          <ScalarProperty Name="product_name" ColumnName="product_name" />
+          <ScalarProperty Name="product_id" ColumnName="product_id" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
