@@ -251,7 +251,7 @@ public class SalesFragment extends Fragment {
             @Override
             public void onResponse(Call<List<Brand>> call, Response<List<Brand>> response) {
                 pd.hide();
-                if (response != null) {
+                if (response != null && response.body() != null) {
                     ArrayList<Brand> brandsList = (ArrayList<Brand>) response.body();
                     Brand tmp = new Brand();
                     tmp.setBrandName("Select Brand");
@@ -410,7 +410,9 @@ public class SalesFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
                 selectedProduct = (Product) parent.getItemAtPosition(position);
-                edtUoM.setText(selectedProduct.getUnitOfMsrmnt().getDescription());
+//                edtUoM.setText(selectedProduct.getUnitOfMsrmnt());
+                if(position != 0)
+                    edtUoM.setText(selectedProduct.getUnitOfMsrmnt().getDescription());
                 // If user change the default selection
                 // First item is disable and it is used for hint
 

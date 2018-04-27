@@ -349,7 +349,7 @@ public class PurchaseFragment extends Fragment {
                             edtPrice.setText("");
                             edtTotalPrice.setText("");
                             edtSpecs.setText("");
-                            txtDate.setText("");
+                            txtDate.setText("Date");
                             edtInvoice.setText("");
                             edtSupplier.setText("");
                             price = 0.0;
@@ -622,7 +622,7 @@ public class PurchaseFragment extends Fragment {
                 } else if(9 == identifier){
                     if(selectedProductType.getTypeId() != null)
                         deleteProductType();
-                    else{
+//                    else{
                         for(int i =0; i< productsTypeList.size(); i++){
                             if(productsTypeList.get(i).getTypeName().equalsIgnoreCase(selectedProductType.getTypeName())) {
                                 productsTypeList.remove(i);
@@ -630,12 +630,14 @@ public class PurchaseFragment extends Fragment {
                             }
                         }
                         setProductTypesDropdown(productsTypeList,productTypesDropdown,false,false);
-                    }
+                    setBrandsDropdownLabel();
+                    setModelsDropdownLabel();
+//                    }
                 }
                 else if(10 == identifier){
                     if(selectedBrand.getBrandId() != null)
                         deleteBrand();
-                    else{
+//                    else{
                         for(int i =0; i< brandsList.size(); i++){
                             if(brandsList.get(i).getBrandName().equalsIgnoreCase(selectedBrand.getBrandName())) {
                                 brandsList.remove(i);
@@ -643,12 +645,13 @@ public class PurchaseFragment extends Fragment {
                             }
                         }
                         setBrandDropdown(brandsList,brandsDropdown,false,false);
-                    }
+                        setModelsDropdownLabel();
+//                    }
                 }
                 else if(11 == identifier){
                     if(selectedProduct.getProductId() != null)
                         deleteModel();
-                    else{
+//                    else{
                         for(int i =0; i< productsList.size(); i++){
                             if(productsList.get(i).getProductName().equalsIgnoreCase(selectedProduct.getProductName())) {
                                 productsList.remove(i);
@@ -656,7 +659,7 @@ public class PurchaseFragment extends Fragment {
                             }
                         }
                         setModelsDropdown(productsList,modelsDropdown,false);
-                    }
+//                    }
                 }
 
             }
@@ -676,7 +679,7 @@ public class PurchaseFragment extends Fragment {
         PurchaseService service =
                 ApiClient.getClient().create(PurchaseService.class);
 
-        Call<Object> call = service.deleteBrand(apiKey, selectedProduct.getProductId());
+        Call<Object> call = service.deleteProduct(apiKey, selectedProduct.getProductId());
         pd.show();
         call.enqueue(new Callback<Object>() {
             @Override
@@ -684,7 +687,7 @@ public class PurchaseFragment extends Fragment {
                 pd.hide();
                 if (response != null) {
                     if((boolean)response.body()){
-                        Toast.makeText(getActivity(),"Brand deleted successfully.",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(),"Model deleted successfully.",Toast.LENGTH_SHORT).show();
                     }
 
                 }
@@ -712,7 +715,7 @@ public class PurchaseFragment extends Fragment {
                 pd.hide();
                 if (response != null) {
                     if((boolean)response.body()){
-                        Toast.makeText(getActivity(),"Model deleted successfully.",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(),"Brand deleted successfully.",Toast.LENGTH_SHORT).show();
                     }
 
                 }
@@ -732,7 +735,7 @@ public class PurchaseFragment extends Fragment {
         PurchaseService service =
                 ApiClient.getClient().create(PurchaseService.class);
 
-        Call<Object> call = service.deleteBrand(apiKey, selectedProductType.getTypeId());
+        Call<Object> call = service.deleteProductType(apiKey, selectedProductType.getTypeId());
         pd.show();
         call.enqueue(new Callback<Object>() {
             @Override
@@ -894,7 +897,7 @@ public class PurchaseFragment extends Fragment {
             @Override
             public void onResponse(Call<List<Brand>> call, Response<List<Brand>> response) {
                 pd.hide();
-                if (response != null) {
+                if (response != null && response.body() != null) {
                     brandsList = (ArrayList<Brand>) response.body();
                     Brand tmp = new Brand();
                     tmp.setBrandName("Select Brand");
@@ -1290,30 +1293,32 @@ public class PurchaseFragment extends Fragment {
 
 
     public boolean validate() {
-        if(txtDate.getText().toString().trim().equals(""))
-            return false;
-        else if (edtInvoice.getText().toString().trim().equals(""))
-            return false;
-        else if (selectedProductType == null)
-            return false;
-        else if (selectedBrand == null)
-            return false;
-        else if (selectedProduct == null)
-            return false;
-        else if (selectedUoM == null)
-            return false;
-        else if (edtQty.getText().toString().trim().equalsIgnoreCase(""))
-            return false;
-        else if (edtPrice.getText().toString().trim().equalsIgnoreCase(""))
-            return false;
-        else if (edtTotalPrice.getText().toString().trim().equalsIgnoreCase(""))
-            return false;
-        else if (edtSpecs.getText().toString().trim().equalsIgnoreCase(""))
-            return false;
-        else if (edtSupplier.getText().toString().trim().equalsIgnoreCase(""))
-            return false;
-        else
-            return true;
+        try {
+            if (txtDate.getText().toString().trim().equals(""))
+                return false;
+            else if (edtInvoice.getText().toString().trim().equals(""))
+                return false;
+            else if (productTypesDropdown.getSelectedItemPosition() == 0)
+                return false;
+            else if (brandsDropdown.getSelectedItemPosition() == 0)
+                return false;
+            else if (modelsDropdown.getSelectedItemPosition() == 0)
+                return false;
+            else if (selectedUoM == null)
+                return false;
+            else if (edtQty.getText().toString().trim().equalsIgnoreCase(""))
+                return false;
+            else if (edtPrice.getText().toString().trim().equalsIgnoreCase(""))
+                return false;
+            else if (edtTotalPrice.getText().toString().trim().equalsIgnoreCase(""))
+                return false;
+            else if (edtSpecs.getText().toString().trim().equalsIgnoreCase(""))
+                return false;
+            else if (edtSupplier.getText().toString().trim().equalsIgnoreCase(""))
+                return false;
+            else
+                return true;
+        }catch(Exception e){return false;}
     }
 
     private void showDatePickerDialog(final TextView dateInputField) {

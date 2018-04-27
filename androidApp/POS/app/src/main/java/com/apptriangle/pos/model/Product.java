@@ -11,6 +11,7 @@ public class Product {
     private Brand brand;
     private String specs;
     private UoM unit_of_msrmnt;
+//    private String unit_of_msrmnt;
     private Double unit_price;
     private Object product_image;
     private Integer qty;

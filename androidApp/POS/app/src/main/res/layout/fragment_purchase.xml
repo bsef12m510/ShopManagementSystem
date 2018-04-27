@@ -293,6 +293,7 @@
                 android:background="@drawable/round_button"
                 android:layout_gravity="center"
                 android:padding="6dp"
+                android:visibility="gone"
                 android:src="@drawable/delete"/>
 
         </LinearLayout>
