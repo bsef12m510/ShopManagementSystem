@@ -410,7 +410,7 @@ public class SalesFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
                 selectedProduct = (Product) parent.getItemAtPosition(position);
-                edtUoM.setText(selectedProduct.getUnitOfMsrmnt());
+                edtUoM.setText(selectedProduct.getUnitOfMsrmnt().getDescription());
                 // If user change the default selection
                 // First item is disable and it is used for hint
 

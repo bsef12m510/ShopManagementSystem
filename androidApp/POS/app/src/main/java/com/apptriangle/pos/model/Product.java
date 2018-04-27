@@ -10,7 +10,7 @@ public class Product {
     private ProductType product_type;
     private Brand brand;
     private String specs;
-    private String unit_of_msrmnt;
+    private UoM unit_of_msrmnt;
     private Double unit_price;
     private Object product_image;
     private Integer qty;
@@ -57,11 +57,11 @@ public class Product {
         this.specs = specs;
     }
 
-    public String getUnitOfMsrmnt() {
+    public UoM getUnitOfMsrmnt() {
         return unit_of_msrmnt;
     }
 
-    public void setUnitOfMsrmnt(String unitOfMsrmnt) {
+    public void setUnitOfMsrmnt(UoM unitOfMsrmnt) {
         this.unit_of_msrmnt = unitOfMsrmnt;
     }
 
