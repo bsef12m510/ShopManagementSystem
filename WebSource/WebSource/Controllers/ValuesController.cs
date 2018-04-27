@@ -94,7 +94,7 @@ namespace WebSource.Controllers
 
         [HttpGet]
         [ActionName("deleteBrand")]
-        public IHttpActionResult deleteBrand(string apiKey, brand brand)
+        public IHttpActionResult deleteBrand(string apiKey, int brand)
         {
             try
             {
@@ -102,7 +102,7 @@ namespace WebSource.Controllers
                 var user = db.users.FirstOrDefault(y => y.api_key.Equals(apiKey));
                 var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
 
-                foreach (var inventory in shop.inventories.Where(y=>y.product.brand_id == brand.brand_id)) {
+                foreach (var inventory in shop.inventories.Where(y=>y.product.brand_id == brand)) {
                     inventory.is_brand_active = "N";
                     inventory.is_prod_active = "N";
                     inventory.prod_quant = 0;
@@ -119,7 +119,7 @@ namespace WebSource.Controllers
 
         [HttpGet]
         [ActionName("deleteProductType")]
-        public IHttpActionResult deleteProductType(string apiKey, product_types p)
+        public IHttpActionResult deleteProductType(string apiKey, int p)
         {
             try
             {
@@ -127,7 +127,7 @@ namespace WebSource.Controllers
                 var user = db.users.FirstOrDefault(y => y.api_key.Equals(apiKey));
                 var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
 
-                db.inventories.RemoveRange(shop.inventories.Where(y => y.product.product_type == p.type_id));
+                db.inventories.RemoveRange(shop.inventories.Where(y => y.product.product_type == p));
                 db.SaveChanges();
             }
             catch (Exception ex)
@@ -140,7 +140,7 @@ namespace WebSource.Controllers
 
         [HttpGet]
         [ActionName("deleteProduct")]
-        public IHttpActionResult deleteProduct(string apiKey, product p)
+        public IHttpActionResult deleteProduct(string apiKey, int p)
         {
             try
             {
@@ -148,8 +148,8 @@ namespace WebSource.Controllers
                 var user = db.users.FirstOrDefault(y => y.api_key.Equals(apiKey));
                 var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
 
-                foreach (var inventory in shop.inventories.Where(y => y.product.product_id == p.product_id)) {
-                    inventory.is_prod_active = "Y";
+                foreach (var inventory in shop.inventories.Where(y => y.product.product_id == p)) {
+                    inventory.is_prod_active = "N";
                     inventory.prod_quant = 0;
                 }
                 db.SaveChanges();
