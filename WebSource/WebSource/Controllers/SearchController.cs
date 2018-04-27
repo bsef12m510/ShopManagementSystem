@@ -42,10 +42,11 @@ namespace WebSource.Controllers
                 var p = db.products.FirstOrDefault(y => y.product_id == i.product_id);
                 var type = db.product_types.FirstOrDefault(y => y.type_id == p.product_type);
                 var brand = db.brands.FirstOrDefault(y => y.brand_id == p.brand_id);
+                var uom = db.msrmnt_units.FirstOrDefault(y => y.sr_no == p.unit_of_msrmnt);
                 if (type.type_name.IndexOf(product, 0, StringComparison.CurrentCultureIgnoreCase) != -1)
                 {
                     // The string exists in the original
-                    cproducts.Add(new CInventory(i, new CProduct(p, type, brand, 0)));
+                    cproducts.Add(new CInventory(i, new CProduct(p, type, brand,uom, 0)));
                 }
                
                  
@@ -68,9 +69,10 @@ namespace WebSource.Controllers
                 var p = db.products.FirstOrDefault(y => y.product_id == i.product_id);
                 var type = db.product_types.FirstOrDefault(y => y.type_id == p.product_type);
                 var brand = db.brands.FirstOrDefault(y => y.brand_id == p.brand_id);
+                var uom = db.msrmnt_units.FirstOrDefault(y => y.sr_no == p.unit_of_msrmnt);
                 if (brand.brand_name.IndexOf(brandName, 0, StringComparison.CurrentCultureIgnoreCase) != -1)
                 {
-                    cproducts.Add(new CInventory(i, new CProduct(p, type, brand, 0)));
+                    cproducts.Add(new CInventory(i, new CProduct(p, type, brand, uom,0)));
                 }
 
             }
@@ -93,9 +95,10 @@ namespace WebSource.Controllers
                 var p = db.products.FirstOrDefault(y => y.product_id == i.product_id);
                 var type = db.product_types.FirstOrDefault(y => y.type_id == p.product_type);
                 var brand = db.brands.FirstOrDefault(y => y.brand_id == p.brand_id);
+                var uom = db.msrmnt_units.FirstOrDefault(y => y.sr_no == p.unit_of_msrmnt);
                 if (p.product_name.IndexOf(model, 0, StringComparison.CurrentCultureIgnoreCase) != -1)
                 {
-                    cproducts.Add(new CInventory(i, new CProduct(p, type, brand, 0)));
+                    cproducts.Add(new CInventory(i, new CProduct(p, type, brand,uom, 0)));
                 }
 
             }

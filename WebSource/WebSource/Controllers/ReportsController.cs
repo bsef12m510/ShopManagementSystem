@@ -31,7 +31,8 @@ namespace WebSource.Controllers
                             var product = db.products.FirstOrDefault(x => x.product_id == p.product_id);
                             var product_type = db.product_types.FirstOrDefault(x => x.type_id == product.product_type);
                             var brand = db.brands.FirstOrDefault(x => x.brand_id == product.brand_id);
-                            cproducts.Add(new CProduct(product, product_type, brand, p.prod_quant));
+                            var uom = db.msrmnt_units.FirstOrDefault(y => y.sr_no == product.unit_of_msrmnt);
+                            cproducts.Add(new CProduct(product, product_type, brand,uom, p.prod_quant));
                         }
 
                         return Ok(cproducts);
@@ -68,7 +69,8 @@ namespace WebSource.Controllers
                                 var product = db.products.FirstOrDefault(x => x.product_id == p.product_id);
                                 var product_type = db.product_types.FirstOrDefault(x => x.type_id == product.product_type);
                                 var brand = db.brands.FirstOrDefault(x => x.brand_id == product.brand_id);
-                                var cp = new CProduct(product, product_type, brand, p.prod_quant);
+                                var uom = db.msrmnt_units.FirstOrDefault(y => y.sr_no == product.unit_of_msrmnt);
+                                var cp = new CProduct(product, product_type, brand,uom, p.prod_quant);
                                 if (!productsMap.ContainsKey(cp.product_id))
                                     productsMap[cp.product_id] = cp;
 
@@ -87,7 +89,8 @@ namespace WebSource.Controllers
                                 var product = db.products.FirstOrDefault(x => x.product_id == s.product_id);
                                 var type = db.product_types.FirstOrDefault(y => y.type_id == product.product_type);
                                 var brand = db.brands.FirstOrDefault(y => y.brand_id == product.brand_id);
-                                var cp = new CProduct(product, type, brand, s.prod_quant);
+                                var uom = db.msrmnt_units.FirstOrDefault(y => y.sr_no == product.unit_of_msrmnt);
+                                var cp = new CProduct(product, type, brand, uom,s.prod_quant);
                                 if (productsMap.ContainsKey(cp.product_id))
                                 {   if(null != productsMap[cp.product_id].otherThanCurrentInventoryQty)
                                     productsMap[cp.product_id].otherThanCurrentInventoryQty += s.prod_quant; // how much sold in given time
@@ -140,7 +143,8 @@ namespace WebSource.Controllers
                             var product = db.products.FirstOrDefault(x => x.product_id == s.product_id);
                             var product_type = db.product_types.FirstOrDefault(x => x.type_id == product.product_type);
                             var brand = db.brands.FirstOrDefault(x => x.brand_id == product.brand_id);
-                            var cproduct = new CProduct(product, product_type, brand, 0);
+                            var uom = db.msrmnt_units.FirstOrDefault(y => y.sr_no == product.unit_of_msrmnt);
+                            var cproduct = new CProduct(product, product_type, brand,uom, 0);
                             var agent = db.users.FirstOrDefault(x => x.user_id.Equals(s.agent_id));
                             var cuser = new CUser(agent);
 

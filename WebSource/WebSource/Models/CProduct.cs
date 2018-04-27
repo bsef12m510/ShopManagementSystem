@@ -12,13 +12,13 @@ namespace WebSource.Models
         public CProductType product_type { get; set; }
         public CBrand brand { get; set; }
         public string specs { get; set; }
-        public int unit_of_msrmnt { get; set; }
+        public msrmnt_units unit_of_msrmnt { get; set; }
         public double unit_price { get; set; }
         public string product_image { get; set; }
         public int? qty { get; set; }
         public int? otherThanCurrentInventoryQty { get; set; }
 
-        public CProduct(product p, product_types type, brand b, int? qt)
+        public CProduct(product p, product_types type, brand b, msrmnt_units u, int? qt)
         {
             product_id = p.product_id;
             product_name = p.product_name;
@@ -27,14 +27,14 @@ namespace WebSource.Models
             if(null != b)
                 brand = new CBrand(b);
             specs = p.specs;
-            unit_of_msrmnt = p.unit_of_msrmnt;
+            unit_of_msrmnt = u;
             unit_price = p.unit_price;
             product_image = p.product_image;
             qty = qt;
 
         }
 
-        public CProduct(product p, product_types type, brand b, int? qt, int? otherQt)
+        public CProduct(product p, product_types type, brand b, msrmnt_units u, int? qt, int? otherQt)
         {
             product_id = p.product_id;
             product_name = p.product_name;
@@ -43,7 +43,7 @@ namespace WebSource.Models
             if (null != brand)
                 brand = new CBrand(b);
             specs = p.specs;
-            unit_of_msrmnt = p.unit_of_msrmnt;
+            unit_of_msrmnt = u;
             unit_price = p.unit_price;
             product_image = p.product_image;
             qty = qt;
