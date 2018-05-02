@@ -17,6 +17,16 @@ public class Product {
     private Integer qty;
     private int otherThanCurrentInventoryQty;
     private boolean isChecked;
+    private User user;
+
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public Integer getProductId() {
         return product_id;

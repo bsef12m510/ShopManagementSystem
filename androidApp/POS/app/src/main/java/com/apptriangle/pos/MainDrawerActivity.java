@@ -25,6 +25,7 @@ import android.widget.TextView;
 import com.apptriangle.pos.dashboard.fragment.AdminDashboardFragment;
 import com.apptriangle.pos.dashboard.fragment.DashboardFragment;
 import com.apptriangle.pos.reports.fragment.ReportsFragment;
+import com.apptriangle.pos.reports.fragment.SalesReportFragment;
 import com.apptriangle.pos.util.expandableListAdapter.ExpandableAdapter;
 
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ import java.util.List;
 
 
 public class MainDrawerActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, AdminDashboardFragment.OnFragmentInteractionListener,ReportsFragment.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener, AdminDashboardFragment.OnFragmentInteractionListener,ReportsFragment.OnFragmentInteractionListener,SalesReportFragment.OnFragmentInteractionListener {
 
     ExpandableAdapter listAdapter;
     ExpandableListView expListView;
@@ -155,8 +156,9 @@ public class MainDrawerActivity extends AppCompatActivity
             Fragment fragment =  new AdminDashboardFragment();
             replaceFragment(fragment,"adminDashboardFragment");
         } else if (id == R.id.nav_sales) {
-            Fragment fragment = new ReportsFragment();
-            replaceFragment(fragment,"reportsFragment");
+            Fragment fragment = new SalesReportFragment();
+            replaceFragment(fragment,"salesReportFragment");
+
         }else if (id == R.id.nav_inventory) {
             Fragment fragment = new ReportsFragment();
             replaceFragment(fragment,"reportsFragment");
