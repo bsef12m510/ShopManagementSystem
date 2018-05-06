@@ -12,27 +12,36 @@ namespace WebSource.Models
         public int shopID { get; set; }
         public string agentID { get; set; }
         public String apiKey { get; set; }
-        public int productID { get; set; }
+        public List<JProduct> products { get; set; }
         public double amount_paid { get; set; }
         public double total_amount { get; set; }
 
-        public JInvoice(sale invoice)
+        public JInvoice(List<sale> invoice)
         {
-            this.agentID = invoice.agent_id;
-            this.shopID = (int)invoice.shop_id;
-            this.invoiceId = (int)invoice.sale_id;
-            this.productID = (int)invoice.product_id;
-            this.amount_paid = (double)invoice.paid_amt;
-            this.total_amount = (double)invoice.total_amt;
+            this.agentID = invoice.First(y=>y.is_invoice.Equals("Y")).agent_id;
+            this.shopID = (int)invoice.First(y=>y.is_invoice.Equals("Y")).shop_id;
+            this.invoiceId = (int)invoice.First(y=>y.is_invoice.Equals("Y")).sale_id;
+            this.amount_paid = (double)invoice.First(y=>y.is_invoice.Equals("Y")).paid_amt;
+            this.total_amount = (double)invoice.First(y=>y.is_invoice.Equals("Y")).total_amt;
+
+            products = new List<JProduct>();
+            foreach (var sale in invoice) {
+                products.Add(new JProduct { product_id = sale.product.product_id, product_name = sale.product.product_name, qty = sale.prod_quant });
+            }
         }
 
-        public JInvoice(purchase invoice) {
-            this.agentID = invoice.agent_id;
-            this.shopID = (int)invoice.shop_id;
-            this.str_invoiceId = invoice.purch_id;
-            this.productID = (int)invoice.prod_id;
-            this.amount_paid = (double)invoice.paid_amt;
-            this.total_amount = (double)invoice.total_amt;
+        public JInvoice(List<purchase> invoice) {
+            this.agentID = invoice.First(y=>y.is_invoice.Equals("Y")).agent_id;
+            this.shopID = (int)invoice.First(y=>y.is_invoice.Equals("Y")).shop_id;
+            this.str_invoiceId = invoice.First(y=>y.is_invoice.Equals("Y")).purch_id;
+            this.amount_paid = (double)invoice.First(y=>y.is_invoice.Equals("Y")).paid_amt;
+            this.total_amount = (double)invoice.First(y=>y.is_invoice.Equals("Y")).total_amt;
+
+            products = new List<JProduct>();
+            foreach (var purchase in invoice)
+            {
+                products.Add(new JProduct { product_id = purchase.product.product_id, product_name = purchase.product.product_name, qty = purchase.prod_quant });
+            }
         }
     }
 }

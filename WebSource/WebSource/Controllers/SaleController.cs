@@ -52,7 +52,7 @@ namespace WebSource.Controllers
                                 sale_date = DateTime.Today,
                                 agent_id = user.user_id,
                                 sale_time = DateTime.Now.TimeOfDay,
-                                total_amt = sale.amount_paid,
+                                total_amt = sale.total_amount,
                                 paid_amt = sale.amount_paid,
                                 discount = sale.discount,
                                 is_pmnt_clr = isClr,
