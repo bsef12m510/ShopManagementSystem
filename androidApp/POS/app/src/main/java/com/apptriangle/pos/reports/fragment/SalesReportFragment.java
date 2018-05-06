@@ -10,7 +10,6 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,8 +27,10 @@ import android.widget.TextView;
 import com.apptriangle.pos.R;
 import com.apptriangle.pos.api.ApiClient;
 import com.apptriangle.pos.model.Brand;
+import com.apptriangle.pos.model.CSale;
 import com.apptriangle.pos.model.Product;
 import com.apptriangle.pos.model.ProductType;
+import com.apptriangle.pos.model.Sale;
 import com.apptriangle.pos.model.User;
 import com.apptriangle.pos.reports.adaptor.ReportsAdaptor;
 import com.apptriangle.pos.reports.adaptor.TableViewAdapter;
@@ -41,12 +42,12 @@ import com.apptriangle.pos.sales.response.SalesResponse;
 import com.apptriangle.pos.sales.restInterface.SalesService;
 import com.apptriangle.pos.tableview.TableView;
 
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
@@ -56,9 +57,9 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- * Created by zeeshan on 4/5/2018.
+ * Created by zeeshan on 5/3/2018.
  */
-public class ReportsFragment  extends Fragment {
+public class SalesReportFragment extends Fragment {
     public static String HALF_MONTH_DATE_FORMAT = "MMM dd, yyyy";
     public static String SERVER_DATE_FORMAT = "MM/dd/yyyy";
     String pickerDateSring;
@@ -74,7 +75,7 @@ public class ReportsFragment  extends Fragment {
     private ProductType selectedProductType;
     private Brand selectedBrand;
     private OnFragmentInteractionListener mListener;
-    public static final int COLUMN_SIZE = 7;
+    public static final int COLUMN_SIZE = 10;
     public static int ROW_SIZE = 1;
     // Columns indexes
     public static final int MOOD_COLUMN_INDEX = 3;
@@ -97,9 +98,10 @@ public class ReportsFragment  extends Fragment {
     ArrayList<ProductType> productsList;
     ArrayList<Brand> brandsList;
     ArrayList<User> usersList;
-    ArrayList<Product> responseList;
+    ArrayList<Sale> responseList;
+    HashMap<Integer,CSale> salesMap = new HashMap();
 
-    public ReportsFragment() {
+    public SalesReportFragment() {
         // Required empty public constructor
     }
 
@@ -210,27 +212,38 @@ public class ReportsFragment  extends Fragment {
         ReportService service =
                 ApiClient.getClient().create(ReportService.class);
 
-        Call<List<Product>> call = service.getReportData(apiKey, convertDate(txtDateFrom.getText().toString()),
+        Call<List<Sale>> call = service.getSalesReportData(apiKey, convertDate(txtDateFrom.getText().toString()),
                 convertDate(txtDateTo.getText().toString()), ((selectedProductType != null) ? selectedProductType.getTypeId() : -1),
-                ((selectedBrand != null) ? selectedBrand.getBrandId() : -1),((selectedUser != null) ? selectedUser.user_id : ""));
+                ((selectedBrand != null) ? selectedBrand.getBrandId() : -1), ((selectedUser != null) ? selectedUser.user_id : ""));
         pd.show();
-        call.enqueue(new Callback<List<Product>>() {
+        call.enqueue(new Callback<List<Sale>>() {
             @Override
-            public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
+            public void onResponse(Call<List<Sale>> call, Response<List<Sale>> response) {
                 pd.hide();
                 if (response != null && response.body() != null) {
                     ROW_SIZE = response.body().size();
-                    responseList = (ArrayList<Product>) response.body();
-                    Brand tmp = new Brand();
-                    tmp.setBrandName("Select Brand");
-                    displayReport();
+                    responseList = (ArrayList<Sale>) response.body();
+                    if(responseList != null) {
+                       /* for (int i = 0; i < responseList.size(); i++) {
+                            if(salesMap.containsKey(responseList.get(i).sale_id)){
+                                salesMap.get(responseList.get(i).sale_id).cust_name = responseList.get(i).cust_name;
+                                responseList.get(i).cproduct.setQty(responseList.get(i).prod_qty);
+                                salesMap.get(responseList.get(i).sale_id).cproduct.add(responseList.get(i).cproduct);
+                            }else{
+                                responseList.get(i).cproduct.setQty(responseList.get(i).prod_qty);
+                                salesMap.put(responseList.get(i).sale_id,new CSale(responseList.get(i)));
+
+                            }
+                        }*/
+                        displayReport();
+                    }
 
 
                 }
             }
 
             @Override
-            public void onFailure(Call<List<Product>> call, Throwable t) {
+            public void onFailure(Call<List<Sale>> call, Throwable t) {
                 // Log error here since request failed
                 Log.e("failure", "failure");
                 pd.hide();
@@ -413,19 +426,25 @@ public class ReportsFragment  extends Fragment {
         String title;
         for (int i = 0; i < COLUMN_SIZE; i++) {
             if(i == 0)
-                title = "Product";
+                title = "Date";
             else if(i == 1)
-                title = "Brand";
+                title = "Invoice No";
             else if(i == 2)
-                title = "Stock";
+                title = "Customer";
             else if(i == 3)
-                title = "UoM";
+                title = "Product";
             else if(i == 4)
-                title = "Unit/B-Price";
+                title = "Brand";
             else if(i == 5)
-                title = "Current Stock";
+                title = "UoM";
+            else if(i == 6)
+                title = "Unit/S-Price";
+            else if(i == 7)
+                title = "Unit/Quantity";
+            else if(i == 8)
+                title = "Total Price";
             else
-                title = "Sold";
+                title = "Sold By";
 
             ColumnHeader header = new ColumnHeader(String.valueOf(i), title);
             list.add(header);
@@ -444,20 +463,27 @@ public class ReportsFragment  extends Fragment {
 
                 final int random = new Random().nextInt();
                 if (j == 0) {
-                    text = responseList.get(i).getProductType().getTypeName();
+                    text = responseList.get(i).saleDate.toString();
                 } else if (j == 1) {
-                    text = responseList.get(i).getBrand().getBrandName();
+                    text = Integer.toString(responseList.get(i).sale_id);
                 } else if (j == 2) {
-                    text = Integer.toString(responseList.get(i).getQty() + responseList.get(i).getOtherThanCurrentInventoryQty());
+                    text = responseList.get(i).cust_name;
                 } else if (j == 3) {
-                    text = responseList.get(i).getUnitOfMsrmnt().getDescription();
+                    text = responseList.get(i).cproduct.getProductName();
                 } else if (j == 4) {
-                    text = Double.toString(responseList.get(i).getUnitPrice());
+                    text = responseList.get(i).cproduct.getBrand().getBrandName();
                 } else if (j == 5) {
-                    text = Integer.toString(responseList.get(i).getQty());
+                    text = responseList.get(i).cproduct.getUnitOfMsrmnt().description;
+                } else if (j == 6){
+                    text = Double.toString(responseList.get(i).cproduct.getUnitPrice());
+                } else if (j == 7){
+                    text = Integer.toString(responseList.get(i).prod_qty);
+                } else if (j == 8){
+                    text = Double.toString(responseList.get(i).cproduct.getUnitPrice() * responseList.get(i).prod_qty);
                 } else {
-                    text = Integer.toString(responseList.get(i).getOtherThanCurrentInventoryQty());
+                    text = responseList.get(i).agent.user_id;
                 }
+
 
                 // Create dummy id.
                 String id = j + "-" + i;
@@ -518,11 +544,11 @@ public class ReportsFragment  extends Fragment {
                 dpdCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
 //                if (dpdCalendar.compareTo(current) > -1) {
-                    final String myFormat = HALF_MONTH_DATE_FORMAT;
-                    SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+                final String myFormat = HALF_MONTH_DATE_FORMAT;
+                SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
-                    pickerDateSring = sdf.format(dpdCalendar.getTime());
-                    dateInputField.setText(pickerDateSring);
+                pickerDateSring = sdf.format(dpdCalendar.getTime());
+                dateInputField.setText(pickerDateSring);
 
 //                    fragment.setDateFrom(dateFrom);
 
@@ -708,7 +734,7 @@ public class ReportsFragment  extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
                 if(position != 0)
-                     selectedBrand = (Brand) parent.getItemAtPosition(position);
+                    selectedBrand = (Brand) parent.getItemAtPosition(position);
                 else
                     selectedBrand = null;
                 // If user change the default selection

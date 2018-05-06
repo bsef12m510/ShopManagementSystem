@@ -167,5 +167,26 @@ namespace WebSource.Controllers
             return Ok(pTypes);
         }
 
+        [HttpGet]
+        [ActionName("getUsersByShop")]
+        public IHttpActionResult getUsersByShop(string apiKey)
+        {
+            SMS_DBEntities1 db = new SMS_DBEntities1();
+            List<CUser> users = new List<CUser>();
+            var user = db.users.FirstOrDefault(y => y.api_key.Equals(apiKey));
+            if(null != user && user.role_id.Equals("admin"))
+            {
+                var userList = db.users.Where(x => x.shop_id == user.shop_id);
+                if (userList != null)
+                {
+                    foreach (var u in userList)
+                        users.Add(new CUser(u));
+             
+                }
+            }
+            return Ok(users);
+        }
+
+
     }
 }
