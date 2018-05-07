@@ -16,6 +16,7 @@ public class CSale {
     public String saleTime ;
     public String cust_name ;
     public String cust_phone ;
+    public Double amount_paid, total_amount;
 
     public CSale(Sale s){
         this.shop_id = s.shop_id;

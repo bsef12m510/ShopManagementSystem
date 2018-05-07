@@ -166,7 +166,7 @@ public class LoginFragment extends Fragment {
                     // Log error here since request failed
                     Log.e("failure", "failure");
                     pd.hide();
-                    onSuccessfulLogin(null,email.getText().toString());
+//                    onSuccessfulLogin(null,email.getText().toString());
 
                 }
             });

@@ -1332,7 +1332,7 @@ public class PurchaseFragment extends Fragment {
                 dpdCalendar.set(Calendar.MONTH, monthOfYear);
                 dpdCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-                if (dpdCalendar.compareTo(current) > -1) {
+//                if (dpdCalendar.compareTo(current) > -1) {
                     final String myFormat = HALF_MONTH_DATE_FORMAT;
                     SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
@@ -1341,15 +1341,15 @@ public class PurchaseFragment extends Fragment {
 
 //                    fragment.setDateFrom(dateFrom);
 
-                }
+//                }
 
 
             }
         }, current.get(Calendar.YEAR), current.get(Calendar.MONTH), current.get(Calendar.DAY_OF_MONTH));
         long minDate;
 
-        minDate = incrementDate(new SimpleDateFormat(HALF_MONTH_DATE_FORMAT).format(current.getTime()));
-        datePickerDailog.getDatePicker().setMinDate(minDate);
+//        minDate = incrementDate(new SimpleDateFormat(HALF_MONTH_DATE_FORMAT).format(current.getTime()));
+//        datePickerDailog.getDatePicker().setMinDate(minDate);
         showSelectedDateOnPicker(datePickerDailog, pickerDateSring);
         datePickerDailog.show();
     }
