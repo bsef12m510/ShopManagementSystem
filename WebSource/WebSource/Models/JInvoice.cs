@@ -11,6 +11,9 @@ namespace WebSource.Models
         public string str_invoiceId { get; set; }
         public int shopID { get; set; }
         public string agentID { get; set; }
+        public string cust_name { get; set; }
+        public string cust_phone { get; set; }
+        public string dlr_details { get; set; }
         public String apiKey { get; set; }
         public List<JProduct> products { get; set; }
         public double amount_paid { get; set; }
@@ -23,6 +26,8 @@ namespace WebSource.Models
             this.invoiceId = (int)invoice.First(y=>y.is_invoice.Equals("Y")).sale_id;
             this.amount_paid = (double)invoice.First(y=>y.is_invoice.Equals("Y")).paid_amt;
             this.total_amount = (double)invoice.First(y=>y.is_invoice.Equals("Y")).total_amt;
+            this.cust_name = invoice.First(y => y.is_invoice.Equals("Y")).cust_name;
+            this.cust_phone = invoice.First(y => y.is_invoice.Equals("Y")).cust_phone;
 
             products = new List<JProduct>();
             foreach (var sale in invoice) {
@@ -36,6 +41,9 @@ namespace WebSource.Models
             this.str_invoiceId = invoice.First(y=>y.is_invoice.Equals("Y")).purch_id;
             this.amount_paid = (double)invoice.First(y=>y.is_invoice.Equals("Y")).paid_amt;
             this.total_amount = (double)invoice.First(y=>y.is_invoice.Equals("Y")).total_amt;
+            this.cust_name = invoice.First(y => y.is_invoice.Equals("Y")).dlr_name;
+            this.dlr_details = invoice.First(y => y.is_invoice.Equals("Y")).dlr_dtls;
+            this.cust_phone = invoice.First(y => y.is_invoice.Equals("Y")).dlr_phone;
 
             products = new List<JProduct>();
             foreach (var purchase in invoice)
