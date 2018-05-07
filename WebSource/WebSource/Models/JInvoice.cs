@@ -49,7 +49,9 @@ namespace WebSource.Models
             products = new List<JProduct>();
             foreach (var purchase in invoice)
             {
-                products.Add(new JProduct { product_id = purchase.product.product_id, product_name = purchase.product.product_name, qty = purchase.prod_quant });
+                products.Add(new JProduct { product_id = purchase.product.product_id, product_name = purchase.product.product_name,
+                                            qty = purchase.prod_quant, unit_price = purchase.product.unit_price
+                });
             }
         }
     }
