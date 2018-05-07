@@ -26,7 +26,10 @@ namespace WebSource.Controllers
                 }
                 var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
 
-                invoice = new JInvoice(db.sales.FirstOrDefault(y => y.sale_id == invoiceId));
+                if (null != db.sales.Where(y => y.sale_id == invoiceId))
+                    invoice = new JInvoice(db.sales.Where(y => y.sale_id == invoiceId).ToList());
+                else
+                    return Ok(false);
             }
             catch (Exception ex)
             {
@@ -52,7 +55,10 @@ namespace WebSource.Controllers
                 }
                 var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
 
-                invoice = new JInvoice(db.sales.FirstOrDefault(y => y.cust_phone == cust_phone));
+                if (null != db.sales.Where(y => y.cust_phone == cust_phone))
+                    invoice = new JInvoice(db.sales.Where(y => y.cust_phone == cust_phone).ToList());
+                else
+                    return Ok(false);
             }
             catch (Exception ex)
             {
@@ -78,10 +84,10 @@ namespace WebSource.Controllers
                 }
                 var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
 
-                invoice = new JInvoice(db.purchases.FirstOrDefault(y => y.purch_id == str_invoiceId));
-
-                if (null == invoice)
-                    return OK(fals);
+                if(null != db.purchases.Where(y => y.purch_id.Equals(invoiceId)))
+                   invoice = new JInvoice(db.purchases.Where(y => y.purch_id.Equals(invoiceId)).ToList());
+                else
+                    return Ok(false);
 
             }
             catch (Exception ex)
@@ -108,12 +114,12 @@ namespace WebSource.Controllers
                 }
                 var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
 
-                invoice = db.sale.FirstOrDefault(y => y.sale_id == invoiceId);
+                invoice = db.sales.FirstOrDefault(y => y.sale_id == invoiceId);
 
                 if (null == invoice)
-                    return false;
+                    return Ok(false);
 
-                if(amt == invoice.total_amount)
+                if(amt == invoice.total_amt)
                     invoice.is_pmnt_clr = "Y";
 
                 invoice.paid_amt = amt;
