@@ -26,6 +26,7 @@ namespace WebSource.Models
         public int shop_id { get; set; }
         public string shope_name { get; set; }
         public string shop_mngr { get; set; }
+        public string address { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<sale> sales { get; set; }

@@ -93,6 +93,7 @@
     <Property Name="shop_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="shope_name" Type="varchar" MaxLength="50" Nullable="false" />
     <Property Name="shop_mngr" Type="varchar" MaxLength="50" />
+    <Property Name="address" Type="varchar" MaxLength="250" />
   </EntityType>
   <EntityType Name="users">
     <Key>

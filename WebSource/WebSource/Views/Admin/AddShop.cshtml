@@ -1,0 +1,29 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card mb-3">
+    <div class="card-header">Manage User</div>
+    <div class="card-body">
+        <form action="SaveNewShop" method="post">
+            <div class="form-group">
+                <div class="form-row">
+                    <div class="col-md-6">
+                        <label for="exampleInputLastName">Shop Name</label>
+                        <input name="shop_name" class="form-control" id="exampleInputLastName" type="text" aria-describedby="nameHelp" placeholder="Enter Shop Name">
+                    </div>
+                    
+                        <div class="col-md-6">
+                            <label for="exampleInputPassword1">Shop Manager</label>
+                            <input name="manager" class="form-control" id="exampleInputPassword1" type="text" placeholder="Enter Shop Manager Name">
+                        </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="exampleInputEmail1">Address</label>
+                <input name="address" class="form-control" id="exampleInputEmail1" type="text" placeholder="Enter Address">
+            </div>            
+            <input class="btn btn-primary btn-block" type="submit" />
+        </form>
+    </div>
+</div>

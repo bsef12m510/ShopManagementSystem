@@ -1,0 +1,41 @@
+﻿@model WebSource.Models.user
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card mb-3">
+    <div class="card-header">Manage User</div>
+    <div class="card-body">
+        <form action="SaveUserEdit" method="post">
+            <div class="form-group">
+                <div class="form-row">
+                    <div class="col-md-6">
+                        <label for="exampleInputName">User ID</label>
+                        <input name="user_id" class="form-control" id="exampleInputName" type="text" aria-describedby="nameHelp" value="@Model.user_id">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="exampleInputLastName">User Name</label>
+                        <input name="username" class="form-control" id="exampleInputLastName" type="text" aria-describedby="nameHelp" value="@Model.username">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="exampleInputEmail1">Shop ID</label>
+                <input name="shop_id" class="form-control" id="exampleInputEmail1" type="text"  value="@Model.shop_id">
+            </div>
+            <div class="form-group">
+                <div class="form-row">
+                    <div class="col-md-6">
+                        <label for="exampleInputPassword1">Password</label>
+                        <input name="password" class="form-control" id="exampleInputPassword1" type="password" value="@Model.password">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="exampleConfirmPassword">Confirm password</label>
+                        <input  class="form-control" id="exampleConfirmPassword" type="password" value="@Model.password">
+                    </div>
+                </div>
+            </div>
+            <input class="btn btn-primary btn-block" type="submit"/>
+        </form>
+    </div>
+</div>

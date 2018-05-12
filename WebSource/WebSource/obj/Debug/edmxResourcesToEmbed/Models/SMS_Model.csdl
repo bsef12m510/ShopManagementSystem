@@ -119,6 +119,7 @@
     <NavigationProperty Name="users" Relationship="SMS_DBModel.fk_users_shid" FromRole="shop" ToRole="user" />
     <NavigationProperty Name="inventories" Relationship="SMS_DBModel.fk_inv_sid" FromRole="shop" ToRole="inventory" />
     <NavigationProperty Name="purchases" Relationship="SMS_DBModel.fk_pur_sh_id" FromRole="shop" ToRole="purchase" />
+    <Property Name="address" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
   </EntityType>
   <EntityType Name="user">
     <Key>

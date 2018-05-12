@@ -98,6 +98,7 @@
           <Property Name="shop_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="shope_name" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="shop_mngr" Type="varchar" MaxLength="50" />
+          <Property Name="address" Type="varchar" MaxLength="250" />
         </EntityType>
         <EntityType Name="users">
           <Key>
@@ -420,6 +421,7 @@
           <NavigationProperty Name="users" Relationship="SMS_DBModel.fk_users_shid" FromRole="shop" ToRole="user" />
           <NavigationProperty Name="inventories" Relationship="SMS_DBModel.fk_inv_sid" FromRole="shop" ToRole="inventory" />
           <NavigationProperty Name="purchases" Relationship="SMS_DBModel.fk_pur_sh_id" FromRole="shop" ToRole="purchase" />
+          <Property Name="address" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="user">
           <Key>
@@ -673,6 +675,7 @@
           <EntitySetMapping Name="shops">
             <EntityTypeMapping TypeName="SMS_DBModel.shop">
               <MappingFragment StoreEntitySet="shops">
+                <ScalarProperty Name="address" ColumnName="address" />
                 <ScalarProperty Name="shop_mngr" ColumnName="shop_mngr" />
                 <ScalarProperty Name="shope_name" ColumnName="shope_name" />
                 <ScalarProperty Name="shop_id" ColumnName="shop_id" />
