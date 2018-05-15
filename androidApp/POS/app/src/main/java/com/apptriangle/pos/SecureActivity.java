@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
+import com.apptriangle.pos.InvoiceSearchFragment.fragment.InvoiceSearchFragment;
 import com.apptriangle.pos.dashboard.fragment.DashboardFragment;
 import com.apptriangle.pos.model.Product;
 import com.apptriangle.pos.purchase.fragemnt.PurchaseFragment;
@@ -27,7 +28,7 @@ import java.util.List;
 /**
  * Created by zeeshan on 3/28/2018.
  */
-public class SecureActivity extends AppCompatActivity implements DashboardFragment.OnFragmentInteractionListener, SalesFragment.OnFragmentInteractionListener, VerifySalesFragment.OnFragmentInteractionListener, InvoiceFragment.OnFragmentInteractionListener, PurchaseFragment.OnFragmentInteractionListener {
+public class SecureActivity extends AppCompatActivity implements DashboardFragment.OnFragmentInteractionListener, SalesFragment.OnFragmentInteractionListener, VerifySalesFragment.OnFragmentInteractionListener, InvoiceFragment.OnFragmentInteractionListener, InvoiceSearchFragment.OnFragmentInteractionListener, PurchaseFragment.OnFragmentInteractionListener {
     private FrameLayout fragmentContainer;
     private FragmentManager fm;
     @Override
@@ -151,7 +152,7 @@ public class SecureActivity extends AppCompatActivity implements DashboardFragme
                 R.anim.slide_out_right,R.anim.slide_in_left,
                 R.anim.slide_out_right);
 
-        InvoiceFragment fragment = new InvoiceFragment();
+        InvoiceSearchFragment fragment = new InvoiceSearchFragment();
         fragment.fromHome = true;
         ft.replace(R.id.fragmentContainer,fragment ,"invoiceFragment");
 
@@ -213,5 +214,8 @@ public class SecureActivity extends AppCompatActivity implements DashboardFragme
     }
 
 
+    @Override
+    public void onInvoiceSearchFragmentInteraction() {
 
+    }
 }
