@@ -15,6 +15,7 @@ import android.widget.FrameLayout;
 
 import com.apptriangle.pos.InvoiceSearchFragment.fragment.InvoiceSearchFragment;
 import com.apptriangle.pos.dashboard.fragment.DashboardFragment;
+import com.apptriangle.pos.model.Invoice;
 import com.apptriangle.pos.model.Product;
 import com.apptriangle.pos.purchase.fragemnt.PurchaseFragment;
 import com.apptriangle.pos.sales.fragment.InvoiceFragment;
@@ -215,7 +216,21 @@ public class SecureActivity extends AppCompatActivity implements DashboardFragme
 
 
     @Override
-    public void onInvoiceSearchFragmentInteraction() {
+    public void onInvoiceSearchFragmentInteraction(Invoice selectedInvoice) {
+        fm = getFragmentManager();
 
+        // replace
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.setCustomAnimations(R.anim.slide_in_left,
+                R.anim.slide_out_right,R.anim.slide_in_left,
+                R.anim.slide_out_right);
+
+        InvoiceFragment fragment = new InvoiceFragment();
+
+        fragment.selectedInvoice = selectedInvoice;
+        ft.replace(R.id.fragmentContainer,fragment ,"invoiceDetailFragment");
+
+        ft.addToBackStack("invoiceDetailFragment");
+        ft.commit();
     }
 }

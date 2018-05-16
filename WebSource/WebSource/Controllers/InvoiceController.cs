@@ -44,7 +44,7 @@ namespace WebSource.Controllers
         public IHttpActionResult GetSalesInvoiceByCell(String apiKey, String cust_phone)
         {
             JInvoice invoice = null;
-
+            List<JInvoice> invoicesList = new List<JInvoice>();
             try
             {
                 SMS_DBEntities1 db = new SMS_DBEntities1();
@@ -56,7 +56,18 @@ namespace WebSource.Controllers
                 var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
 
                 if (null != db.sales.Where(y => y.cust_phone == cust_phone))
-                    invoice = new JInvoice(db.sales.Where(y => y.cust_phone == cust_phone).ToList());
+                {
+                    var salesList = db.sales.Where(y => y.cust_phone == cust_phone).ToList();  // add cust phone for every row of same sale id in db
+                    foreach (var salesWithCellNo in salesList.GroupBy(x => x.sale_id))
+                    {
+                        //eventsInYear.Key - year
+                        //eventsInYear - collection of events in that year
+                        invoice = new JInvoice(salesWithCellNo.ToList());
+                        invoicesList.Add(invoice);
+                    }
+                    //invoice = new JInvoice(db.sales.Where(y => y.cust_phone == cust_phone).ToList());
+                }
+                    
                 else
                     return Ok(false);
             }
@@ -66,7 +77,7 @@ namespace WebSource.Controllers
             }
             finally { }
 
-            return Ok(invoice);
+            return Ok(invoicesList);
         }
 
         [ActionName("GetPurchaseInvoice")]

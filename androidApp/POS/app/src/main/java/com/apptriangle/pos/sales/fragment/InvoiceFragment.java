@@ -20,12 +20,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.apptriangle.pos.InvoiceSearchFragment.adapter.InvoiceAdapter;
+import com.apptriangle.pos.InvoiceSearchFragment.fragment.InvoiceSearchFragment;
+import com.apptriangle.pos.InvoiceSearchFragment.service.InvoiceService;
 import com.apptriangle.pos.R;
 import com.apptriangle.pos.SecureActivity;
 import com.apptriangle.pos.api.ApiClient;
 import com.apptriangle.pos.model.Brand;
 import com.apptriangle.pos.model.CSale;
+import com.apptriangle.pos.model.Invoice;
 import com.apptriangle.pos.model.Product;
 import com.apptriangle.pos.sales.adaptor.VerifySaleAdaptor;
 import com.apptriangle.pos.sales.response.SalesResponse;
@@ -47,7 +52,7 @@ public class InvoiceFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private View contentView;
     private RecyclerView recyclerView;
-    String[] listItems = {"item 1", "item 2 ", "list", "android" };
+    String[] listItems = {"item 1", "item 2 ", "list", "android"};
     private VerifySaleAdaptor adaptor;
     public boolean fromHome = false;
     private CardView searchContainer1, searchContainer2;
@@ -56,22 +61,24 @@ public class InvoiceFragment extends Fragment {
     public Button finishBtn;
     public EditText searchText;
     public CSale saleObj;
-    public Double totalAmount, paidAmount, dueAmount;
-    public EditText edtCustName, edtCustNo,edtTotalAmnt, edtPaidAmnt, edtDueAmnt;
-
+    public Double totalAmount = 0.0, paidAmount= 0.0, dueAmount= 0.0;
+    public EditText edtCustName, edtCustNo, edtTotalAmnt, edtPaidAmnt, edtDueAmnt;
+    public Invoice selectedInvoice;
 
     TextWatcher inputTextWatcher = new TextWatcher() {
         public void afterTextChanged(Editable s) {
-            if(s != null && !s.toString().trim().equalsIgnoreCase("")) {
+            if (s != null && !s.toString().trim().equalsIgnoreCase("")) {
                 paidAmount = Double.parseDouble(s.toString());
                 dueAmount = totalAmount - paidAmount;
-                if(dueAmount < 0)
+                if (dueAmount < 0)
                     dueAmount = 0.0;
                 edtDueAmnt.setText(dueAmount.toString());
             }
         }
-        public void beforeTextChanged(CharSequence s, int start, int count, int after){
+
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         }
+
         public void onTextChanged(CharSequence s, int start, int before, int count) {
         }
     };
@@ -101,42 +108,59 @@ public class InvoiceFragment extends Fragment {
 
     }
 
-    public void initialize(){
+    public void initialize() {
         getApiKey();
         pd = new ProgressDialog(getActivity());
         pd.setMessage("Processing...");
         pd.setCanceledOnTouchOutside(false);
-        finishBtn = (Button)contentView.findViewById(R.id.finishButton);
+        finishBtn = (Button) contentView.findViewById(R.id.finishButton);
         edtTotalAmnt = (EditText) contentView.findViewById(R.id.edtTotalAmnt);
         searchText = (EditText) contentView.findViewById(R.id.searchText);
         edtCustName = (EditText) contentView.findViewById(R.id.edtCustName);
         edtPaidAmnt = (EditText) contentView.findViewById(R.id.edtPaidAmnt);
         edtCustNo = (EditText) contentView.findViewById(R.id.edtCustNo);
         edtDueAmnt = (EditText) contentView.findViewById(R.id.edtDueAmnt);
-        if(!fromHome) {
+
+        edtCustName.setEnabled(false);
+        edtCustNo.setEnabled(false);
+        if (!fromHome) {
             edtTotalAmnt.setEnabled(false);
             edtPaidAmnt.setEnabled(false);
             edtDueAmnt.setEnabled(false);
-            edtCustName.setEnabled(false);
-            edtCustNo.setEnabled(false);
-            edtCustNo.setText(cart.cust_phone);
-            edtCustName.setText(cart.cust_name);
-            edtTotalAmnt.setText(cart.total_amount.toString());
-            edtPaidAmnt.setText(cart.amount_paid.toString());
-            edtDueAmnt.setText(Double.toString(cart.total_amount - cart.amount_paid));
+            if (cart != null) {
+                edtCustNo.setText(cart.cust_phone);
+                edtCustName.setText(cart.cust_name);
+                edtTotalAmnt.setText(cart.total_amount.toString());
+                edtPaidAmnt.setText(cart.amount_paid.toString());
+                edtDueAmnt.setText(Double.toString(cart.total_amount - cart.amount_paid));
+            } else {
+                if (selectedInvoice.amount_paid < selectedInvoice.total_amount){
+                    edtPaidAmnt.setEnabled(true);
+                    edtPaidAmnt.addTextChangedListener(inputTextWatcher);
+                }
+                totalAmount = selectedInvoice.total_amount;
+                paidAmount = selectedInvoice.amount_paid;
+
+                edtCustNo.setText(selectedInvoice.cust_phone);
+                edtCustName.setText(selectedInvoice.cust_name);
+                edtTotalAmnt.setText(Double.toString(selectedInvoice.total_amount));
+                edtPaidAmnt.setText(Double.toString(selectedInvoice.amount_paid));
+                edtDueAmnt.setText(Double.toString(selectedInvoice.total_amount - selectedInvoice.amount_paid));
+            }
         }
         recyclerView = (RecyclerView) contentView.findViewById(R.id.sales_recycler_view);
-        searchContainer1 =(CardView) contentView.findViewById(R.id.searchContainer1);
-        searchContainer2 =(CardView) contentView.findViewById(R.id.searchContainer2);
-        saleDescContainer =(NestedScrollView) contentView.findViewById(R.id.saleDescContainer);
-        Button printBtn = (Button)contentView.findViewById(R.id.printBtn);
-        Button smsBtn = (Button)contentView.findViewById(R.id.smsBtn);
-        if(!fromHome) {
-            searchContainer1.setVisibility(View.GONE);
-            searchContainer2.setVisibility(View.GONE);
+        searchContainer1 = (CardView) contentView.findViewById(R.id.searchContainer1);
+        searchContainer2 = (CardView) contentView.findViewById(R.id.searchContainer2);
+        saleDescContainer = (NestedScrollView) contentView.findViewById(R.id.saleDescContainer);
+        Button printBtn = (Button) contentView.findViewById(R.id.printBtn);
+        Button smsBtn = (Button) contentView.findViewById(R.id.smsBtn);
+        searchContainer1.setVisibility(View.GONE);
+        searchContainer2.setVisibility(View.GONE);
+        if (!fromHome) {
+
             printBtn.setVisibility(View.VISIBLE);
             smsBtn.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             saleDescContainer.setVisibility(View.GONE);
         }
         ArrayList<SalesResponse> stockResponseArrayList = new ArrayList<>();
@@ -145,9 +169,15 @@ public class InvoiceFragment extends Fragment {
             stockResponseArrayList.add(tmp);
         }
 
-        if(cart != null) {
+        if (cart != null) {
             adaptor = new VerifySaleAdaptor(getActivity(), cart.products, true);
 
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setAdapter(adaptor);
+        } else {
+            adaptor = new VerifySaleAdaptor(getActivity(), selectedInvoice.products, true);
+            adaptor.isFromInvoiceSearchScreen = true;
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             recyclerView.setHasFixedSize(true);
             recyclerView.setAdapter(adaptor);
@@ -156,59 +186,49 @@ public class InvoiceFragment extends Fragment {
         finishBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(),SecureActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
+                if(cart != null) {
+                    Intent intent = new Intent(getActivity(), SecureActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                }else{
+                    updateInvoice();
+                }
             }
         });
     }
 
 
-   /* public void getInvoiceData(){
-        SalesService service =
-                ApiClient.getClient().create(SalesService.class);
-        Call<CSale> call;
-        call = service.getInvoice(apiKey, searchText.getText().toString());
+    public void updateInvoice() {
+        InvoiceService service =
+                ApiClient.getClient().create(InvoiceService.class);
+        Call<Object> call;
+        call = service.updatePayment(apiKey, selectedInvoice.invoiceId, Double.parseDouble(edtPaidAmnt.getText().toString()));
         pd.show();
-        call.enqueue(new Callback<CSale>() {
+        call.enqueue(new Callback<Object>() {
             @Override
-            public void onResponse(Call<CSale> call, Response<CSale> response) {
+            public void onResponse(Call<Object> call, Response<Object> response) {
                 pd.hide();
                 if (response != null && response.body() != null) {
-                    saleObj = (CSale) response.body();
-                    edtTotalAmnt.setEnabled(false);
-
-                    edtDueAmnt.setEnabled(false);
-                    edtCustName.setEnabled(false);
-                    edtCustNo.setEnabled(false);
-                    edtCustNo.setText(cart.cust_phone);
-                    edtCustName.setText(cart.cust_name);
-                    edtTotalAmnt.setText(cart.total_amount.toString());
-                    edtPaidAmnt.setText(cart.amount_paid.toString());
-                    edtDueAmnt.setText(Double.toString(cart.total_amount - cart.amount_paid));
-                    if(saleObj.amount_paid == saleObj.total_amt){
-                        edtPaidAmnt.setEnabled(false);
-                    }else if(saleObj.amount_paid < saleObj.total_amt){
-                        edtPaidAmnt.setEnabled(true);
+                    if(response.body() instanceof  Boolean){
+                        if((boolean)response.body())
+                            Toast.makeText(getActivity(),"Invoice Payment Updated Successfully.",Toast.LENGTH_SHORT).show();
+                        else
+                            Toast.makeText(getActivity(),"Unable to update payment",Toast.LENGTH_SHORT).show();
                     }
-
                 }
             }
 
             @Override
-            public void onFailure(Call<CSale> call, Throwable t) {
+            public void onFailure(Call<Object> call, Throwable t) {
                 // Log error here since request failed
                 Log.e("failure", "failure");
                 pd.hide();
+                Toast.makeText(getActivity(),"Unable to update payment",Toast.LENGTH_SHORT).show();
 
             }
         });
-    }
-*/
-    public void updateInvoice(){
 
     }
-
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed() {
@@ -217,8 +237,7 @@ public class InvoiceFragment extends Fragment {
         }
     }
 
-    void setTitle()
-    {
+    void setTitle() {
         ((Activity) getActivity()).setTitle("INVOICE");
     }
 

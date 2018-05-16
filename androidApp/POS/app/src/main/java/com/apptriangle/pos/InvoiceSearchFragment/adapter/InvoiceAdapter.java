@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.apptriangle.pos.InvoiceSearchFragment.fragment.InvoiceSearchFragment;
@@ -49,6 +50,15 @@ public class InvoiceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         viewHolder.qty.setText(Double.toString(product.amount_paid));
         viewHolder.price.setText(Double.toString(product.total_amount ));
 
+
+        viewHolder.container.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                parentFrag.selectedInvoice = product;
+                parentFrag.onButtonPressed();
+            }
+        });
+
     }
 
     @Override
@@ -70,6 +80,7 @@ public class InvoiceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private class MyViewHolder extends RecyclerView.ViewHolder {
         TextView product, qty, price;
         CheckBox checkbox;
+        LinearLayout container;
 
         MyViewHolder(View itemView) {
             super(itemView);
@@ -77,6 +88,7 @@ public class InvoiceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             product = (TextView) itemView.findViewById(R.id.verifyProduct);
             qty = (TextView) itemView.findViewById(R.id.qty);
             price = (TextView) itemView.findViewById(R.id.price);
+            container = (LinearLayout) itemView.findViewById(R.id.container);
 
 
 

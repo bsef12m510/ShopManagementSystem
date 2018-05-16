@@ -29,6 +29,7 @@ public class VerifySaleAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHol
     private boolean invoiceScreen;
     public Double totalAmount =0.0;
     public VerifySalesFragment parentFrag;
+    public boolean isFromInvoiceSearchScreen;
 
     public VerifySaleAdaptor(Context _mContext, List<Product> _transactionsList, boolean invoiceScreen) {
         this.mContext = _mContext;
@@ -49,8 +50,13 @@ public class VerifySaleAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHol
         final MyViewHolder viewHolder = (MyViewHolder) holder;
         final Product product = transactionsList.get(position);
         viewHolder.product.setText(product.getProductName());
-        viewHolder.qty.setText(Integer.toString(product.getOtherThanCurrentInventoryQty()));
-        viewHolder.price.setText(Double.toString(product.getOtherThanCurrentInventoryQty() * product.getUnitPrice()));
+        if(!isFromInvoiceSearchScreen) {
+            viewHolder.qty.setText(Integer.toString(product.getOtherThanCurrentInventoryQty()));
+            viewHolder.price.setText(Double.toString(product.getOtherThanCurrentInventoryQty() * product.getUnitPrice()));
+        }else{
+            viewHolder.qty.setText(Integer.toString(product.getQty()));
+            viewHolder.price.setText(Double.toString(product.getQty() * product.getUnitPrice()));
+        }
         if(invoiceScreen)
             viewHolder.checkbox.setVisibility(View.GONE);
         else{

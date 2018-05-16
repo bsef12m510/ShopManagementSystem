@@ -42,7 +42,7 @@ import retrofit2.Response;
 public class InvoiceSearchFragment extends Fragment {
     private String apiKey;
     private ProgressDialog pd;
-    private InvoiceFragment.OnFragmentInteractionListener mListener;
+    private InvoiceSearchFragment.OnFragmentInteractionListener mListener;
     private View contentView;
     private RecyclerView recyclerView;
     String[] listItems = {"item 1", "item 2 ", "list", "android"};
@@ -57,7 +57,7 @@ public class InvoiceSearchFragment extends Fragment {
     public List<Invoice> invoiceList = new ArrayList<>();
     public Double totalAmount, paidAmount, dueAmount;
     public EditText edtCustName, edtCustNo, edtTotalAmnt, edtPaidAmnt, edtDueAmnt;
-
+    public Invoice selectedInvoice;
 
     TextWatcher inputTextWatcher = new TextWatcher() {
         public void afterTextChanged(Editable s) {
@@ -126,7 +126,7 @@ public class InvoiceSearchFragment extends Fragment {
                 if(radioGroup.getCheckedRadioButtonId() == R.id.radio0)
                     getInvoiceData();
                 else if(radioGroup.getCheckedRadioButtonId() == R.id.radio1){
-
+                    getInvoiceDataByCell();
                 }
             }
         });
@@ -147,11 +147,12 @@ public class InvoiceSearchFragment extends Fragment {
             public void onResponse(Call<Invoice> call, Response<Invoice> response) {
                 pd.hide();
                 if (response != null && response.body() != null) {
+                    invoiceList.clear();
                     invObj = (Invoice) response.body();
                     invoiceList.add(invObj);
                     if (invoiceList != null) {
                         adaptor = new InvoiceAdapter(getActivity(), invoiceList, true);
-
+                        adaptor.parentFrag = InvoiceSearchFragment.this;
                         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                         recyclerView.setHasFixedSize(true);
                         recyclerView.setAdapter(adaptor);
@@ -169,6 +170,40 @@ public class InvoiceSearchFragment extends Fragment {
         });
     }
 
+    public void getInvoiceDataByCell() {
+        InvoiceService service =
+                ApiClient.getClient().create(InvoiceService.class);
+        Call<List<Invoice>> call;
+        call = service.getInvoiceByCell(apiKey, searchText.getText().toString());
+        pd.show();
+        call.enqueue(new Callback<List<Invoice>>() {
+            @Override
+            public void onResponse(Call<List<Invoice>> call, Response<List<Invoice>> response) {
+                pd.hide();
+                if (response != null && response.body() != null) {
+                    invoiceList.clear();
+                    invoiceList = (List<Invoice>) response.body();
+//                    invoiceList.add(invObj);
+                    if (invoiceList != null) {
+                        adaptor = new InvoiceAdapter(getActivity(), invoiceList, true);
+                        adaptor.parentFrag = InvoiceSearchFragment.this;
+                        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                        recyclerView.setHasFixedSize(true);
+                        recyclerView.setAdapter(adaptor);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Invoice>> call, Throwable t) {
+                // Log error here since request failed
+                Log.e("failure", "failure");
+                pd.hide();
+
+            }
+        });
+    }
+
     public void updateInvoice() {
 
     }
@@ -177,7 +212,7 @@ public class InvoiceSearchFragment extends Fragment {
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed() {
         if (mListener != null) {
-            mListener.onFragmentInteraction();
+            mListener.onInvoiceSearchFragmentInteraction(selectedInvoice);
         }
     }
 
@@ -195,7 +230,7 @@ public class InvoiceSearchFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (InvoiceFragment.OnFragmentInteractionListener) activity;
+            mListener = (InvoiceSearchFragment.OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -220,6 +255,6 @@ public class InvoiceSearchFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onInvoiceSearchFragmentInteraction();
+        void onInvoiceSearchFragmentInteraction( Invoice selectedInvoice);
     }
 }
