@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.apptriangle.pos.dashboard.fragment.AdminDashboardFragment;
 import com.apptriangle.pos.dashboard.fragment.DashboardFragment;
+import com.apptriangle.pos.model.Product;
 import com.apptriangle.pos.reports.fragment.ReportsFragment;
 import com.apptriangle.pos.reports.fragment.SalesReportFragment;
 import com.apptriangle.pos.util.expandableListAdapter.ExpandableAdapter;
@@ -231,7 +232,13 @@ public class MainDrawerActivity extends AppCompatActivity
     }
 
     @Override
-    public void onFragmentInteraction() {
+    public void onFragmentInteraction(ArrayList<Product> dataList) {
+        Fragment fragment = new ReportsFragment();
+        navigationView.setCheckedItem(R.id.nav_inventory);
+        ((ReportsFragment)fragment).responseList = dataList;
+        ((ReportsFragment)fragment).showDashboardData = true;
+        replaceFragment(fragment,"reportsFragment");
+
 
     }
 
