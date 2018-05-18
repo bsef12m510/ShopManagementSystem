@@ -6,7 +6,7 @@
 <div class="card mb-3">
     <div class="card-header">Manage User</div>
     <div class="card-body">
-        <form action="SaveNewUser" method="post">
+        <form action="AddNewUser" method="post">
             <div class="form-group">
                 <div class="form-row">
                     <div class="col-md-6">
@@ -28,6 +28,13 @@
                       }
                        
                   </select>
+            </div>
+            <div class="form-group">
+                <label for="sel2">Role</label>
+                <select class="form-control" id="sel2" name="role">
+                    <option>Salesman</option>
+                    <option>Owner</option>
+                </select>
             </div>
             <div class="form-group">
                 <div class="form-row">

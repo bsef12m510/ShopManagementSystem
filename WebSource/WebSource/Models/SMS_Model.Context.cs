@@ -30,9 +30,9 @@ namespace WebSource.Models
         public virtual DbSet<product_types> product_types { get; set; }
         public virtual DbSet<sale> sales { get; set; }
         public virtual DbSet<shop> shops { get; set; }
-        public virtual DbSet<user> users { get; set; }
         public virtual DbSet<msrmnt_units> msrmnt_units { get; set; }
         public virtual DbSet<purchase> purchases { get; set; }
         public virtual DbSet<product> products { get; set; }
+        public virtual DbSet<user> users { get; set; }
     }
 }

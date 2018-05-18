@@ -106,7 +106,7 @@
           </Key>
           <Property Name="user_id" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="password" Type="varchar" MaxLength="100" Nullable="false" />
-          <Property Name="role_id" Type="varchar" MaxLength="5" Nullable="false" />
+          <Property Name="role_id" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="username" Type="varchar" MaxLength="100" />
           <Property Name="api_key" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="shop_id" Type="int" Nullable="false" />
@@ -308,18 +308,9 @@
           <EntitySet Name="product_types" EntityType="SMS_DBModel.product_types" />
           <EntitySet Name="sales" EntityType="SMS_DBModel.sale" />
           <EntitySet Name="shops" EntityType="SMS_DBModel.shop" />
-          <EntitySet Name="users" EntityType="SMS_DBModel.user" />
           <AssociationSet Name="fk_sales_sh_id" Association="SMS_DBModel.fk_sales_sh_id">
             <End Role="shop" EntitySet="shops" />
             <End Role="sale" EntitySet="sales" />
-          </AssociationSet>
-          <AssociationSet Name="fk_sales_uid" Association="SMS_DBModel.fk_sales_uid">
-            <End Role="user" EntitySet="users" />
-            <End Role="sale" EntitySet="sales" />
-          </AssociationSet>
-          <AssociationSet Name="fk_users_shid" Association="SMS_DBModel.fk_users_shid">
-            <End Role="shop" EntitySet="shops" />
-            <End Role="user" EntitySet="users" />
           </AssociationSet>
           <EntitySet Name="msrmnt_units" EntityType="SMS_DBModel.msrmnt_units" />
           <AssociationSet Name="fk_inv_sid" Association="SMS_DBModel.fk_inv_sid">
@@ -329,10 +320,6 @@
           <EntitySet Name="purchases" EntityType="SMS_DBModel.purchase" />
           <AssociationSet Name="fk_pur_sh_id" Association="SMS_DBModel.fk_pur_sh_id">
             <End Role="shop" EntitySet="shops" />
-            <End Role="purchase" EntitySet="purchases" />
-          </AssociationSet>
-          <AssociationSet Name="fk_pur_uid" Association="SMS_DBModel.fk_pur_uid">
-            <End Role="user" EntitySet="users" />
             <End Role="purchase" EntitySet="purchases" />
           </AssociationSet>
           <EntitySet Name="products" EntityType="SMS_DBModel.product" />
@@ -355,6 +342,19 @@
           <AssociationSet Name="fk_sales_pid" Association="SMS_DBModel.fk_sales_pid">
             <End Role="product" EntitySet="products" />
             <End Role="sale" EntitySet="sales" />
+          </AssociationSet>
+          <EntitySet Name="users" EntityType="SMS_DBModel.user" />
+          <AssociationSet Name="fk_pur_uid" Association="SMS_DBModel.fk_pur_uid">
+            <End Role="user" EntitySet="users" />
+            <End Role="purchase" EntitySet="purchases" />
+          </AssociationSet>
+          <AssociationSet Name="fk_sales_uid" Association="SMS_DBModel.fk_sales_uid">
+            <End Role="user" EntitySet="users" />
+            <End Role="sale" EntitySet="sales" />
+          </AssociationSet>
+          <AssociationSet Name="fk_users_shid" Association="SMS_DBModel.fk_users_shid">
+            <End Role="shop" EntitySet="shops" />
+            <End Role="user" EntitySet="users" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="brand">
@@ -407,8 +407,8 @@
           <Property Name="sale_date" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="sale_time" Type="Time" Nullable="false" Precision="7" />
           <NavigationProperty Name="shop" Relationship="SMS_DBModel.fk_sales_sh_id" FromRole="sale" ToRole="shop" />
-          <NavigationProperty Name="user" Relationship="SMS_DBModel.fk_sales_uid" FromRole="sale" ToRole="user" />
           <NavigationProperty Name="product" Relationship="SMS_DBModel.fk_sales_pid" FromRole="sale" ToRole="product" />
+          <NavigationProperty Name="user" Relationship="SMS_DBModel.fk_sales_uid" FromRole="sale" ToRole="user" />
         </EntityType>
         <EntityType Name="shop">
           <Key>
@@ -418,24 +418,10 @@
           <Property Name="shope_name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="shop_mngr" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="sales" Relationship="SMS_DBModel.fk_sales_sh_id" FromRole="shop" ToRole="sale" />
-          <NavigationProperty Name="users" Relationship="SMS_DBModel.fk_users_shid" FromRole="shop" ToRole="user" />
           <NavigationProperty Name="inventories" Relationship="SMS_DBModel.fk_inv_sid" FromRole="shop" ToRole="inventory" />
           <NavigationProperty Name="purchases" Relationship="SMS_DBModel.fk_pur_sh_id" FromRole="shop" ToRole="purchase" />
           <Property Name="address" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="user">
-          <Key>
-            <PropertyRef Name="user_id" />
-          </Key>
-          <Property Name="user_id" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="password" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="role_id" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
-          <Property Name="username" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="api_key" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="shop_id" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="sales" Relationship="SMS_DBModel.fk_sales_uid" FromRole="user" ToRole="sale" />
-          <NavigationProperty Name="shop" Relationship="SMS_DBModel.fk_users_shid" FromRole="user" ToRole="shop" />
-          <NavigationProperty Name="purchases" Relationship="SMS_DBModel.fk_pur_uid" FromRole="user" ToRole="purchase" />
+          <NavigationProperty Name="users" Relationship="SMS_DBModel.fk_users_shid" FromRole="shop" ToRole="user" />
         </EntityType>
         <Association Name="fk_sales_sh_id">
           <End Type="SMS_DBModel.shop" Role="shop" Multiplicity="0..1" />
@@ -445,30 +431,6 @@
               <PropertyRef Name="shop_id" />
             </Principal>
             <Dependent Role="sale">
-              <PropertyRef Name="shop_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="fk_sales_uid">
-          <End Type="SMS_DBModel.user" Role="user" Multiplicity="1" />
-          <End Type="SMS_DBModel.sale" Role="sale" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="user">
-              <PropertyRef Name="user_id" />
-            </Principal>
-            <Dependent Role="sale">
-              <PropertyRef Name="agent_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="fk_users_shid">
-          <End Type="SMS_DBModel.shop" Role="shop" Multiplicity="1" />
-          <End Type="SMS_DBModel.user" Role="user" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="shop">
-              <PropertyRef Name="shop_id" />
-            </Principal>
-            <Dependent Role="user">
               <PropertyRef Name="shop_id" />
             </Dependent>
           </ReferentialConstraint>
@@ -512,8 +474,8 @@
           <Property Name="pur_date" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="pur_time" Type="Time" Nullable="false" Precision="7" />
           <NavigationProperty Name="shop" Relationship="SMS_DBModel.fk_pur_sh_id" FromRole="purchase" ToRole="shop" />
-          <NavigationProperty Name="user" Relationship="SMS_DBModel.fk_pur_uid" FromRole="purchase" ToRole="user" />
           <NavigationProperty Name="product" Relationship="SMS_DBModel.fk_pur_pid" FromRole="purchase" ToRole="product" />
+          <NavigationProperty Name="user" Relationship="SMS_DBModel.fk_pur_uid" FromRole="purchase" ToRole="user" />
         </EntityType>
         <Association Name="fk_pur_sh_id">
           <End Type="SMS_DBModel.shop" Role="shop" Multiplicity="1" />
@@ -524,18 +486,6 @@
             </Principal>
             <Dependent Role="purchase">
               <PropertyRef Name="shop_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="fk_pur_uid">
-          <End Type="SMS_DBModel.user" Role="user" Multiplicity="0..1" />
-          <End Type="SMS_DBModel.purchase" Role="purchase" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="user">
-              <PropertyRef Name="user_id" />
-            </Principal>
-            <Dependent Role="purchase">
-              <PropertyRef Name="agent_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -617,6 +567,56 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="user">
+          <Key>
+            <PropertyRef Name="user_id" />
+          </Key>
+          <Property Name="user_id" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="password" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="role_id" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="username" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="api_key" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="shop_id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="purchases" Relationship="SMS_DBModel.fk_pur_uid" FromRole="user" ToRole="purchase" />
+          <NavigationProperty Name="sales" Relationship="SMS_DBModel.fk_sales_uid" FromRole="user" ToRole="sale" />
+          <NavigationProperty Name="shop" Relationship="SMS_DBModel.fk_users_shid" FromRole="user" ToRole="shop" />
+        </EntityType>
+        <Association Name="fk_pur_uid">
+          <End Type="SMS_DBModel.user" Role="user" Multiplicity="0..1" />
+          <End Type="SMS_DBModel.purchase" Role="purchase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="user">
+              <PropertyRef Name="user_id" />
+            </Principal>
+            <Dependent Role="purchase">
+              <PropertyRef Name="agent_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_sales_uid">
+          <End Type="SMS_DBModel.user" Role="user" Multiplicity="1" />
+          <End Type="SMS_DBModel.sale" Role="sale" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="user">
+              <PropertyRef Name="user_id" />
+            </Principal>
+            <Dependent Role="sale">
+              <PropertyRef Name="agent_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_users_shid">
+          <End Type="SMS_DBModel.shop" Role="shop" Multiplicity="1" />
+          <End Type="SMS_DBModel.user" Role="user" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="shop">
+              <PropertyRef Name="shop_id" />
+            </Principal>
+            <Dependent Role="user">
+              <PropertyRef Name="shop_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -682,18 +682,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="users">
-            <EntityTypeMapping TypeName="SMS_DBModel.user">
-              <MappingFragment StoreEntitySet="users">
-                <ScalarProperty Name="shop_id" ColumnName="shop_id" />
-                <ScalarProperty Name="api_key" ColumnName="api_key" />
-                <ScalarProperty Name="username" ColumnName="username" />
-                <ScalarProperty Name="role_id" ColumnName="role_id" />
-                <ScalarProperty Name="password" ColumnName="password" />
-                <ScalarProperty Name="user_id" ColumnName="user_id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="msrmnt_units">
             <EntityTypeMapping TypeName="SMS_DBModel.msrmnt_units">
               <MappingFragment StoreEntitySet="msrmnt_units">
@@ -734,6 +722,18 @@
                 <ScalarProperty Name="product_type" ColumnName="product_type" />
                 <ScalarProperty Name="product_name" ColumnName="product_name" />
                 <ScalarProperty Name="product_id" ColumnName="product_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="users">
+            <EntityTypeMapping TypeName="SMS_DBModel.user">
+              <MappingFragment StoreEntitySet="users">
+                <ScalarProperty Name="shop_id" ColumnName="shop_id" />
+                <ScalarProperty Name="api_key" ColumnName="api_key" />
+                <ScalarProperty Name="username" ColumnName="username" />
+                <ScalarProperty Name="role_id" ColumnName="role_id" />
+                <ScalarProperty Name="password" ColumnName="password" />
+                <ScalarProperty Name="user_id" ColumnName="user_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -31,7 +31,7 @@ namespace WebSource.Models
         public System.TimeSpan sale_time { get; set; }
     
         public virtual shop shop { get; set; }
-        public virtual user user { get; set; }
         public virtual product product { get; set; }
+        public virtual user user { get; set; }
     }
 }

@@ -101,7 +101,7 @@
     </Key>
     <Property Name="user_id" Type="varchar" MaxLength="50" Nullable="false" />
     <Property Name="password" Type="varchar" MaxLength="100" Nullable="false" />
-    <Property Name="role_id" Type="varchar" MaxLength="5" Nullable="false" />
+    <Property Name="role_id" Type="varchar" MaxLength="10" Nullable="false" />
     <Property Name="username" Type="varchar" MaxLength="100" />
     <Property Name="api_key" Type="varchar" MaxLength="100" Nullable="false" />
     <Property Name="shop_id" Type="int" Nullable="false" />
