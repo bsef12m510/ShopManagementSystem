@@ -13,12 +13,14 @@ import android.widget.TextView;
 
 import com.apptriangle.pos.R;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
@@ -76,7 +78,34 @@ public class BarChartFragment extends Fragment implements OnChartGestureListener
         mChart.getAxisRight().setEnabled(false);
 
         XAxis xAxis = mChart.getXAxis();
-        xAxis.setEnabled(false);
+//        xAxis.setEnabled(false);
+
+        xAxis.setDrawLabels(true);
+        final String[] ds = new String[7];
+        ds[0]="Lights";
+        ds[1]="Generator";
+        ds[2]="Ups";
+        ds[3]="Ac";
+        ds[4]="Lights";
+        ds[5]="Fan";
+        ds[6]="Ac";
+
+
+
+        xAxis.setDrawLabels(true);
+        xAxis.setValueFormatter(new IAxisValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                Log.i("zain", "value " + value);
+                try {
+                    return ds[Math.round(value)];
+                }catch (Exception e){
+                    return ds[0];
+                }
+            }
+
+
+        });
 
         // programatically add the chart
         FrameLayout parent = (FrameLayout) v.findViewById(R.id.parentLayout);
@@ -138,10 +167,11 @@ public class BarChartFragment extends Fragment implements OnChartGestureListener
 //            entries = FileUtils.loadEntriesFromAssets(getActivity().getAssets(), "stacked_bars.txt");
 
             for (int j = 0; j < count; j++) {
-                entries.add(new BarEntry(j, (float) (Math.random() * range) + range / 4));
+                entries.add(new BarEntry(j, (float) (Math.random() * range) + range / 4, mLabels));
             }
 
             BarDataSet ds = new BarDataSet(entries, getLabel(i));
+//            ds.setStackLabels(mLabels);
             ds.setColors(ColorTemplate.VORDIPLOM_COLORS);
             sets.add(ds);
         }
@@ -151,7 +181,7 @@ public class BarChartFragment extends Fragment implements OnChartGestureListener
         return d;
     }
 
-    private String[] mLabels = new String[]{"Company A", "Company B", "Company C", "Company D", "Company E", "Company F"};
+    private String[] mLabels = new String[]{ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec" };
 //    private String[] mXVals = new String[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec" };
 
     private String getLabel(int i) {

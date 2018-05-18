@@ -20,6 +20,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.apptriangle.pos.InvoiceSearchFragment.adapter.InvoiceAdapter;
 import com.apptriangle.pos.InvoiceSearchFragment.fragment.InvoiceSearchFragment;
@@ -61,7 +63,12 @@ public class AdminDashboardFragment extends Fragment {
     private SalesAdminAdapter adapter;
     String[] listItems = {"item 1", "item 2 ", "list", "android"};
     public ArrayList<Product> topSellingProductsList = new ArrayList<>();
+    public ArrayList<Product> lowStockProductsList = new ArrayList<>();
+    public ArrayList<Product> inventoryList = new ArrayList<>();
     ArrayList<Product> dataList = new ArrayList<>();
+    TextView tvLowStockCount, tvInventoryCount;
+    LinearLayout lytLowStock, lytInventory;
+    public boolean isSale;
 
     public AdminDashboardFragment() {
         // Required empty public constructor
@@ -81,10 +88,37 @@ public class AdminDashboardFragment extends Fragment {
         pd.setMessage("Processing...");
         pd.setCanceledOnTouchOutside(false);
         pager = (ViewPager) contentView.findViewById(R.id.viewPager);
+        lytLowStock = (LinearLayout) contentView.findViewById(R.id.lytLowStock);
+        lytInventory = (LinearLayout) contentView.findViewById(R.id.lytInventory);
+        tvLowStockCount = (TextView) contentView.findViewById(R.id.lowStockCount);
+        tvInventoryCount = (TextView) contentView.findViewById(R.id.inventoryCount);
         adaptor = new MyPagerAdapter(((AppCompatActivity) getActivity()).getSupportFragmentManager());
         pager.setAdapter(adaptor);
         tabLayout = (TabLayout) contentView.findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(pager);
+
+        lytLowStock.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                if(lowStockProductsList != null && lowStockProductsList.size() > 0) {
+                    dataList = lowStockProductsList;
+                    isSale = false;
+                    onButtonPressed();
+                }
+            }
+        });
+
+        lytInventory.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                if(inventoryList != null && inventoryList.size() > 0) {
+                    dataList = inventoryList;
+                    isSale = false;
+                    onButtonPressed();
+                }
+            }
+        });
+
         initialize();
 
     }
@@ -108,7 +142,7 @@ public class AdminDashboardFragment extends Fragment {
         call.enqueue(new Callback<List<Product>>() {
             @Override
             public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
-                pd.hide();
+//                pd.hide();
                 if (response != null && response.body() != null) {
                     topSellingProductsList.clear();
                     topSellingProductsList = (ArrayList<Product>) response.body();
@@ -142,6 +176,69 @@ public class AdminDashboardFragment extends Fragment {
                         }
                     }
                 }
+                getInventory();
+            }
+
+            @Override
+            public void onFailure(Call<List<Product>> call, Throwable t) {
+                // Log error here since request failed
+                Log.e("failure", "failure");
+//                pd.hide();
+                getInventory();
+            }
+        });
+    }
+
+    public void getInventory() {
+        DashboardService service =
+                ApiClient.getClient().create(DashboardService.class);
+        Call<List<Product>> call;
+        call = service.getInventory(apiKey);
+//        pd.show();
+
+        call.enqueue(new Callback<List<Product>>() {
+            @Override
+            public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
+//                pd.hide();
+                if (response != null && response.body() != null) {
+                    inventoryList.clear();
+                    inventoryList = (ArrayList<Product>) response.body();
+                    if (inventoryList != null) {
+                        tvInventoryCount.setText(Integer.toString(inventoryList.size()));
+                    }
+                }
+                getLowStockProducts();
+            }
+
+            @Override
+            public void onFailure(Call<List<Product>> call, Throwable t) {
+                // Log error here since request failed
+                Log.e("failure", "failure");
+//                pd.hide();
+                getLowStockProducts();
+
+            }
+        });
+    }
+
+    public void getLowStockProducts() {
+        DashboardService service =
+                ApiClient.getClient().create(DashboardService.class);
+        Call<List<Product>> call;
+        call = service.getLowStockProducts(apiKey);
+//        pd.show();
+
+        call.enqueue(new Callback<List<Product>>() {
+            @Override
+            public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
+                pd.hide();
+                if (response != null && response.body() != null) {
+                    lowStockProductsList.clear();
+                    lowStockProductsList = (ArrayList<Product>) response.body();
+                    if (lowStockProductsList != null) {
+                        tvLowStockCount.setText(Integer.toString(lowStockProductsList.size()));
+                    }
+                }
             }
 
             @Override
@@ -153,6 +250,8 @@ public class AdminDashboardFragment extends Fragment {
             }
         });
     }
+
+
 
 
     public void initialize() {
@@ -169,7 +268,7 @@ public class AdminDashboardFragment extends Fragment {
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed() {
         if (mListener != null) {
-            mListener.onFragmentInteraction(dataList);
+            mListener.onFragmentInteraction(dataList, isSale);
         }
     }
 
@@ -192,6 +291,7 @@ public class AdminDashboardFragment extends Fragment {
     }
 
     public void openMoreTopSellingProducts() {
+        isSale = true;
         onButtonPressed();
     }
 
@@ -207,7 +307,7 @@ public class AdminDashboardFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(ArrayList<Product> dataList);
+        void onFragmentInteraction(ArrayList<Product> dataList , boolean isSale);
     }
 
     @Override

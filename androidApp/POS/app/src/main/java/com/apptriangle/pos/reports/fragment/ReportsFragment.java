@@ -58,7 +58,8 @@ import retrofit2.Response;
 /**
  * Created by zeeshan on 4/5/2018.
  */
-public class ReportsFragment  extends Fragment {
+public class ReportsFragment extends Fragment {
+    public boolean isSale;
     public static String HALF_MONTH_DATE_FORMAT = "MMM dd, yyyy";
     public static String SERVER_DATE_FORMAT = "MM/dd/yyyy";
     String pickerDateSring;
@@ -74,7 +75,7 @@ public class ReportsFragment  extends Fragment {
     private ProductType selectedProductType;
     private Brand selectedBrand;
     private OnFragmentInteractionListener mListener;
-    public static final int COLUMN_SIZE = 7;
+    public static final int COLUMN_SIZE = 8;
     public static int ROW_SIZE = 1;
     // Columns indexes
     public static final int MOOD_COLUMN_INDEX = 3;
@@ -86,7 +87,7 @@ public class ReportsFragment  extends Fragment {
     public static final int BOY = 0;
     public static final int GIRL = 1;
     private View contentView;
-    String[] listItems = {"item 1", "item 2 ", "list", "android" };
+    String[] listItems = {"item 1", "item 2 ", "list", "android"};
     private Button checkoutBtn;
     TableView tableView;
     private ProgressDialog pd;
@@ -97,8 +98,8 @@ public class ReportsFragment  extends Fragment {
     ArrayList<ProductType> productsList;
     ArrayList<Brand> brandsList;
     ArrayList<User> usersList;
-     public ArrayList<Product> responseList = new ArrayList<>();
-     public boolean showDashboardData;
+    public ArrayList<Product> responseList = new ArrayList<>();
+    public boolean showDashboardData;
 
     public ReportsFragment() {
         // Required empty public constructor
@@ -120,26 +121,28 @@ public class ReportsFragment  extends Fragment {
         contentView = inflater.inflate(R.layout.fragment_reports, container, false);
         return contentView;
     }
+
     private void getApiKey() {
         SharedPreferences shared = getActivity().getSharedPreferences("com.appTriangle.pos", Context.MODE_PRIVATE);
         apiKey = shared.getString("api_key", "");
 
     }
-    public void initialize(){
+
+    public void initialize() {
         getApiKey();
         pd = new ProgressDialog(getActivity());
         pd.setMessage("Processing...");
         pd.setCanceledOnTouchOutside(false);
-        tableView = (TableView)contentView.findViewById(R.id.content_container);
-        customContainer = (CardView)contentView.findViewById(R.id.customContainer);
+        tableView = (TableView) contentView.findViewById(R.id.content_container);
+        customContainer = (CardView) contentView.findViewById(R.id.customContainer);
         productsDropdown = (Spinner) contentView.findViewById(R.id.productsDropdown);
         brandsDropdown = (Spinner) contentView.findViewById(R.id.brandsDropdown);
         usersDropdown = (Spinner) contentView.findViewById(R.id.usersDropdown);
-        dateFromContainer = (LinearLayout)contentView.findViewById(R.id.dateFromContainer);
-        dateToContainer = (LinearLayout)contentView.findViewById(R.id.dateToContainer);
-        btnGo =(Button)contentView.findViewById(R.id.btnGo);
-        txtDateFrom = (TextView)contentView.findViewById(R.id.txtDateFrom);
-        txtDateTo = (TextView)contentView.findViewById(R.id.txtDateTo);
+        dateFromContainer = (LinearLayout) contentView.findViewById(R.id.dateFromContainer);
+        dateToContainer = (LinearLayout) contentView.findViewById(R.id.dateToContainer);
+        btnGo = (Button) contentView.findViewById(R.id.btnGo);
+        txtDateFrom = (TextView) contentView.findViewById(R.id.txtDateFrom);
+        txtDateTo = (TextView) contentView.findViewById(R.id.txtDateTo);
 
         setupDropdowns();
 
@@ -155,7 +158,7 @@ public class ReportsFragment  extends Fragment {
                 showDatePickerDialog(txtDateTo);
             }
         });
-        btnGo.setOnClickListener(new View.OnClickListener(){
+        btnGo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showDashboardData = false;
@@ -166,12 +169,12 @@ public class ReportsFragment  extends Fragment {
             }
         });
 
-        radioGroup =(RadioGroup)contentView.findViewById(R.id.radioGroup1);
+        radioGroup = (RadioGroup) contentView.findViewById(R.id.radioGroup1);
 
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                switch(i){
+                switch (i) {
                     case R.id.radio0:
                         customContainer.setVisibility(View.GONE);
                         tableView.setVisibility(View.VISIBLE);
@@ -190,13 +193,13 @@ public class ReportsFragment  extends Fragment {
             }
         });
         List<SalesResponse> list = new ArrayList<>();
-        for (int i = 0; i <20 ; i++) {
+        for (int i = 0; i < 20; i++) {
             SalesResponse tmp = new SalesResponse();
             list.add(tmp);
         }
 
 
-        if(showDashboardData) {
+        if (showDashboardData) {
             tableView.setVisibility(View.VISIBLE);
             ROW_SIZE = responseList.size();
             displayReport();
@@ -213,13 +216,13 @@ public class ReportsFragment  extends Fragment {
     }
 
 
-    public void getReportData(){
+    public void getReportData() {
         ReportService service =
                 ApiClient.getClient().create(ReportService.class);
 
         Call<List<Product>> call = service.getReportData(apiKey, convertDate(txtDateFrom.getText().toString()),
                 convertDate(txtDateTo.getText().toString()), ((selectedProductType != null) ? selectedProductType.getTypeId() : -1),
-                ((selectedBrand != null) ? selectedBrand.getBrandId() : -1),((selectedUser != null) ? selectedUser.user_id : ""));
+                ((selectedBrand != null) ? selectedBrand.getBrandId() : -1), ((selectedUser != null) ? selectedUser.user_id : ""));
         pd.show();
         call.enqueue(new Callback<List<Product>>() {
             @Override
@@ -247,7 +250,7 @@ public class ReportsFragment  extends Fragment {
         });
     }
 
-    public String  convertDate(String dateString){
+    public String convertDate(String dateString) {
         SimpleDateFormat df = new SimpleDateFormat(HALF_MONTH_DATE_FORMAT);
         Date startDate;
         try {
@@ -261,7 +264,7 @@ public class ReportsFragment  extends Fragment {
         }
     }
 
-    public void getUsers(){
+    public void getUsers() {
         ReportService service =
                 ApiClient.getClient().create(ReportService.class);
 
@@ -276,7 +279,7 @@ public class ReportsFragment  extends Fragment {
                     User tmp = new User();
 
                     tmp.user_id = "Select User";
-                    usersList.add(0,tmp);
+                    usersList.add(0, tmp);
                     setUsersDropdown(usersList, usersDropdown);
 
                 }
@@ -292,7 +295,7 @@ public class ReportsFragment  extends Fragment {
         });
     }
 
-    public void getAllProductTypes(){
+    public void getAllProductTypes() {
         SalesService service =
                 ApiClient.getClient().create(SalesService.class);
 
@@ -307,7 +310,7 @@ public class ReportsFragment  extends Fragment {
                     ProductType tmp = new ProductType();
 
                     tmp.setTypeName("Select Product Type");
-                    productsList.add(0,tmp);
+                    productsList.add(0, tmp);
                     setProductTypesDropdown(productsList, productsDropdown);
 
                 }
@@ -323,7 +326,7 @@ public class ReportsFragment  extends Fragment {
         });
     }
 
-    public void getBrands(){
+    public void getBrands() {
         SalesService service =
                 ApiClient.getClient().create(SalesService.class);
 
@@ -338,7 +341,7 @@ public class ReportsFragment  extends Fragment {
                     Brand tmp = new Brand();
                     tmp.setBrandName("Select Brand");
 
-                    brandsList.add(0,tmp);
+                    brandsList.add(0, tmp);
                     setBrandDropdown(brandsList, brandsDropdown);
 
                 }
@@ -354,14 +357,14 @@ public class ReportsFragment  extends Fragment {
         });
     }
 
-    public void setupDropdowns(){
+    public void setupDropdowns() {
         setBrandsDropdownLabel();
         getAllProductTypes();
         getUsers();
 
     }
 
-    public void displayReport(){
+    public void displayReport() {
         // Create our custom TableView Adapter
         TableViewAdapter adapter = new TableViewAdapter(getActivity());
 
@@ -406,7 +409,7 @@ public class ReportsFragment  extends Fragment {
     private List<RowHeader> getRowHeaderList() {
         List<RowHeader> list = new ArrayList<>();
         for (int i = 0; i < ROW_SIZE; i++) {
-            String rh = Integer.toString(i+1) ;
+            String rh = Integer.toString(i + 1);
 
             RowHeader header = new RowHeader(String.valueOf(i), rh);
             list.add(header);
@@ -419,19 +422,21 @@ public class ReportsFragment  extends Fragment {
     private List<ColumnHeader> getColumnHeaderList() {
         List<ColumnHeader> list = new ArrayList<>();
         String title;
-        if(!showDashboardData) {
+        if (!showDashboardData) {
             for (int i = 0; i < COLUMN_SIZE; i++) {
                 if (i == 0)
                     title = "Product";
                 else if (i == 1)
                     title = "Brand";
                 else if (i == 2)
-                    title = "Stock";
+                    title = "Model";
                 else if (i == 3)
-                    title = "UoM";
+                    title = "Stock";
                 else if (i == 4)
-                    title = "Unit/B-Price";
+                    title = "UoM";
                 else if (i == 5)
+                    title = "Unit/B-Price";
+                else if (i == 6)
                     title = "Current Stock";
                 else
                     title = "Sold";
@@ -439,19 +444,25 @@ public class ReportsFragment  extends Fragment {
                 ColumnHeader header = new ColumnHeader(String.valueOf(i), title);
                 list.add(header);
             }
-        }else{
+        } else {
 
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 6; i++) {
                 if (i == 0)
                     title = "Product";
                 else if (i == 1)
                     title = "Brand";
                 else if (i == 2)
-                    title = "UoM";
+                    title = "Model";
                 else if (i == 3)
+                    title = "UoM";
+                else if (i == 4)
                     title = "Unit/B-Price";
-                else
-                    title = "Sold";
+                else {
+                    if (isSale)
+                        title = "Sold";
+                    else
+                        title = "Qty";
+                }
 
                 ColumnHeader header = new ColumnHeader(String.valueOf(i), title);
                 list.add(header);
@@ -466,7 +477,7 @@ public class ReportsFragment  extends Fragment {
         List<List<Cell>> list = new ArrayList<>();
         for (int i = 0; i < ROW_SIZE; i++) {
             List<Cell> cellList = new ArrayList<>();
-            if(!showDashboardData) {
+            if (!showDashboardData) {
                 for (int j = 0; j < COLUMN_SIZE; j++) {
                     Object text = "cell " + j + " " + i;
 
@@ -476,12 +487,14 @@ public class ReportsFragment  extends Fragment {
                     } else if (j == 1) {
                         text = responseList.get(i).getBrand().getBrandName();
                     } else if (j == 2) {
-                        text = Integer.toString(responseList.get(i).getQty() + responseList.get(i).getOtherThanCurrentInventoryQty());
+                        text = responseList.get(i).getProductName();
                     } else if (j == 3) {
-                        text = responseList.get(i).getUnitOfMsrmnt().getDescription();
+                        text = Integer.toString(responseList.get(i).getQty() + responseList.get(i).getOtherThanCurrentInventoryQty());
                     } else if (j == 4) {
-                        text = Double.toString(responseList.get(i).getUnitPrice());
+                        text = responseList.get(i).getUnitOfMsrmnt().getDescription();
                     } else if (j == 5) {
+                        text = Double.toString(responseList.get(i).getUnitPrice());
+                    } else if (j == 6) {
                         text = Integer.toString(responseList.get(i).getQty());
                     } else {
                         text = Integer.toString(responseList.get(i).getOtherThanCurrentInventoryQty());
@@ -495,8 +508,8 @@ public class ReportsFragment  extends Fragment {
 
                     cellList.add(cell);
                 }
-            }else{
-                for (int j = 0; j < 5; j++) {
+            } else {
+                for (int j = 0; j < 6; j++) {
                     Object text = "cell " + j + " " + i;
 
                     final int random = new Random().nextInt();
@@ -505,9 +518,11 @@ public class ReportsFragment  extends Fragment {
                     } else if (j == 1) {
                         text = responseList.get(i).getBrand().getBrandName();
                     } else if (j == 2) {
+                        text = responseList.get(i).getProductName();
+                    } else if (j == 3) {
                         text = responseList.get(i).getUnitOfMsrmnt().getDescription();
 
-                    } else if (j == 3) {
+                    } else if (j == 4) {
                         text = Double.toString(responseList.get(i).getUnitPrice());
                     } else {
                         text = Integer.toString(responseList.get(i).getQty());
@@ -529,7 +544,6 @@ public class ReportsFragment  extends Fragment {
     }
 
 
-
     // TODO: Rename method, update argument and hook method into UI event
     public void onCheckoutButtonPressed() {
         if (mListener != null) {
@@ -537,8 +551,7 @@ public class ReportsFragment  extends Fragment {
         }
     }
 
-    void setTitle()
-    {
+    void setTitle() {
         ((Activity) getActivity()).setTitle("REPORT");
     }
 
@@ -560,7 +573,6 @@ public class ReportsFragment  extends Fragment {
     }
 
 
-
     private void showDatePickerDialog(final TextView dateInputField) {
         final Calendar current = Calendar.getInstance();
         final Calendar dpdCalendar = Calendar.getInstance();
@@ -573,11 +585,11 @@ public class ReportsFragment  extends Fragment {
                 dpdCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
 //                if (dpdCalendar.compareTo(current) > -1) {
-                    final String myFormat = HALF_MONTH_DATE_FORMAT;
-                    SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+                final String myFormat = HALF_MONTH_DATE_FORMAT;
+                SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
-                    pickerDateSring = sdf.format(dpdCalendar.getTime());
-                    dateInputField.setText(pickerDateSring);
+                pickerDateSring = sdf.format(dpdCalendar.getTime());
+                dateInputField.setText(pickerDateSring);
 
 //                    fragment.setDateFrom(dateFrom);
 
@@ -684,11 +696,11 @@ public class ReportsFragment  extends Fragment {
         dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(position != 0) {
+                if (position != 0) {
                     selectedProductType = (ProductType) parent.getItemAtPosition(position);
 
                     getBrands();
-                }else{
+                } else {
                     selectedProductType = null;
                     setBrandsDropdownLabel();
                 }
@@ -762,8 +774,8 @@ public class ReportsFragment  extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                if(position != 0)
-                     selectedBrand = (Brand) parent.getItemAtPosition(position);
+                if (position != 0)
+                    selectedBrand = (Brand) parent.getItemAtPosition(position);
                 else
                     selectedBrand = null;
                 // If user change the default selection
@@ -826,7 +838,7 @@ public class ReportsFragment  extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                if(position != 0)
+                if (position != 0)
                     selectedUser = (User) parent.getItemAtPosition(position);
                 else
                     selectedUser = null;

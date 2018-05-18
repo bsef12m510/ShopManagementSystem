@@ -222,7 +222,7 @@ namespace WebSource.Controllers
                     {
                         p.qty = productsMap[p.product_id].qty;
                     }
-                    distinctList = distinctList.OrderBy(p => p.qty);
+                    distinctList = distinctList.OrderByDescending(p => p.qty);
                     return Ok(distinctList);
                 }
             }
@@ -239,7 +239,8 @@ namespace WebSource.Controllers
             if (null != user)
             {
                 var shop = db.shops.FirstOrDefault(x => x.shop_id == user.shop_id);
-                var inventory = db.inventories.Where(x => x.shop_id == shop.shop_id);
+                var inventory = db.inventories.Where(x => x.shop_id == shop.shop_id && x.is_prod_active.Equals("Y")
+                                                                                    && x.is_brand_active.Equals("Y"));
                 var cproducts = new List<CProduct>();
                 foreach (var i in inventory)
                 {
@@ -310,6 +311,40 @@ namespace WebSource.Controllers
 
             }
             return BadRequest();
+        }
+
+        [HttpGet]
+        [ActionName("getInventory")]
+        public IHttpActionResult getInventory(string apiKey)
+        {
+            var cproducts = new List<CProduct>();
+            SMS_DBEntities1 db = new SMS_DBEntities1();
+            var user = db.users.FirstOrDefault(y => y.api_key.Equals(apiKey));
+            if (null != user)
+            {
+                var shop = db.shops.FirstOrDefault(x => x.shop_id == user.shop_id);
+                var inventory = db.inventories.Where(x => x.shop_id == shop.shop_id && x.is_prod_active.Equals("Y")
+                                                                                    && x.is_brand_active.Equals("Y"));
+
+                foreach (var i in inventory)
+                {
+                    var p = db.products.FirstOrDefault(y => y.product_id == i.product_id);
+                    if (null != p)
+                    {
+                        var type = db.product_types.FirstOrDefault(y => y.type_id == p.product_type);
+                        var brand = db.brands.FirstOrDefault(y => y.brand_id == p.brand_id);
+                        var uom = db.msrmnt_units.FirstOrDefault(y => y.sr_no == p.unit_of_msrmnt);
+
+                        cproducts.Add(new CProduct(p, type, brand, uom, i.prod_quant));
+                    }
+                }
+                IEnumerable<CProduct> list = cproducts.OrderBy(x => x.qty);
+                return Ok(cproducts);
+            }
+            else
+            {
+                return Ok(cproducts);
+            }
         }
     }
 

@@ -232,11 +232,12 @@ public class MainDrawerActivity extends AppCompatActivity
     }
 
     @Override
-    public void onFragmentInteraction(ArrayList<Product> dataList) {
+    public void onFragmentInteraction(ArrayList<Product> dataList, boolean isSale) {
         Fragment fragment = new ReportsFragment();
         navigationView.setCheckedItem(R.id.nav_inventory);
         ((ReportsFragment)fragment).responseList = dataList;
         ((ReportsFragment)fragment).showDashboardData = true;
+        ((ReportsFragment)fragment).isSale = isSale;
         replaceFragment(fragment,"reportsFragment");
 
 
