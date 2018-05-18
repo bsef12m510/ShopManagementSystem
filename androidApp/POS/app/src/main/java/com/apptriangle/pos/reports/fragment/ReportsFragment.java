@@ -97,7 +97,8 @@ public class ReportsFragment  extends Fragment {
     ArrayList<ProductType> productsList;
     ArrayList<Brand> brandsList;
     ArrayList<User> usersList;
-    ArrayList<Product> responseList;
+     public ArrayList<Product> responseList = new ArrayList<>();
+     public boolean showDashboardData;
 
     public ReportsFragment() {
         // Required empty public constructor
@@ -157,6 +158,8 @@ public class ReportsFragment  extends Fragment {
         btnGo.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
+                showDashboardData = false;
+                responseList = new ArrayList<>();
                 tableView.setVisibility(View.VISIBLE);
                 getReportData();
 
@@ -193,7 +196,11 @@ public class ReportsFragment  extends Fragment {
         }
 
 
-
+        if(showDashboardData) {
+            tableView.setVisibility(View.VISIBLE);
+            ROW_SIZE = responseList.size();
+            displayReport();
+        }
        /* recyclerView = (RecyclerView)contentView.findViewById(R.id.rcView);
         adapter = new ReportsAdaptor(getActivity(), list);
 
@@ -220,6 +227,7 @@ public class ReportsFragment  extends Fragment {
                 pd.hide();
                 if (response != null && response.body() != null) {
                     ROW_SIZE = response.body().size();
+                    responseList = new ArrayList<>();
                     responseList = (ArrayList<Product>) response.body();
                     Brand tmp = new Brand();
                     tmp.setBrandName("Select Brand");
@@ -411,24 +419,43 @@ public class ReportsFragment  extends Fragment {
     private List<ColumnHeader> getColumnHeaderList() {
         List<ColumnHeader> list = new ArrayList<>();
         String title;
-        for (int i = 0; i < COLUMN_SIZE; i++) {
-            if(i == 0)
-                title = "Product";
-            else if(i == 1)
-                title = "Brand";
-            else if(i == 2)
-                title = "Stock";
-            else if(i == 3)
-                title = "UoM";
-            else if(i == 4)
-                title = "Unit/B-Price";
-            else if(i == 5)
-                title = "Current Stock";
-            else
-                title = "Sold";
+        if(!showDashboardData) {
+            for (int i = 0; i < COLUMN_SIZE; i++) {
+                if (i == 0)
+                    title = "Product";
+                else if (i == 1)
+                    title = "Brand";
+                else if (i == 2)
+                    title = "Stock";
+                else if (i == 3)
+                    title = "UoM";
+                else if (i == 4)
+                    title = "Unit/B-Price";
+                else if (i == 5)
+                    title = "Current Stock";
+                else
+                    title = "Sold";
 
-            ColumnHeader header = new ColumnHeader(String.valueOf(i), title);
-            list.add(header);
+                ColumnHeader header = new ColumnHeader(String.valueOf(i), title);
+                list.add(header);
+            }
+        }else{
+
+            for (int i = 0; i < 5; i++) {
+                if (i == 0)
+                    title = "Product";
+                else if (i == 1)
+                    title = "Brand";
+                else if (i == 2)
+                    title = "UoM";
+                else if (i == 3)
+                    title = "Unit/B-Price";
+                else
+                    title = "Sold";
+
+                ColumnHeader header = new ColumnHeader(String.valueOf(i), title);
+                list.add(header);
+            }
         }
 
         return list;
@@ -439,33 +466,61 @@ public class ReportsFragment  extends Fragment {
         List<List<Cell>> list = new ArrayList<>();
         for (int i = 0; i < ROW_SIZE; i++) {
             List<Cell> cellList = new ArrayList<>();
-            for (int j = 0; j < COLUMN_SIZE; j++) {
-                Object text = "cell " + j + " " + i;
+            if(!showDashboardData) {
+                for (int j = 0; j < COLUMN_SIZE; j++) {
+                    Object text = "cell " + j + " " + i;
 
-                final int random = new Random().nextInt();
-                if (j == 0) {
-                    text = responseList.get(i).getProductType().getTypeName();
-                } else if (j == 1) {
-                    text = responseList.get(i).getBrand().getBrandName();
-                } else if (j == 2) {
-                    text = Integer.toString(responseList.get(i).getQty() + responseList.get(i).getOtherThanCurrentInventoryQty());
-                } else if (j == 3) {
-                    text = responseList.get(i).getUnitOfMsrmnt().getDescription();
-                } else if (j == 4) {
-                    text = Double.toString(responseList.get(i).getUnitPrice());
-                } else if (j == 5) {
-                    text = Integer.toString(responseList.get(i).getQty());
-                } else {
-                    text = Integer.toString(responseList.get(i).getOtherThanCurrentInventoryQty());
+                    final int random = new Random().nextInt();
+                    if (j == 0) {
+                        text = responseList.get(i).getProductType().getTypeName();
+                    } else if (j == 1) {
+                        text = responseList.get(i).getBrand().getBrandName();
+                    } else if (j == 2) {
+                        text = Integer.toString(responseList.get(i).getQty() + responseList.get(i).getOtherThanCurrentInventoryQty());
+                    } else if (j == 3) {
+                        text = responseList.get(i).getUnitOfMsrmnt().getDescription();
+                    } else if (j == 4) {
+                        text = Double.toString(responseList.get(i).getUnitPrice());
+                    } else if (j == 5) {
+                        text = Integer.toString(responseList.get(i).getQty());
+                    } else {
+                        text = Integer.toString(responseList.get(i).getOtherThanCurrentInventoryQty());
+                    }
+
+                    // Create dummy id.
+                    String id = j + "-" + i;
+
+                    Cell cell;
+                    cell = new Cell(id, text);
+
+                    cellList.add(cell);
                 }
+            }else{
+                for (int j = 0; j < 5; j++) {
+                    Object text = "cell " + j + " " + i;
 
-                // Create dummy id.
-                String id = j + "-" + i;
+                    final int random = new Random().nextInt();
+                    if (j == 0) {
+                        text = responseList.get(i).getProductType().getTypeName();
+                    } else if (j == 1) {
+                        text = responseList.get(i).getBrand().getBrandName();
+                    } else if (j == 2) {
+                        text = responseList.get(i).getUnitOfMsrmnt().getDescription();
 
-                Cell cell;
-                cell = new Cell(id, text);
+                    } else if (j == 3) {
+                        text = Double.toString(responseList.get(i).getUnitPrice());
+                    } else {
+                        text = Integer.toString(responseList.get(i).getQty());
+                    }
 
-                cellList.add(cell);
+                    // Create dummy id.
+                    String id = j + "-" + i;
+
+                    Cell cell;
+                    cell = new Cell(id, text);
+
+                    cellList.add(cell);
+                }
             }
             list.add(cellList);
         }

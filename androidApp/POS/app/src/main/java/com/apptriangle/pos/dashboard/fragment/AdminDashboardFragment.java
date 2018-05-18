@@ -2,6 +2,9 @@ package com.apptriangle.pos.dashboard.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -10,14 +13,23 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.apptriangle.pos.InvoiceSearchFragment.adapter.InvoiceAdapter;
+import com.apptriangle.pos.InvoiceSearchFragment.fragment.InvoiceSearchFragment;
+import com.apptriangle.pos.InvoiceSearchFragment.service.InvoiceService;
 import com.apptriangle.pos.R;
+import com.apptriangle.pos.api.ApiClient;
 import com.apptriangle.pos.dashboard.adapter.SalesAdminAdapter;
+import com.apptriangle.pos.dashboard.service.DashboardService;
+import com.apptriangle.pos.model.Invoice;
+import com.apptriangle.pos.model.Product;
 import com.apptriangle.pos.sales.response.SalesResponse;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
@@ -29,10 +41,16 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 /**
  * Created by zeeshan on 3/28/2018.
  */
 public class AdminDashboardFragment extends Fragment {
+    private String apiKey;
+    private ProgressDialog pd;
     private PieChart mChart;
     private OnFragmentInteractionListener mListener;
     private RecyclerView recyclerView;
@@ -42,16 +60,26 @@ public class AdminDashboardFragment extends Fragment {
     ViewPager pager;
     private SalesAdminAdapter adapter;
     String[] listItems = {"item 1", "item 2 ", "list", "android"};
-
+    public ArrayList<Product> topSellingProductsList = new ArrayList<>();
+    ArrayList<Product> dataList = new ArrayList<>();
 
     public AdminDashboardFragment() {
         // Required empty public constructor
     }
 
+    private void getApiKey() {
+        SharedPreferences shared = getActivity().getSharedPreferences("com.appTriangle.pos", Context.MODE_PRIVATE);
+        apiKey = shared.getString("api_key", "");
+
+    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        getApiKey();
+        pd = new ProgressDialog(getActivity());
+        pd.setMessage("Processing...");
+        pd.setCanceledOnTouchOutside(false);
         pager = (ViewPager) contentView.findViewById(R.id.viewPager);
         adaptor = new MyPagerAdapter(((AppCompatActivity) getActivity()).getSupportFragmentManager());
         pager.setAdapter(adaptor);
@@ -70,6 +98,62 @@ public class AdminDashboardFragment extends Fragment {
         return contentView;
     }
 
+    public void getTopSellingProducts() {
+        DashboardService service =
+                ApiClient.getClient().create(DashboardService.class);
+        Call<List<Product>> call;
+        call = service.getTopSellingProducts(apiKey);
+        pd.show();
+
+        call.enqueue(new Callback<List<Product>>() {
+            @Override
+            public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
+                pd.hide();
+                if (response != null && response.body() != null) {
+                    topSellingProductsList.clear();
+                    topSellingProductsList = (ArrayList<Product>) response.body();
+//                    invoiceList.add(invObj);
+                    if (topSellingProductsList != null) {
+                        if (topSellingProductsList.size() <= 5) {
+                            adapter = new SalesAdminAdapter(getActivity(), topSellingProductsList);
+                            adapter.parentFrag = AdminDashboardFragment.this;
+                            recyclerView.setVisibility(View.VISIBLE);
+                            recyclerView.setNestedScrollingEnabled(false);
+                            GridLayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 3);
+//        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+                            recyclerView.setLayoutManager(mLayoutManager);
+                            recyclerView.setAdapter(adapter);
+
+                        } else if (topSellingProductsList.size() > 5) {
+                            dataList = new ArrayList<>();
+                            dataList.addAll(topSellingProductsList);
+                            topSellingProductsList.subList(5, topSellingProductsList.size()).clear();
+                            Product tmp = new Product();
+                            tmp.setProductName("More...");
+                            topSellingProductsList.add(tmp);
+                            adapter = new SalesAdminAdapter(getActivity(), topSellingProductsList);
+                            adapter.parentFrag = AdminDashboardFragment.this;
+                            recyclerView.setVisibility(View.VISIBLE);
+                            recyclerView.setNestedScrollingEnabled(false);
+                            GridLayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 3);
+//        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+                            recyclerView.setLayoutManager(mLayoutManager);
+                            recyclerView.setAdapter(adapter);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Product>> call, Throwable t) {
+                // Log error here since request failed
+                Log.e("failure", "failure");
+                pd.hide();
+
+            }
+        });
+    }
+
 
     public void initialize() {
         List<SalesResponse> list = new ArrayList<>();
@@ -78,20 +162,14 @@ public class AdminDashboardFragment extends Fragment {
             list.add(tmp);
         }
         recyclerView = (RecyclerView) contentView.findViewById(R.id.recyclerView);
-        adapter = new SalesAdminAdapter(getActivity(), list);
+        getTopSellingProducts();
 
-        recyclerView.setVisibility(View.VISIBLE);
-        recyclerView.setNestedScrollingEnabled(false);
-//        GridLayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 3);
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setAdapter(adapter);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed() {
         if (mListener != null) {
-            mListener.onFragmentInteraction();
+            mListener.onFragmentInteraction(dataList);
         }
     }
 
@@ -113,6 +191,10 @@ public class AdminDashboardFragment extends Fragment {
         mListener = null;
     }
 
+    public void openMoreTopSellingProducts() {
+        onButtonPressed();
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -125,14 +207,14 @@ public class AdminDashboardFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction();
+        void onFragmentInteraction(ArrayList<Product> dataList);
     }
 
     @Override
     public void onResume() {
         super.onResume();
         if (adaptor != null)
-           adaptor.notifyDataSetChanged();
+            adaptor.notifyDataSetChanged();
         if (tabLayout != null && pager != null)
             tabLayout.setupWithViewPager(pager);
     }
