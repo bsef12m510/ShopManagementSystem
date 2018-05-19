@@ -130,10 +130,10 @@ namespace WebSource.Controllers
                 if (null == invoice)
                     return Ok(false);
 
-                if(amt == invoice.total_amt)
+                if(invoice.paid_amt + amt == invoice.total_amt)
                     invoice.is_pmnt_clr = "Y";
 
-                invoice.paid_amt = amt;
+                invoice.paid_amt += amt;
 
                 db.SaveChanges();
 

@@ -98,7 +98,10 @@ namespace WebSource.Controllers
                 if (null != Session && null != Session["key"])
                     session = Session["key"].ToString();
                 if (null != session && null != db.users.FirstOrDefault(y => y.api_key.Equals(session)))
+                {
+                    ViewBag.shops = db.shops.ToList();
                     return View(db.users.FirstOrDefault(y => y.user_id == user_id));
+                }
             }
             catch (Exception e) { }
             return RedirectToAction("Login");
@@ -206,9 +209,13 @@ namespace WebSource.Controllers
                 {
                     var user = db.users.FirstOrDefault(y => y.user_id.Equals(user_id));
                     user.username = Request.Form["username"].ToString();
-                    user.shop_id = int.Parse(Request.Form["shop"]);
+                    if(!Request.Form["shop"].ToString().Trim().Equals("Choose an Option"))
+                        user.shop_id = int.Parse(Request.Form["shop"].Split('-').First());
+                    if (!Request.Form["role"].ToString().Trim().Equals("Choose an Option"))
+                        user.role_id = Request.Form["role"].ToString();
                     user.password = Request.Form["password"].ToString();
-                    user.role_id = Request.Form["role"].ToString();
+
+                    
                     db.SaveChanges();
                     return RedirectToAction("Users");
                 }
@@ -216,7 +223,7 @@ namespace WebSource.Controllers
             }
             catch (Exception e)
             {
-
+                return RedirectToAction("Users");
             }
             return RedirectToAction("Login");
         }
@@ -243,7 +250,7 @@ namespace WebSource.Controllers
             }
             catch (Exception e)
             {
-
+                return RedirectToAction("Shops");
             }
             return RedirectToAction("Login");
         }

@@ -7,11 +7,13 @@ using System.Net.Http;
 using System.Web.Http;
 using WebSource.Models;
 using System.Globalization;
+using System.Data.SqlClient;
 
 namespace WebSource.Controllers
 {
     public class ReportsController : ApiController
     {
+
         [HttpGet]
         [ActionName("stockReport")]
         public IHttpActionResult GetStockReport(string apiKey)
@@ -201,5 +203,29 @@ namespace WebSource.Controllers
             return BadRequest();
 
         }
+
+        [HttpGet]
+        [ActionName("GetSalesAmountByMonth")]
+        public IHttpActionResult GetSalesAmountByMonth(string apiKey)
+        {
+
+            SMS_DBEntities1 db = new SMS_DBEntities1();
+            var user = db.users.FirstOrDefault(x => x.api_key.Equals(apiKey));
+            if (null != user)
+            {
+                var shop = db.shops.FirstOrDefault(x => x.shop_id == user.shop_id);
+                if (null != shop)
+                {
+                    
+                    var sales = db.Database.SqlQuery<SaleByMonth>("select DATEADD(DAY,1,EOMONTH(sale_date,-1)) as date,sum(paid_amt) as saleAmount from sales where shop_id = @shop and sale_date between DATEADD(DAY,-365,GETDATE()) and GETDATE() and is_invoice = 'Y' group by DATEADD(DAY,1,EOMONTH(sale_date,-1))", new SqlParameter("@shop",shop.shop_id));
+
+                    return Ok(sales);
+                }
+
+            }
+            return BadRequest();
+
+        }
+
     }
 }

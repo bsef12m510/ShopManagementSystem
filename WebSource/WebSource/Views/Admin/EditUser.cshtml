@@ -11,7 +11,7 @@
                 <div class="form-row">
                     <div class="col-md-6">
                         <label for="exampleInputName">User ID</label>
-                        <input name="user_id" class="form-control" id="exampleInputName" type="text" aria-describedby="nameHelp" value="@Model.user_id">
+                        <input name="user_id" class="form-control" readonly id="exampleInputName" type="text" aria-describedby="nameHelp" value="@Model.user_id">
                     </div>
                     <div class="col-md-6">
                         <label for="exampleInputLastName">User Name</label>
@@ -20,14 +20,20 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="exampleInputEmail1">Shop ID</label>
-                <input name="shop_id" class="form-control" id="exampleInputEmail1" type="text"  value="@Model.shop_id">
+                <label for="sel2">Shop</label>
+                <select class="form-control" id="sel2" name="shop">
+                    <option> Choose an Option</option> 
+                    @foreach (var shop in ViewBag.shops)
+                    {
+                        <option>@shop.shop_id - @shop.shope_name</option>
+                    }
+                </select>
             </div>
             <div class="form-group">
                 <label for="sel1">Role</label>
                 <select class="form-control" id="sel1" name="role">
-                        <option> Choose an Option</option> }
-                        <option> Salesman</option> }
+                        <option> Choose an Option</option> 
+                        <option> Salesman</option> 
                         <option>Owner</option>
                 </select>
             </div>
@@ -36,10 +42,6 @@
                     <div class="col-md-6">
                         <label for="exampleInputPassword1">Password</label>
                         <input name="password" class="form-control" id="exampleInputPassword1" type="password" value="@Model.password">
-                    </div>
-                    <div class="col-md-6">
-                        <label for="exampleConfirmPassword">Confirm password</label>
-                        <input  class="form-control" id="exampleConfirmPassword" type="password" value="@Model.password">
                     </div>
                 </div>
             </div>
