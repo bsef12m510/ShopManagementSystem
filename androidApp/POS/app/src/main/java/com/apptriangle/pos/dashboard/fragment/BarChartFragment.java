@@ -81,27 +81,18 @@ public class BarChartFragment extends Fragment implements OnChartGestureListener
 //        xAxis.setEnabled(false);
 
         xAxis.setDrawLabels(true);
-        final String[] ds = new String[7];
-        ds[0]="Lights";
-        ds[1]="Generator";
-        ds[2]="Ups";
-        ds[3]="Ac";
-        ds[4]="Lights";
-        ds[5]="Fan";
-        ds[6]="Ac";
 
-
+        final String[] mLabels = new String[]{ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec" };
 
         xAxis.setDrawLabels(true);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setDrawGridLines(false);
+        xAxis.setGranularity(1f); // only intervals of 1 day
         xAxis.setValueFormatter(new IAxisValueFormatter() {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
                 Log.i("zain", "value " + value);
-                try {
-                    return ds[Math.round(value)];
-                }catch (Exception e){
-                    return ds[0];
-                }
+                return mLabels[(int) value % mLabels.length];
             }
 
 
@@ -167,7 +158,7 @@ public class BarChartFragment extends Fragment implements OnChartGestureListener
 //            entries = FileUtils.loadEntriesFromAssets(getActivity().getAssets(), "stacked_bars.txt");
 
             for (int j = 0; j < count; j++) {
-                entries.add(new BarEntry(j, (float) (Math.random() * range) + range / 4, mLabels));
+                entries.add(new BarEntry(j, (float) 500 , mLabels[j]));   //(Math.random() * range) + range / 4
             }
 
             BarDataSet ds = new BarDataSet(entries, getLabel(i));

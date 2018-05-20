@@ -325,7 +325,7 @@ public class AdminDashboardFragment extends Fragment {
 
         public MyPagerAdapter(FragmentManager fm) {
             super(fm);
-            mFragmentTitleList.add("Pie");
+//            mFragmentTitleList.add("Pie");
             mFragmentTitleList.add("Bar");
         }
 
@@ -334,7 +334,8 @@ public class AdminDashboardFragment extends Fragment {
             switch (pos) {
 
                 case 0:
-                    return PieChartFragment.newInstance("FirstFragment, Instance 1");
+                    return BarChartFragment.newInstance("SecondFragment, Instance 1");
+//                    return PieChartFragment.newInstance("FirstFragment, Instance 1");
                 case 1:
                     return BarChartFragment.newInstance("SecondFragment, Instance 1");
 
@@ -350,7 +351,7 @@ public class AdminDashboardFragment extends Fragment {
 
         @Override
         public int getCount() {
-            return 2;
+            return 1;
         }
     }
 

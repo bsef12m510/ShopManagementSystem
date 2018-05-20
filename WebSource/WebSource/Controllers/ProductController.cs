@@ -305,7 +305,7 @@ namespace WebSource.Controllers
                     {
                         p.qty = productsMap[p.product_id].qty;
                     }
-                    distinctList = distinctList.OrderBy(p => p.qty);
+                    distinctList = distinctList.OrderByDescending(p => p.qty);
                     return Ok(distinctList);
                 }
 
