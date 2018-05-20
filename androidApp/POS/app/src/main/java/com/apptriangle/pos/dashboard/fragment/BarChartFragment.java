@@ -12,6 +12,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.apptriangle.pos.R;
+import com.apptriangle.pos.dashboard.response.MonthlySalesResponse;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
@@ -26,7 +27,12 @@ import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by zawan on 4/3/18.
@@ -34,13 +40,15 @@ import java.util.ArrayList;
 
 public class BarChartFragment extends Fragment implements OnChartGestureListener {
 
-
-    public static BarChartFragment newInstance(String text) {
+    public List<MonthlySalesResponse> monthlySalesResponseList;
+    public String[] labelsArray = new String[]{};
+    public static BarChartFragment newInstance(String text, ArrayList<MonthlySalesResponse> monthlySalesResponse) {
 
         BarChartFragment f = new BarChartFragment();
         Bundle b = new Bundle();
         b.putString("msg", text);
-
+        f.monthlySalesResponseList = monthlySalesResponse;
+        f.labelsArray = new String[]{};
         f.setArguments(b);
 
         return f;
@@ -52,7 +60,7 @@ public class BarChartFragment extends Fragment implements OnChartGestureListener
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.bar_frag, container, false);
-
+        createLabelsArray();
         // create a new chart object
         mChart = new BarChart(getActivity());
         mChart.getDescription().setEnabled(false);
@@ -65,8 +73,8 @@ public class BarChartFragment extends Fragment implements OnChartGestureListener
         mChart.setDrawGridBackground(false);
         mChart.setDrawBarShadow(false);
 
-
-        mChart.setData(generateBarData(1, 20000, 12));
+        findHighestSale();
+        mChart.setData(generateBarData(1, (float) findHighestSale(), 12));
 
         Legend l = mChart.getLegend();
 
@@ -92,7 +100,7 @@ public class BarChartFragment extends Fragment implements OnChartGestureListener
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
                 Log.i("zain", "value " + value);
-                return mLabels[(int) value % mLabels.length];
+                return labelsArray[(int) value % labelsArray.length];
             }
 
 
@@ -103,6 +111,13 @@ public class BarChartFragment extends Fragment implements OnChartGestureListener
         parent.addView(mChart);
 
         return v;
+    }
+
+    private double findHighestSale() {
+        List<Double> saleAmtList = new ArrayList<>();
+        for (int i = 0; i< monthlySalesResponseList.size(); i++)
+            saleAmtList.add(monthlySalesResponseList.get(i).getSaleAmount());
+        return Collections.max(saleAmtList);
     }
 
     @Override
@@ -158,7 +173,7 @@ public class BarChartFragment extends Fragment implements OnChartGestureListener
 //            entries = FileUtils.loadEntriesFromAssets(getActivity().getAssets(), "stacked_bars.txt");
 
             for (int j = 0; j < count; j++) {
-                entries.add(new BarEntry(j, (float) 500 , mLabels[j]));   //(Math.random() * range) + range / 4
+                entries.add(new BarEntry(j, (float) monthlySalesResponseList.get(j).getSaleAmount() , labelsArray[j]));   //(Math.random() * range) + range / 4
             }
 
             BarDataSet ds = new BarDataSet(entries, getLabel(i));
@@ -176,6 +191,53 @@ public class BarChartFragment extends Fragment implements OnChartGestureListener
 //    private String[] mXVals = new String[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec" };
 
     private String getLabel(int i) {
-        return mLabels[i];
+        return labelsArray[i];
+    }
+
+
+    public void createLabelsArray(){
+        labelsArray = new String[monthlySalesResponseList.size()];
+        for(int i = 0; i< monthlySalesResponseList.size(); i++){
+            labelsArray[i] = (getMonthLabel(convertDate(monthlySalesResponseList.get(i).getDate()).getMonth()));
+        }
+    }
+
+    public Date  convertDate(String dateString){
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        Date startDate;
+        try {
+            startDate = df.parse(dateString);
+            return startDate;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public String getMonthLabel(int i){
+        if(i == 0)
+            return "Jan";
+        else if(i ==1)
+            return "Feb";
+        else if(i ==2)
+            return "Mar";
+        else if(i ==3)
+            return "Apr";
+        else if(i ==4)
+            return "May";
+        else if(i ==5)
+            return "Jun";
+        else if(i ==6)
+            return "Jul";
+        else if(i ==7)
+            return "Aug";
+        else if(i ==8)
+            return "Sep";
+        else if(i ==9)
+            return "Oct";
+        else if(i ==10)
+            return "Nov";
+        else
+            return "Dec";
     }
 }

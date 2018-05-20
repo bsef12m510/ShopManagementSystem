@@ -29,6 +29,7 @@ import com.apptriangle.pos.InvoiceSearchFragment.service.InvoiceService;
 import com.apptriangle.pos.R;
 import com.apptriangle.pos.api.ApiClient;
 import com.apptriangle.pos.dashboard.adapter.SalesAdminAdapter;
+import com.apptriangle.pos.dashboard.response.MonthlySalesResponse;
 import com.apptriangle.pos.dashboard.service.DashboardService;
 import com.apptriangle.pos.model.Invoice;
 import com.apptriangle.pos.model.Product;
@@ -65,6 +66,7 @@ public class AdminDashboardFragment extends Fragment {
     public ArrayList<Product> topSellingProductsList = new ArrayList<>();
     public ArrayList<Product> lowStockProductsList = new ArrayList<>();
     public ArrayList<Product> inventoryList = new ArrayList<>();
+    public ArrayList<MonthlySalesResponse> monthlySalesResponseArrayList = new ArrayList<>();
     ArrayList<Product> dataList = new ArrayList<>();
     TextView tvLowStockCount, tvInventoryCount;
     LinearLayout lytLowStock, lytInventory;
@@ -92,10 +94,9 @@ public class AdminDashboardFragment extends Fragment {
         lytInventory = (LinearLayout) contentView.findViewById(R.id.lytInventory);
         tvLowStockCount = (TextView) contentView.findViewById(R.id.lowStockCount);
         tvInventoryCount = (TextView) contentView.findViewById(R.id.inventoryCount);
-        adaptor = new MyPagerAdapter(((AppCompatActivity) getActivity()).getSupportFragmentManager());
-        pager.setAdapter(adaptor);
+
         tabLayout = (TabLayout) contentView.findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(pager);
+
 
         lytLowStock.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -231,7 +232,7 @@ public class AdminDashboardFragment extends Fragment {
         call.enqueue(new Callback<List<Product>>() {
             @Override
             public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
-                pd.hide();
+//                pd.hide();
                 if (response != null && response.body() != null) {
                     lowStockProductsList.clear();
                     lowStockProductsList = (ArrayList<Product>) response.body();
@@ -239,10 +240,43 @@ public class AdminDashboardFragment extends Fragment {
                         tvLowStockCount.setText(Integer.toString(lowStockProductsList.size()));
                     }
                 }
+                getMonthlySales();
             }
 
             @Override
             public void onFailure(Call<List<Product>> call, Throwable t) {
+                // Log error here since request failed
+                Log.e("failure", "failure");
+//                pd.hide();
+                getMonthlySales();
+            }
+        });
+    }
+
+    public void getMonthlySales() {
+        DashboardService service =
+                ApiClient.getClient().create(DashboardService.class);
+        Call<List<MonthlySalesResponse>> call;
+        call = service.getSalesAmountByMonth(apiKey);
+//        pd.show();
+
+        call.enqueue(new Callback<List<MonthlySalesResponse>>() {
+            @Override
+            public void onResponse(Call<List<MonthlySalesResponse>> call, Response<List<MonthlySalesResponse>> response) {
+                pd.hide();
+                if (response != null && response.body() != null) {
+                    monthlySalesResponseArrayList.clear();
+                    monthlySalesResponseArrayList = (ArrayList<MonthlySalesResponse>) response.body();
+                    if (monthlySalesResponseArrayList != null) {
+                        adaptor = new MyPagerAdapter(((AppCompatActivity) getActivity()).getSupportFragmentManager());
+                        pager.setAdapter(adaptor);
+                        tabLayout.setupWithViewPager(pager);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<MonthlySalesResponse>> call, Throwable t) {
                 // Log error here since request failed
                 Log.e("failure", "failure");
                 pd.hide();
@@ -334,10 +368,10 @@ public class AdminDashboardFragment extends Fragment {
             switch (pos) {
 
                 case 0:
-                    return BarChartFragment.newInstance("SecondFragment, Instance 1");
+                    return BarChartFragment.newInstance("SecondFragment, Instance 1", monthlySalesResponseArrayList);
 //                    return PieChartFragment.newInstance("FirstFragment, Instance 1");
                 case 1:
-                    return BarChartFragment.newInstance("SecondFragment, Instance 1");
+                    return BarChartFragment.newInstance("SecondFragment, Instance 1", monthlySalesResponseArrayList);
 
                 default:
                     return PieChartFragment.newInstance("ThirdFragment, Default");
