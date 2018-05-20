@@ -4,7 +4,7 @@
 }
 
 <div class="card mb-3">
-    <div class="card-header">Manage User</div>
+    <div class="card-header">Manage SHop</div>
     <div class="card-body">
         <form action="SaveShopEdit" method="post">
             <div class="form-group">
@@ -24,10 +24,20 @@
                 <input name="address" class="form-control" id="exampleInputEmail1" type="text" value="@Model.address">
             </div>
             <div class="form-group">
+                <label for="phone">Phone</label>
+                <input name="phone" class="form-control" id="phone" type="text" value="@Model.phone">
+            </div>
+            <div class="form-group">
                 <div class="form-row">
                     <div class="col-md-6">
-                        <label for="exampleInputPassword1">Shop Manager</label>
-                        <input name="manager" class="form-control" id="exampleInputPassword1" type="text" value="@Model.shop_mngr">
+                        <label for="shop_mng">Shop Manager</label>
+                        <select class="form-control" id="shop_mng" name="shop_mng">
+                            <option selected> @ViewBag.shop_mngr</option>
+                            @foreach (var other in ViewBag.others)
+                            {
+                                <option>@other.user_id</option>
+                                }
+                        </select>
                     </div>
                 </div>
             </div>

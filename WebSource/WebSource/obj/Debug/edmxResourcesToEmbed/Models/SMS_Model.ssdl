@@ -94,6 +94,7 @@
     <Property Name="shope_name" Type="varchar" MaxLength="50" Nullable="false" />
     <Property Name="shop_mngr" Type="varchar" MaxLength="50" />
     <Property Name="address" Type="varchar" MaxLength="250" />
+    <Property Name="phone" Type="varchar" MaxLength="25" />
   </EntityType>
   <EntityType Name="users">
     <Key>

@@ -22,7 +22,7 @@
             <div class="form-group">
                 <label for="sel2">Shop</label>
                 <select class="form-control" id="sel2" name="shop">
-                    <option> Choose an Option</option> 
+                    <option selected> @Model.shop_id - @Model.shop.shope_name</option> 
                     @foreach (var shop in ViewBag.shops)
                     {
                         <option>@shop.shop_id - @shop.shope_name</option>
@@ -32,9 +32,8 @@
             <div class="form-group">
                 <label for="sel1">Role</label>
                 <select class="form-control" id="sel1" name="role">
-                        <option> Choose an Option</option> 
-                        <option> Salesman</option> 
-                        <option>Owner</option>
+                    <option selected> @Model.role_id</option> 
+                    <option> @ViewBag.role</option> 
                 </select>
             </div>
             <div class="form-group">

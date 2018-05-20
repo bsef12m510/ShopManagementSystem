@@ -53,6 +53,7 @@
     <EntitySetMapping Name="shops">
       <EntityTypeMapping TypeName="SMS_DBModel.shop">
         <MappingFragment StoreEntitySet="shops">
+          <ScalarProperty Name="phone" ColumnName="phone" />
           <ScalarProperty Name="address" ColumnName="address" />
           <ScalarProperty Name="shop_mngr" ColumnName="shop_mngr" />
           <ScalarProperty Name="shope_name" ColumnName="shope_name" />

@@ -217,9 +217,32 @@ namespace WebSource.Controllers
                 if (null != shop)
                 {
                     
-                    var sales = db.Database.SqlQuery<SaleByMonth>("select DATEADD(DAY,1,EOMONTH(sale_date,-1)) as date,sum(paid_amt) as saleAmount from sales where shop_id = @shop and sale_date between DATEADD(DAY,-365,GETDATE()) and GETDATE() and is_invoice = 'Y' group by DATEADD(DAY,1,EOMONTH(sale_date,-1))", new SqlParameter("@shop",shop.shop_id));
+                    var sales = db.Database.SqlQuery<SaleByMonth>("select DATEADD(DAY,1,EOMONTH(sale_date,-1)) as date,sum(paid_amt) as saleAmount from sales where shop_id = @shop and sale_date between DATEADD(DAY,-365,GETDATE()) and GETDATE() and is_invoice = 'Y' group by DATEADD(DAY,1,EOMONTH(sale_date,-1))", new SqlParameter("@shop",shop.shop_id)).ToList();
+                    List<SaleByMonth> salesWithFillers = new List<SaleByMonth>();
 
-                    return Ok(sales);
+                    for (int i = 0; i < 12; i++) {
+                        
+                        int month = DateTime.Today.Month, year = DateTime.Today.Year;
+
+                        if (DateTime.Today.Month - i > 0)
+                        {
+                            month -= i;
+                        }
+                        else
+                        {
+                            year--;
+                            month = 12 + (DateTime.Today.Month - i);
+                        }
+
+                        var s = sales.FirstOrDefault(x => x.date.Month == month);
+                        double saleAmt = 0.0;
+                        if(null != s)
+                            saleAmt = s.saleAmount;
+
+                       salesWithFillers.Add(new SaleByMonth { date = new DateTime(year, month, 1), saleAmount = saleAmt });
+                    }
+                    
+                    return Ok(salesWithFillers);
                 }
 
             }

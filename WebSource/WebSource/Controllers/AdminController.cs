@@ -80,7 +80,17 @@ namespace WebSource.Controllers
                 if (null != Session && null != Session["key"])
                     session = Session["key"].ToString();
                 if (null != session && null != db.users.FirstOrDefault(y => y.api_key.Equals(session)))
-                    return View(db.shops.FirstOrDefault(y => y.shop_id == shop_id));
+                {
+                    List<user> other = db.users.ToList();
+                    var shop = db.shops.FirstOrDefault(y => y.shop_id == shop_id);
+                    var mnger = db.users.FirstOrDefault(y => y.user_id.Equals(shop.shop_mngr));
+                    if (mnger != null)
+                        other.Remove(mnger);
+                    else
+                        ViewBag.shop_mngr = "Select A Manager";
+                    ViewBag.others = other;
+                    return View(shop);
+                }
             }
             catch (Exception e) { }
             return RedirectToAction("Login");
@@ -99,8 +109,16 @@ namespace WebSource.Controllers
                     session = Session["key"].ToString();
                 if (null != session && null != db.users.FirstOrDefault(y => y.api_key.Equals(session)))
                 {
-                    ViewBag.shops = db.shops.ToList();
-                    return View(db.users.FirstOrDefault(y => y.user_id == user_id));
+                    var shops = db.shops.ToList();
+                    var user = db.users.FirstOrDefault(y => y.user_id == user_id);
+                    shops.Remove(db.shops.First(y => y.shop_id == user.shop_id));
+                    ViewBag.shops = shops;
+                    if (user.role_id.Equals("Salesman"))
+                        ViewBag.role = "Owner";
+                    else
+                        ViewBag.role = "Salesman";
+
+                    return View(user);
                 }
             }
             catch (Exception e) { }
@@ -118,7 +136,7 @@ namespace WebSource.Controllers
                 if (null != Session && null != Session["key"])
                     session = Session["key"].ToString();
                 if (null != session && null != db.users.FirstOrDefault(y => y.api_key.Equals(session)))
-                    return View();
+                    return View(db.users.ToList());
             }
             catch (Exception e) { }
             return RedirectToAction("Login");
@@ -209,13 +227,15 @@ namespace WebSource.Controllers
                 {
                     var user = db.users.FirstOrDefault(y => y.user_id.Equals(user_id));
                     user.username = Request.Form["username"].ToString();
-                    if(!Request.Form["shop"].ToString().Trim().Equals("Choose an Option"))
-                        user.shop_id = int.Parse(Request.Form["shop"].Split('-').First());
-                    if (!Request.Form["role"].ToString().Trim().Equals("Choose an Option"))
-                        user.role_id = Request.Form["role"].ToString();
+                    user.shop_id = int.Parse(Request.Form["shop"].Split('-').First());
+                    user.role_id = Request.Form["role"].ToString();
                     user.password = Request.Form["password"].ToString();
 
-                    
+                    if (user.role_id.Equals("Owner")) {
+                        var shop = db.shops.First(y => y.shop_id == y.shop_id);
+                        shop.shop_mngr = user.user_id;
+                    }
+
                     db.SaveChanges();
                     return RedirectToAction("Users");
                 }
@@ -241,7 +261,9 @@ namespace WebSource.Controllers
                 {
                     var shop = db.shops.FirstOrDefault(y => y.shop_id == shop_id);
                     shop.shope_name = Request.Form["shop_name"].ToString();
-                    shop.shop_mngr = Request.Form["manager"].ToString();
+                    if(!Request.Form["shop_mng"].ToString().Equals("Select A Manager"))
+                        shop.shop_mngr = Request.Form["shop_mng"].ToString();
+                    shop.phone = Request.Form["phone"].ToString();
                     shop.address = Request.Form["address"].ToString();
                     db.SaveChanges();
                     return RedirectToAction("Shops");
@@ -269,7 +291,7 @@ namespace WebSource.Controllers
                     db.shops.Add(new shop
                     {
                         shope_name = Request.Form["shop_name"].ToString(),
-                        shop_mngr = Request.Form["manager"].ToString(),
+                        phone = Request.Form["phone"].ToString(),
                         address = Request.Form["address"].ToString()
                     });
 
