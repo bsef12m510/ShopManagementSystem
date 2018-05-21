@@ -21,14 +21,14 @@ namespace WebSource.Controllers
             {
                 if (null != Session && null != Session["key"])
                     session = Session["key"].ToString();
-                if (null != session && null != db.users.FirstOrDefault(y => y.api_key.Equals(session)))
+                if (null != session && null != db.users.FirstOrDefault(y => y.api_key.Equals(session) && y.role_id.Equals("Admin")))
                     return View(db.shops.ToList());
 
                 var username = Request.Form["username"].ToString();
                 var pass = Request.Form["password"].ToString();
 
                 if (null != db.users.FirstOrDefault(y => y.username.Equals(username)
-                    && y.password.Equals(pass)))
+                    && y.password.Equals(pass) && y.role_id.Equals("Admin")))
                 {
                     Session.Add("key", db.users.FirstOrDefault(y => y.username.Equals(username)
                     && y.password.Equals(pass)).api_key);
@@ -49,19 +49,12 @@ namespace WebSource.Controllers
             {
                 if (null != Session && null != Session["key"])
                     session = Session["key"].ToString();
-                if (null != session && null != db.users.FirstOrDefault(y => y.api_key.Equals(session)))
-                    return View(db.users.ToList());
-
-                var username = Request.Form["username"].ToString();
-                var pass = Request.Form["password"].ToString();
-
-                if (null != db.users.FirstOrDefault(y => y.username.Equals(username)
-                    && y.password.Equals(pass)))
+                if (null != session && null != db.users.FirstOrDefault(y => y.api_key.Equals(session) && y.role_id.Equals("Admin")))
                 {
-                    Session.Add("key", db.users.FirstOrDefault(y => y.username.Equals(username)
-                    && y.password.Equals(pass)).api_key);
-                    return View(db.users.ToList());
+                    var users = db.users.Where(y => y.role_id.Equals("Owner") || y.role_id.Equals("Salesman")).ToList();
+                    return View(users);
                 }
+                    
             }
             catch (Exception e) { }
 
@@ -79,15 +72,19 @@ namespace WebSource.Controllers
             {
                 if (null != Session && null != Session["key"])
                     session = Session["key"].ToString();
-                if (null != session && null != db.users.FirstOrDefault(y => y.api_key.Equals(session)))
+                if (null != session && null != db.users.FirstOrDefault(y => y.api_key.Equals(session) && y.role_id.Equals("Admin")))
                 {
-                    List<user> other = db.users.ToList();
+                    List<user> other = db.users.Where(y => y.role_id.Equals("Owner") || y.role_id.Equals("Salesman")).ToList();
                     var shop = db.shops.FirstOrDefault(y => y.shop_id == shop_id);
                     var mnger = db.users.FirstOrDefault(y => y.user_id.Equals(shop.shop_mngr));
                     if (mnger != null)
                         other.Remove(mnger);
                     else
                         ViewBag.shop_mngr = "Select A Manager";
+
+                    if (other.Count == 0)
+                        ViewBag.shop_mngr = mnger.user_id;
+
                     ViewBag.others = other;
                     return View(shop);
                 }
@@ -107,7 +104,7 @@ namespace WebSource.Controllers
             {
                 if (null != Session && null != Session["key"])
                     session = Session["key"].ToString();
-                if (null != session && null != db.users.FirstOrDefault(y => y.api_key.Equals(session)))
+                if (null != session && null != db.users.FirstOrDefault(y => y.api_key.Equals(session) && y.role_id.Equals("Admin")))
                 {
                     var shops = db.shops.ToList();
                     var user = db.users.FirstOrDefault(y => y.user_id == user_id);
@@ -135,8 +132,8 @@ namespace WebSource.Controllers
             {
                 if (null != Session && null != Session["key"])
                     session = Session["key"].ToString();
-                if (null != session && null != db.users.FirstOrDefault(y => y.api_key.Equals(session)))
-                    return View(db.users.ToList());
+                if (null != session && null != db.users.FirstOrDefault(y => y.api_key.Equals(session) && y.role_id.Equals("Admin")))
+                    return View();
             }
             catch (Exception e) { }
             return RedirectToAction("Login");
@@ -152,7 +149,7 @@ namespace WebSource.Controllers
             {
                 if (null != Session && null != Session["key"])
                     session = Session["key"].ToString();
-                if (null != session && null != db.users.FirstOrDefault(y => y.api_key.Equals(session)))
+                if (null != session && null != db.users.FirstOrDefault(y => y.api_key.Equals(session) && y.role_id.Equals("Admin")))
                     return View(db.shops.ToList());
             }
             catch (Exception e) { }
@@ -169,7 +166,7 @@ namespace WebSource.Controllers
                 String session = "";
                 if (null != Session && null != Session["key"])
                     session = Session["key"].ToString();
-                if (null != session && null != db.users.FirstOrDefault(y => y.api_key.Equals(session)))
+                if (null != session && null != db.users.FirstOrDefault(y => y.api_key.Equals(session) && y.role_id.Equals("Admin")))
                 {
                     db.users.Remove(db.users.FirstOrDefault(y => y.user_id.Equals(user_id)));
                     db.SaveChanges();
@@ -193,7 +190,7 @@ namespace WebSource.Controllers
                 String session = "";
                 if (null != Session && null != Session["key"])
                     session = Session["key"].ToString();
-                if (null != session && null != db.users.FirstOrDefault(y => y.api_key.Equals(session)))
+                if (null != session && null != db.users.FirstOrDefault(y => y.api_key.Equals(session) && y.role_id.Equals("Admin")))
                 {
                     db.inventories.RemoveRange(db.inventories.Where(y => y.shop_id == shop_id));
                     db.purchases.RemoveRange(db.purchases.Where(y => y.shop_id == shop_id));
@@ -223,7 +220,7 @@ namespace WebSource.Controllers
                 String session = "";
                 if (null != Session && null != Session["key"])
                     session = Session["key"].ToString();
-                if (null != session && null != db.users.FirstOrDefault(y => y.api_key.Equals(session)))
+                if (null != session && null != db.users.FirstOrDefault(y => y.api_key.Equals(session) && y.role_id.Equals("Admin")))
                 {
                     var user = db.users.FirstOrDefault(y => y.user_id.Equals(user_id));
                     user.username = Request.Form["username"].ToString();
@@ -257,12 +254,18 @@ namespace WebSource.Controllers
                 String session = "";
                 if (null != Session && null != Session["key"])
                     session = Session["key"].ToString();
-                if (null != session && null != db.users.FirstOrDefault(y => y.api_key.Equals(session)))
+                if (null != session && null != db.users.FirstOrDefault(y => y.api_key.Equals(session) && y.role_id.Equals("Admin")))
                 {
                     var shop = db.shops.FirstOrDefault(y => y.shop_id == shop_id);
                     shop.shope_name = Request.Form["shop_name"].ToString();
-                    if(!Request.Form["shop_mng"].ToString().Equals("Select A Manager"))
+                    if (!Request.Form["shop_mng"].ToString().Equals("Select A Manager"))
+                    {
                         shop.shop_mngr = Request.Form["shop_mng"].ToString();
+                        var user = db.users.First(y => y.user_id.Equals(shop.shop_mngr));
+                        user.role_id = "Owner";
+                        user.shop_id = shop.shop_id;
+                    }
+
                     shop.phone = Request.Form["phone"].ToString();
                     shop.address = Request.Form["address"].ToString();
                     db.SaveChanges();
@@ -286,7 +289,7 @@ namespace WebSource.Controllers
                 String session = "";
                 if (null != Session && null != Session["key"])
                     session = Session["key"].ToString();
-                if (null != session && null != db.users.FirstOrDefault(y => y.api_key.Equals(session)))
+                if (null != session && null != db.users.FirstOrDefault(y => y.api_key.Equals(session) && y.role_id.Equals("Admin")))
                 {
                     db.shops.Add(new shop
                     {
@@ -315,7 +318,7 @@ namespace WebSource.Controllers
                 String session = "";
                 if (null != Session && null != Session["key"])
                     session = Session["key"].ToString();
-                if (null != session && null != db.users.FirstOrDefault(y => y.api_key.Equals(session)))
+                if (null != session && null != db.users.FirstOrDefault(y => y.api_key.Equals(session) && y.role_id.Equals("Admin")))
                 {
                     db.users.Add(new user
                     {
@@ -326,6 +329,12 @@ namespace WebSource.Controllers
                         api_key = Request.Form["user_id"].ToString(),
                         password = Request.Form["password"].ToString()
                     });
+
+                    if (Request.Form["role"].ToString().Equals("Owner")) {
+                        int shop_id = int.Parse(Request.Form["shop"].ToString().Split('-').First().Trim());
+                        var shop = db.shops.First(y => y.shop_id == shop_id);
+                        shop.shop_mngr = Request.Form["user_id"].ToString();
+                    }
 
                     db.SaveChanges();
                     return RedirectToAction("Users");

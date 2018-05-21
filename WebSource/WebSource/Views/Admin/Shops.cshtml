@@ -23,6 +23,7 @@
                                     <th>Shop Name</th>
                                     <th>Manager</th>
                                     <th>Address</th>
+                                    <th>Phone</th>
                                     <th>Delete</th>
                                     <th>Edit</th>
                                 </tr>
@@ -33,6 +34,7 @@
                                     <th>Shop Name</th>
                                     <th>Manager</th>
                                     <th>Address</th>
+                                    <th>Phone</th>
                                     <th>Delete</th>
                                     <th>Edit</th>
                                 </tr>
@@ -52,6 +54,9 @@
                                         </td>
                                         <td>
                                             @shop.address
+                                        </td>
+                                        <td>
+                                            @shop.phone
                                         </td>
                                         <td>
                                             <a href="DeleteShop?shop_id=@shop.shop_id">Delete</a>

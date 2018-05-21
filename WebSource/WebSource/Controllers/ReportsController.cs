@@ -220,7 +220,7 @@ namespace WebSource.Controllers
                     var sales = db.Database.SqlQuery<SaleByMonth>("select DATEADD(DAY,1,EOMONTH(sale_date,-1)) as date,sum(paid_amt) as saleAmount from sales where shop_id = @shop and sale_date between DATEADD(DAY,-365,GETDATE()) and GETDATE() and is_invoice = 'Y' group by DATEADD(DAY,1,EOMONTH(sale_date,-1))", new SqlParameter("@shop",shop.shop_id)).ToList();
                     List<SaleByMonth> salesWithFillers = new List<SaleByMonth>();
 
-                    for (int i = 0; i < 12; i++) {
+                    for (int i = 11 ; i >= 0; i--) {
                         
                         int month = DateTime.Today.Month, year = DateTime.Today.Year;
 
