@@ -29,7 +29,7 @@ import java.util.List;
 /**
  * Created by zeeshan on 3/28/2018.
  */
-public class SecureActivity extends AppCompatActivity implements DashboardFragment.OnFragmentInteractionListener, SalesFragment.OnFragmentInteractionListener, VerifySalesFragment.OnFragmentInteractionListener, InvoiceFragment.OnFragmentInteractionListener, InvoiceSearchFragment.OnFragmentInteractionListener, PurchaseFragment.OnFragmentInteractionListener {
+public class SecureActivity extends AppCompatActivity implements DashboardFragment.OnFragmentInteractionListener, SalesFragment.OnFragmentInteractionListener, VerifySalesFragment.OnFragmentInteractionListener, InvoiceFragment.OnFragmentInteractionListener, InvoiceSearchFragment.OnFragmentInteractionListener, PurchaseFragment.OnFragmentInteractionListener, StockFragment.OnFragmentInteractionListener {
     private FrameLayout fragmentContainer;
     private FragmentManager fm;
     @Override
@@ -204,6 +204,11 @@ public class SecureActivity extends AppCompatActivity implements DashboardFragme
 
     @Override
     public void onCheckoutListenerPurchase() {
+
+    }
+
+    @Override
+    public void onStockFragmentListener(){
 
     }
 

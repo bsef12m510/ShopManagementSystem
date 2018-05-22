@@ -266,7 +266,7 @@ public class StockFragment extends Fragment {
     // TODO: Rename method, update argument and hook method into UI event
     public void onSalesClick() {
         if (mListener != null) {
-            mListener.onSalesClickListener();
+            mListener.onStockFragmentListener();
         }
     }
 
@@ -321,6 +321,6 @@ public class StockFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onSalesClickListener();
+        void onStockFragmentListener();
     }
 }

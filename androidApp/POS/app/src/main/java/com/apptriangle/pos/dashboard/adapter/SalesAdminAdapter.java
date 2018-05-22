@@ -60,11 +60,11 @@ public class SalesAdminAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             viewHolder.container.setBackground(mContext.getResources().getDrawable(R.drawable.round_bg));
         else if (position == 1)
             viewHolder.container.setBackground(mContext.getResources().getDrawable(R.drawable.round_bg1));
-        else if (position == 1)
+        else if (position == 2)
             viewHolder.container.setBackground(mContext.getResources().getDrawable(R.drawable.round_bg2));
-        else if (position == 1)
+        else if (position == 3)
             viewHolder.container.setBackground(mContext.getResources().getDrawable(R.drawable.round_bg3));
-        else if (position == 1)
+        else if (position == 4)
             viewHolder.container.setBackground(mContext.getResources().getDrawable(R.drawable.round_bg4));
         else
             viewHolder.container.setBackground(mContext.getResources().getDrawable(R.drawable.round_bg5));

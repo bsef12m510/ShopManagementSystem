@@ -4,7 +4,7 @@
     android:id="@+id/scrollView"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:background="#ececec"
+    android:background="@color/body_background_color"
     android:layout_height="match_parent">
 
     <LinearLayout

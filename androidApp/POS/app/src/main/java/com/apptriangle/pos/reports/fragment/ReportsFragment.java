@@ -40,8 +40,11 @@ import com.apptriangle.pos.reports.service.ReportService;
 import com.apptriangle.pos.sales.response.SalesResponse;
 import com.apptriangle.pos.sales.restInterface.SalesService;
 import com.apptriangle.pos.tableview.TableView;
+import com.opencsv.CSVWriter;
 
 
+import java.io.File;
+import java.io.FileWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -63,7 +66,7 @@ public class ReportsFragment extends Fragment {
     public static String HALF_MONTH_DATE_FORMAT = "MMM dd, yyyy";
     public static String SERVER_DATE_FORMAT = "MM/dd/yyyy";
     String pickerDateSring;
-    private CardView customContainer;
+    private CardView customContainer, title_container;
     private LinearLayout dateFromContainer, dateToContainer;
     private Button btnGo;
     private TextView txtDateFrom, txtDateTo;
@@ -129,12 +132,14 @@ public class ReportsFragment extends Fragment {
     }
 
     public void initialize() {
+        storeDataToFile();
         getApiKey();
         pd = new ProgressDialog(getActivity());
         pd.setMessage("Processing...");
         pd.setCanceledOnTouchOutside(false);
         tableView = (TableView) contentView.findViewById(R.id.content_container);
         customContainer = (CardView) contentView.findViewById(R.id.customContainer);
+        title_container = (CardView) contentView.findViewById(R.id.card_view);
         productsDropdown = (Spinner) contentView.findViewById(R.id.productsDropdown);
         brandsDropdown = (Spinner) contentView.findViewById(R.id.brandsDropdown);
         usersDropdown = (Spinner) contentView.findViewById(R.id.usersDropdown);
@@ -200,6 +205,8 @@ public class ReportsFragment extends Fragment {
 
 
         if (showDashboardData) {
+            title_container.setVisibility(View.GONE);
+            customContainer.setVisibility(View.GONE);
             tableView.setVisibility(View.VISIBLE);
             ROW_SIZE = responseList.size();
             displayReport();
@@ -543,6 +550,45 @@ public class ReportsFragment extends Fragment {
         return list;
     }
 
+
+    public void storeDataToFile(){
+        try {
+
+            String baseDir = android.os.Environment.getExternalStorageDirectory().getAbsolutePath();
+            String fileName = "AnalysisData.csv";
+            String filePath = baseDir + File.separator + fileName;
+            File f = new File(filePath );
+            FileWriter mFileWriter;
+            CSVWriter writer;
+// File exist
+            if(f.exists() && !f.isDirectory()){
+                mFileWriter = new FileWriter(filePath , true);
+                writer = new CSVWriter(mFileWriter);
+            }
+            else {
+                writer = new CSVWriter(new FileWriter(filePath));
+            }
+            List<String[]> data = new ArrayList<String[]>();
+            data.add(new String[]{"India", "New Delhi"});
+            data.add(new String[]{"United States", "Washington D.C"});
+            data.add(new String[]{"Germany", "Berlin"});
+
+            writer.writeAll(data);
+            writer.close();
+
+           /* String csv = android.os.Environment.getExternalStorageDirectory().getAbsolutePath();
+            CSVWriter writer = new CSVWriter(new FileWriter(csv));
+
+            List<String[]> data = new ArrayList<String[]>();
+            data.add(new String[]{"India", "New Delhi"});
+            data.add(new String[]{"United States", "Washington D.C"});
+            data.add(new String[]{"Germany", "Berlin"});
+
+            writer.writeAll(data);
+
+            writer.close();*/
+        }catch (Exception e){}
+    }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onCheckoutButtonPressed() {

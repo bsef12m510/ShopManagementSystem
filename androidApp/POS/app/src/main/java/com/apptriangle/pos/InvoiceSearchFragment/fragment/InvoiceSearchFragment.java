@@ -48,7 +48,7 @@ public class InvoiceSearchFragment extends Fragment {
     String[] listItems = {"item 1", "item 2 ", "list", "android"};
     private InvoiceAdapter adaptor;
     public boolean fromHome = false;
-    private CardView searchContainer1, searchContainer2;
+    private CardView searchContainer1, searchContainer2, labelsContainer;
     private NestedScrollView saleDescContainer;
     public SalesResponse cart;
     public Button finishBtn;
@@ -115,6 +115,7 @@ public class InvoiceSearchFragment extends Fragment {
         recyclerView = (RecyclerView) contentView.findViewById(R.id.invoice_recycler_view);
         searchContainer1 = (CardView) contentView.findViewById(R.id.searchContainer1);
         searchContainer2 = (CardView) contentView.findViewById(R.id.searchContainer2);
+        labelsContainer = (CardView) contentView.findViewById(R.id.labelsContainer);
 
 
 
@@ -151,6 +152,10 @@ public class InvoiceSearchFragment extends Fragment {
                     invObj = (Invoice) response.body();
                     invoiceList.add(invObj);
                     if (invoiceList != null) {
+                        if(invoiceList.size() > 0)
+                            labelsContainer.setVisibility(View.VISIBLE);
+                        else
+                            labelsContainer.setVisibility(View.GONE);
                         adaptor = new InvoiceAdapter(getActivity(), invoiceList, true);
                         adaptor.parentFrag = InvoiceSearchFragment.this;
                         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -185,6 +190,10 @@ public class InvoiceSearchFragment extends Fragment {
                     invoiceList = (List<Invoice>) response.body();
 //                    invoiceList.add(invObj);
                     if (invoiceList != null) {
+                        if(invoiceList.size() > 0)
+                            labelsContainer.setVisibility(View.VISIBLE);
+                        else
+                            labelsContainer.setVisibility(View.GONE);
                         adaptor = new InvoiceAdapter(getActivity(), invoiceList, true);
                         adaptor.parentFrag = InvoiceSearchFragment.this;
                         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

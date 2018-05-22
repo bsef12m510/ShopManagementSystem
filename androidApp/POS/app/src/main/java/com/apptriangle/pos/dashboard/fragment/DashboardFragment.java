@@ -10,12 +10,14 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 
 import com.apptriangle.pos.MainDrawerActivity;
@@ -37,7 +39,7 @@ public class DashboardFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private View contentView;
     String[] listItems = {"item 1", "item 2 ", "list", "android" };
-    Button salesBtn, stockBtn, invoiceBtn, purchaseBtn;
+    LinearLayout salesBtn, stockBtn, invoiceBtn, purchaseBtn;
 
 
     public DashboardFragment() {
@@ -57,10 +59,10 @@ public class DashboardFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setTitle();
-        salesBtn = (Button)contentView.findViewById(R.id.button1);
-        stockBtn = (Button)contentView.findViewById(R.id.button3);
-        invoiceBtn = (Button)contentView.findViewById(R.id.button4);
-        purchaseBtn = (Button)contentView.findViewById(R.id.button2);
+        salesBtn = (LinearLayout)contentView.findViewById(R.id.button1);
+        stockBtn = (LinearLayout)contentView.findViewById(R.id.button3);
+        invoiceBtn = (LinearLayout)contentView.findViewById(R.id.button4);
+        purchaseBtn = (LinearLayout)contentView.findViewById(R.id.button2);
         salesBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {

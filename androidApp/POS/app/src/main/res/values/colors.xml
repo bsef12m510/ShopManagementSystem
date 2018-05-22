@@ -14,7 +14,7 @@
     <item name="bgQueryUsedColor" type="color">#f2f2f2</item>
     <item name="bgAccountHeaderColor" type="color">#f8f8f8</item>
     <item name="plansSlashAfterColor" type="color">#f8f8f8</item>
-    <color name="body_background_color">#f3f3f3</color>
+    <color name="body_background_color">#C0C5CE</color>
 
     <color name="transparent">#00000000</color>
 
@@ -47,4 +47,17 @@
     <!-- <color name="cell_line_color">#dbdbdb</color> -->
     <!-- <color name="table_view_selected_background_color">@color/md_selected_background_color</color> -->
     <color name="default_background_color">@color/cell_background_color</color>
+
+    <color name="top_produc_owner_first">#8FD8E5</color>
+    <color name="top_produc_owner_second">#62F492</color>
+    <color name="top_produc_owner_third">#D6A2FC</color>
+    <color name="top_produc_owner_fourth">#F6F98A</color>
+    <color name="top_produc_owner_fifth">#778DFC</color>
+    <color name="top_produc_owner_sixth">#F78D8D</color>
+
+    <color name="purchase_tile">#29ABE2</color>
+    <color name="sales_tile">#009245</color>
+    <color name="invoice_tile">#FBB03B</color>
+    <color name="stock_tile">#FF1D25</color>
+
 </resources>

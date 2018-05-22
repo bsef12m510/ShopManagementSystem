@@ -110,6 +110,7 @@ namespace WebSource.Controllers
             return Ok(invoice);
         }
 
+        [HttpGet]
         [ActionName("clearSaleInvoicePayment")]
         public IHttpActionResult clearSaleInvoicePayment(String apiKey, int invoiceId, double amt)
         {

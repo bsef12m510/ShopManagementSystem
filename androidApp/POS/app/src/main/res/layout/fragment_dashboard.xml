@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.4"
-        android:background="#f2f2f2"
+        android:background="@color/body_background_color"
         android:padding="16dp"
         android:orientation="vertical"
         android:gravity="center">
@@ -64,51 +64,144 @@
     android:layout_width="match_parent"
     android:layout_height="0dp"
     android:layout_weight="0.6"
-    android:background="#ffffff"
+    android:background="@color/body_background_color"
     app:columnCount="2"
     app:rowCount="2">
 
-    <Button
+    <LinearLayout
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/sales_bg"
+        android:textColor="#ffffff"
+        app:layout_column="1"
+        app:layout_columnWeight="1"
+        app:layout_gravity="fill"
+        app:layout_row="0"
+        app:layout_rowWeight="1"
         android:id="@+id/button1"
-        android:text="Sales"
-        android:background="#ff3366"
-        android:textColor="#ffffff"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:src="@drawable/sales_icon"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="SALES"
+            android:textColor="@color/black"
+            android:layout_marginTop="8dp"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            />
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_marginRight="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/purchase_bg"
         app:layout_column="0"
         app:layout_columnWeight="1"
         app:layout_gravity="fill"
         app:layout_row="0"
-        app:layout_rowWeight="1"/>
-
-    <Button
+        app:layout_rowWeight="1"
+        android:gravity="center"
         android:id="@+id/button2"
-        android:text="Purchase"
-        android:background="#ffffff"
+        android:orientation="vertical">
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:src="@drawable/purchase_icon"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="PURCHASE"
+            android:textColor="@color/black"
+            android:layout_marginTop="8dp"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/stock_bg"
         app:layout_column="1"
         app:layout_columnWeight="1"
         app:layout_gravity="fill"
-        app:layout_row="0"
-        app:layout_rowWeight="1"/>
-
-    <Button
+        app:layout_row="1"
+        app:layout_rowWeight="1"
+        android:gravity="center"
         android:id="@+id/button3"
-        android:text="Stock"
-        android:background="#ffffff"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:src="@drawable/stock"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="STOCK"
+            android:textColor="@color/black"
+            android:layout_marginTop="8dp"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/button4"
         app:layout_column="0"
         app:layout_columnWeight="1"
         app:layout_gravity="fill"
         app:layout_row="1"
-        app:layout_rowWeight="1"/>
+        app:layout_rowWeight="1"
+        android:layout_marginRight="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/invoice_bg"
+        android:orientation="vertical"
+        android:gravity="center"
+        >
 
-    <Button
-        android:id="@+id/button4"
-        android:text="Invoice"
-        android:background="#99cc66"
-        android:textColor="#ffffff"
-        app:layout_column="1"
-        app:layout_columnWeight="1"
-        app:layout_gravity="fill"
-        app:layout_row="1"
-        app:layout_rowWeight="1"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:src="@drawable/invoice_icon"/>
+        <TextView
+            android:text="INVOICE"
+            android:textColor="@color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            />
+    </LinearLayout>
+
 
 </android.support.v7.widget.GridLayout>
 </LinearLayout>

@@ -61,15 +61,21 @@ public class InvoiceFragment extends Fragment {
     public Button finishBtn;
     public EditText searchText;
     public CSale saleObj;
-    public Double totalAmount = 0.0, paidAmount= 0.0, dueAmount= 0.0;
+    public Double totalAmount = 0.0, paidAmount = 0.0, dueAmount = 0.0;
     public EditText edtCustName, edtCustNo, edtTotalAmnt, edtPaidAmnt, edtDueAmnt;
     public Invoice selectedInvoice;
 
     TextWatcher inputTextWatcher = new TextWatcher() {
         public void afterTextChanged(Editable s) {
             if (s != null && !s.toString().trim().equalsIgnoreCase("")) {
-                paidAmount = Double.parseDouble(s.toString());
-                dueAmount = totalAmount - paidAmount;
+               /* if (!fromHome && cart == null)
+                    paidAmount = paidAmount + Double.parseDouble(s.toString());
+                else
+                    paidAmount = Double.parseDouble(s.toString());*/
+                if (!fromHome && cart == null)
+                    dueAmount = totalAmount - (paidAmount + Double.parseDouble(s.toString()));
+                else
+                    dueAmount = totalAmount - paidAmount;
                 if (dueAmount < 0)
                     dueAmount = 0.0;
                 edtDueAmnt.setText(dueAmount.toString());
@@ -134,7 +140,7 @@ public class InvoiceFragment extends Fragment {
                 edtPaidAmnt.setText(cart.amount_paid.toString());
                 edtDueAmnt.setText(Double.toString(cart.total_amount - cart.amount_paid));
             } else {
-                if (selectedInvoice.amount_paid < selectedInvoice.total_amount){
+                if (selectedInvoice.amount_paid < selectedInvoice.total_amount) {
                     edtPaidAmnt.setEnabled(true);
                     edtPaidAmnt.addTextChangedListener(inputTextWatcher);
                 }
@@ -186,12 +192,18 @@ public class InvoiceFragment extends Fragment {
         finishBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(cart != null) {
+                if (cart != null) {
                     Intent intent = new Intent(getActivity(), SecureActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
-                }else{
-                    updateInvoice();
+                } else {
+                    if (edtPaidAmnt.isEnabled())
+                        updateInvoice();
+                    else {
+                        Intent intent = new Intent(getActivity(), SecureActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                    }
                 }
             }
         });
@@ -199,35 +211,56 @@ public class InvoiceFragment extends Fragment {
 
 
     public void updateInvoice() {
-        InvoiceService service =
-                ApiClient.getClient().create(InvoiceService.class);
-        Call<Object> call;
-        call = service.updatePayment(apiKey, selectedInvoice.invoiceId, Double.parseDouble(edtPaidAmnt.getText().toString()));
-        pd.show();
-        call.enqueue(new Callback<Object>() {
-            @Override
-            public void onResponse(Call<Object> call, Response<Object> response) {
-                pd.hide();
-                if (response != null && response.body() != null) {
-                    if(response.body() instanceof  Boolean){
-                        if((boolean)response.body())
-                            Toast.makeText(getActivity(),"Invoice Payment Updated Successfully.",Toast.LENGTH_SHORT).show();
-                        else
-                            Toast.makeText(getActivity(),"Unable to update payment",Toast.LENGTH_SHORT).show();
+        boolean isOk = false;
+        if(!fromHome && cart == null){
+            if(paidAmount + (Double.parseDouble(edtPaidAmnt.getText().toString())) <= totalAmount)
+                isOk = true;
+            else
+                isOk = false;
+        }else{
+            if(paidAmount <= totalAmount)
+                isOk = true;
+            else
+                isOk =false;
+        }
+        if (isOk) {
+            InvoiceService service =
+                    ApiClient.getClient().create(InvoiceService.class);
+            Call<Object> call;
+            call = service.updatePayment(apiKey, selectedInvoice.invoiceId, Double.parseDouble(edtPaidAmnt.getText().toString()));
+            pd.show();
+            call.enqueue(new Callback<Object>() {
+                @Override
+                public void onResponse(Call<Object> call, Response<Object> response) {
+                    pd.hide();
+                    if (response != null && response.body() != null) {
+                        if (response.body() instanceof Boolean) {
+                            if ((boolean) response.body())
+                                Toast.makeText(getActivity(), "Invoice Payment Updated Successfully.", Toast.LENGTH_SHORT).show();
+                            else
+                                Toast.makeText(getActivity(), "Unable to update payment", Toast.LENGTH_SHORT).show();
+                        }
                     }
+                    Intent intent = new Intent(getActivity(), SecureActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
                 }
-            }
 
-            @Override
-            public void onFailure(Call<Object> call, Throwable t) {
-                // Log error here since request failed
-                Log.e("failure", "failure");
-                pd.hide();
-                Toast.makeText(getActivity(),"Unable to update payment",Toast.LENGTH_SHORT).show();
+                @Override
+                public void onFailure(Call<Object> call, Throwable t) {
+                    // Log error here since request failed
+                    Log.e("failure", "failure");
+                    pd.hide();
+                    Toast.makeText(getActivity(), "Unable to update payment", Toast.LENGTH_SHORT).show();
 
-            }
-        });
+                    Intent intent = new Intent(getActivity(), SecureActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
 
+                }
+            });
+        } else
+            Toast.makeText(getActivity(), "Amount exceeds total amount. Please enter valid amount.", Toast.LENGTH_SHORT).show();
     }
 
     // TODO: Rename method, update argument and hook method into UI event
