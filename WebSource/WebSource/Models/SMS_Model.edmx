@@ -160,6 +160,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="fk_prod_unit_msr">
+          <End Role="msrmnt_units" Type="Self.msrmnt_units" Multiplicity="1" />
+          <End Role="products" Type="Self.products" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="msrmnt_units">
+              <PropertyRef Name="sr_no" />
+            </Principal>
+            <Dependent Role="products">
+              <PropertyRef Name="unit_of_msrmnt" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="fk_pur_pid">
           <End Role="products" Type="Self.products" Multiplicity="1" />
           <End Role="purchase" Type="Self.purchase" Multiplicity="*" />
@@ -270,6 +282,10 @@
             <End Role="product_types" EntitySet="product_types" />
             <End Role="products" EntitySet="products" />
           </AssociationSet>
+          <AssociationSet Name="fk_prod_unit_msr" Association="Self.fk_prod_unit_msr">
+            <End Role="msrmnt_units" EntitySet="msrmnt_units" />
+            <End Role="products" EntitySet="products" />
+          </AssociationSet>
           <AssociationSet Name="fk_pur_pid" Association="Self.fk_pur_pid">
             <End Role="products" EntitySet="products" />
             <End Role="purchase" EntitySet="purchase" />
@@ -357,6 +373,10 @@
             <End Role="shop" EntitySet="shops" />
             <End Role="user" EntitySet="users" />
           </AssociationSet>
+          <AssociationSet Name="fk_prod_unit_msr" Association="SMS_DBModel.fk_prod_unit_msr">
+            <End Role="msrmnt_units" EntitySet="msrmnt_units" />
+            <End Role="product" EntitySet="products" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="brand">
           <Key>
@@ -443,6 +463,7 @@
           </Key>
           <Property Name="sr_no" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="description" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="products" Relationship="SMS_DBModel.fk_prod_unit_msr" FromRole="msrmnt_units" ToRole="product" />
         </EntityType>
         <Association Name="fk_inv_sid">
           <End Type="SMS_DBModel.shop" Role="shop" Multiplicity="1" />
@@ -508,6 +529,7 @@
           <NavigationProperty Name="product_types" Relationship="SMS_DBModel.fk_prod_type_id" FromRole="product" ToRole="product_types" />
           <NavigationProperty Name="purchases" Relationship="SMS_DBModel.fk_pur_pid" FromRole="product" ToRole="purchase" />
           <NavigationProperty Name="sales" Relationship="SMS_DBModel.fk_sales_pid" FromRole="product" ToRole="sale" />
+          <NavigationProperty Name="msrmnt_units" Relationship="SMS_DBModel.fk_prod_unit_msr" FromRole="product" ToRole="msrmnt_units" />
         </EntityType>
         <Association Name="fk_prod_br_id">
           <End Type="SMS_DBModel.brand" Role="brand" Multiplicity="1" />
@@ -616,6 +638,18 @@
             </Principal>
             <Dependent Role="user">
               <PropertyRef Name="shop_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_prod_unit_msr">
+          <End Type="SMS_DBModel.msrmnt_units" Role="msrmnt_units" Multiplicity="1" />
+          <End Type="SMS_DBModel.product" Role="product" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="msrmnt_units">
+              <PropertyRef Name="sr_no" />
+            </Principal>
+            <Dependent Role="product">
+              <PropertyRef Name="unit_of_msrmnt" />
             </Dependent>
           </ReferentialConstraint>
         </Association>

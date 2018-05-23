@@ -245,6 +245,7 @@
     </Compile>
     <Compile Include="Models\SaleByMonth.cs" />
     <Compile Include="Models\SProduct.cs" />
+    <Compile Include="Models\TodaySale.cs" />
     <Compile Include="TimeUuidGenerator\GuidGenerator.cs" />
     <Compile Include="TimeUuidGenerator\GuidVersion.cs" />
     <Compile Include="Models\inventory.cs">

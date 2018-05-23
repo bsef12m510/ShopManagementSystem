@@ -102,11 +102,8 @@ namespace WebSource.Controllers
                 var user = db.users.FirstOrDefault(y => y.api_key.Equals(apiKey));
                 var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
 
-                foreach (var inventory in shop.inventories.Where(y=>y.product.brand_id == brand)) {
-                    inventory.is_brand_active = "N";
-                    inventory.is_prod_active = "N";
-                    inventory.prod_quant = 0;
-                }
+                db.products.RemoveRange(db.products.Where(y => y.brand_id == brand));
+                db.inventories.RemoveRange(shop.inventories.Where(y => y.product.brand_id == brand));
                 
                 db.SaveChanges();
             }
@@ -127,7 +124,10 @@ namespace WebSource.Controllers
                 var user = db.users.FirstOrDefault(y => y.api_key.Equals(apiKey));
                 var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
 
+
+                db.products.RemoveRange(db.products.Where(y=>y.product_type == p));
                 db.inventories.RemoveRange(shop.inventories.Where(y => y.product.product_type == p));
+                db.product_types.RemoveRange(db.product_types.Where(y => y.type_id == p));
                 db.SaveChanges();
             }
             catch (Exception ex)
@@ -148,10 +148,8 @@ namespace WebSource.Controllers
                 var user = db.users.FirstOrDefault(y => y.api_key.Equals(apiKey));
                 var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
 
-                foreach (var inventory in shop.inventories.Where(y => y.product.product_id == p)) {
-                    inventory.is_prod_active = "N";
-                    inventory.prod_quant = 0;
-                }
+                db.inventories.RemoveRange(shop.inventories.Where(y => y.product_id == p));
+                db.products.Remove(db.products.First(y => y.product_id == p));
                 db.SaveChanges();
             }
             catch (Exception ex)

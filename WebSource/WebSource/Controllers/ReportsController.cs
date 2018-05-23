@@ -250,5 +250,28 @@ namespace WebSource.Controllers
 
         }
 
+        [HttpGet]
+        [ActionName("GetTodaySale")]
+        public IHttpActionResult GetTodaySale(string apiKey)
+        {
+
+            SMS_DBEntities1 db = new SMS_DBEntities1();
+            var user = db.users.FirstOrDefault(x => x.api_key.Equals(apiKey));
+            if (null != user)
+            {
+                var shop = db.shops.FirstOrDefault(x => x.shop_id == user.shop_id);
+                if (null != shop)
+                {
+
+                    var sales = db.Database.SqlQuery<TodaySale>("select product_id,sum(prod_quant) total_items,sum(total_amt) total_sale from sales where agent_id = @user and sale_date =CAST(GETDATE() AS DATE) group by product_id;", new SqlParameter("@user", user.user_id)).ToList();
+                    
+                    return Ok(sales);
+                }
+
+            }
+            return BadRequest();
+
+        }
+
     }
 }

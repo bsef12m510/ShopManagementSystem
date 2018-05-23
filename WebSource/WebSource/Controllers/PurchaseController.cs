@@ -22,7 +22,7 @@ namespace WebSource.Controllers
                     return Ok(-1);
                 }
                 var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
-                var inventory = db.inventories.Where(y => y.shop_id == shop.shop_id);
+                var inventory = shop.inventories.ToList();
                 int i = 1;
 
                 List<purchase> purchases = new List<purchase>();
@@ -39,13 +39,17 @@ namespace WebSource.Controllers
                 foreach (var product in purchase.products)
                 {
                     var prod_id = product.product_id;
+                    var brand_id = -1;
+                    var product_type = -1;
 
-
-                    if (null == db.brands.FirstOrDefault(y => y.brand_id == product.brand.brand_id) &&
-                        null == db.brands.FirstOrDefault(y => y.brand_name.ToLower().Equals(product.brand.brand_name.ToLower())))
+                    if (null == inventory.FirstOrDefault(y => y.product.brand_id == product.brand.brand_id))
                     {
                         db.brands.Add(new brand { brand_name = product.brand.brand_name });
                         db.SaveChanges();
+                    }
+                    else if (null != inventory.FirstOrDefault(y => y.product.brand.brand_name.Equals(product.brand.brand_name.ToLower())))
+                    {
+                        brand_id = inventory.FirstOrDefault(y => y.product.brand.brand_name.Equals(product.brand.brand_name.ToLower())).product.brand_id;
                     }
                     else if (null != db.brands.FirstOrDefault(y => y.brand_id == product.brand.brand_id) &&
                             product.brand.brand_name != null && !product.brand.brand_name.Equals(""))
@@ -54,11 +58,13 @@ namespace WebSource.Controllers
                         b.brand_name = product.brand.brand_name;
                         db.SaveChanges();
                     }
-                    if (null == db.product_types.FirstOrDefault(y => y.type_id == product.product_type.type_id) &&
-                        null == db.product_types.FirstOrDefault(y => y.type_name.ToLower().Equals(product.product_type.type_name.ToLower())))
+                    if (null == inventory.FirstOrDefault(y => y.product.product_type == product.product_type.type_id))
                     {
                         db.product_types.Add(new product_types { type_name = product.product_type.type_name });
                         db.SaveChanges();
+                    }
+                    else if (null == inventory.FirstOrDefault(y => y.product.product_types.type_name.ToLower().Equals(product.product_type.type_name.ToLower()))) {
+                        product_type = inventory.FirstOrDefault(y => y.product.product_types.type_name.ToLower().Equals(product.product_type.type_name.ToLower())).product.product_type;
                     }
                     else if (null != db.product_types.FirstOrDefault(y => y.type_id == product.product_type.type_id) &&
                             product.product_type.type_name != null && !product.product_type.type_name.Equals(""))
@@ -68,12 +74,14 @@ namespace WebSource.Controllers
                         db.SaveChanges();
                     }
                     int msr_unit = -1;
-                    if (null == db.msrmnt_units.FirstOrDefault(y => y.sr_no.Equals(product.unit_of_msrmnt.sr_no)) &&
-                        null == db.msrmnt_units.FirstOrDefault(y => y.description.ToLower().Equals(product.unit_of_msrmnt.description.ToLower())))
+                    if (null == inventory.FirstOrDefault(y => y.product.msrmnt_units.sr_no == product.unit_of_msrmnt.sr_no))
                     {
                         db.msrmnt_units.Add(new msrmnt_units { description = product.unit_of_msrmnt.description });
                         db.SaveChanges();
-                        msr_unit = db.msrmnt_units.FirstOrDefault(y => y.description.Equals(product.unit_of_msrmnt.description)).sr_no;
+                        msr_unit = db.msrmnt_units.Where(y => y.description.Equals(product.unit_of_msrmnt.description)).First(y => y.products.Count == 0).sr_no;
+                    }
+                    else if (null == inventory.FirstOrDefault(y => y.product.msrmnt_units.description.ToLower().Equals(product.unit_of_msrmnt.description))){
+                        msr_unit = inventory.FirstOrDefault(y => y.product.msrmnt_units.description.ToLower().Equals(product.unit_of_msrmnt.description)).product.unit_of_msrmnt;
                     }
                     else
                     {
@@ -83,17 +91,10 @@ namespace WebSource.Controllers
                         db.SaveChanges();
                     }
 
-                    if (null == db.products.FirstOrDefault(y => y.product_id == product.product_id) &&
-                        null == db.products.FirstOrDefault(y => y.product_name.ToLower().Equals(product.product_name.ToLower())))
+                    if (null == inventory.FirstOrDefault(y => y.product_id == product.product_id) &&
+                        null == inventory.FirstOrDefault(y => y.product.product_name.ToLower().Equals(product.product_name.ToLower())))
                     {
-                        var brand_id = product.brand.brand_id;
-                        var product_type = product.product_type.type_id;
-
-                        if (product_type == 0)
-                            product_type = db.product_types.FirstOrDefault(y => y.type_name == product.product_type.type_name).type_id;
-                        if (brand_id == 0)
-                            brand_id = db.brands.FirstOrDefault(y => y.brand_name == product.brand.brand_name).brand_id;
-
+                       
                         db.products.Add(new product
                         {
                             product_name = product.product_name,
@@ -121,8 +122,6 @@ namespace WebSource.Controllers
                     if (invObj != null)
                     {
                         invObj.prod_quant += product.qty;
-                        invObj.is_prod_active = "Y";
-                        invObj.is_brand_active = "Y";
                     }
                     else
                     {
@@ -130,21 +129,11 @@ namespace WebSource.Controllers
                         {
                             product_id = prod_id,
                             shop_id = shop.shop_id,
-                            prod_quant = product.qty,
-                            is_brand_active = "Y",
-                            is_prod_active = "Y"
+                            prod_quant = product.qty
                         });
 
                     }
-
-                    if (0 == product.brand.brand_id)
-                    {
-                        foreach (var inv in inventory.Where(y => y.product.brand_id == product.brand.brand_id))
-                        {
-                            inv.is_brand_active = "Y";
-                        }
-                    }
-
+                    
                     if (i == purchase.products.Length)
                     {
                         var isClr = "N";

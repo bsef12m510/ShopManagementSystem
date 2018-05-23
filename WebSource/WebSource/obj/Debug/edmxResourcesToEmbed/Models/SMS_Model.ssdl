@@ -155,6 +155,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="fk_prod_unit_msr">
+    <End Role="msrmnt_units" Type="Self.msrmnt_units" Multiplicity="1" />
+    <End Role="products" Type="Self.products" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="msrmnt_units">
+        <PropertyRef Name="sr_no" />
+      </Principal>
+      <Dependent Role="products">
+        <PropertyRef Name="unit_of_msrmnt" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="fk_pur_pid">
     <End Role="products" Type="Self.products" Multiplicity="1" />
     <End Role="purchase" Type="Self.purchase" Multiplicity="*" />
@@ -263,6 +275,10 @@
     </AssociationSet>
     <AssociationSet Name="fk_prod_type_id" Association="Self.fk_prod_type_id">
       <End Role="product_types" EntitySet="product_types" />
+      <End Role="products" EntitySet="products" />
+    </AssociationSet>
+    <AssociationSet Name="fk_prod_unit_msr" Association="Self.fk_prod_unit_msr">
+      <End Role="msrmnt_units" EntitySet="msrmnt_units" />
       <End Role="products" EntitySet="products" />
     </AssociationSet>
     <AssociationSet Name="fk_pur_pid" Association="Self.fk_pur_pid">

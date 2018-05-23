@@ -77,14 +77,18 @@ namespace WebSource.Controllers
                     List<user> other = db.users.Where(y => y.role_id.Equals("Owner") || y.role_id.Equals("Salesman")).ToList();
                     var shop = db.shops.FirstOrDefault(y => y.shop_id == shop_id);
                     var mnger = db.users.FirstOrDefault(y => y.user_id.Equals(shop.shop_mngr));
-                    if (mnger != null)
-                        other.Remove(mnger);
-                    else
-                        ViewBag.shop_mngr = "Select A Manager";
 
-                    if (other.Count == 0)
-                        ViewBag.shop_mngr = mnger.user_id;
-
+                    if (other.Count > 0)
+                    {
+                        if (mnger != null)
+                        {
+                            other.Remove(mnger);
+                            ViewBag.shop_mngr = mnger.user_id;
+                        }
+                        else
+                            ViewBag.shop_mngr = "Select A Manager";
+                    }
+                    
                     ViewBag.others = other;
                     return View(shop);
                 }

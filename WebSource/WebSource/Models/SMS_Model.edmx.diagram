@@ -25,6 +25,7 @@
         <AssociationConnector Association="SMS_DBModel.fk_pur_uid" />
         <AssociationConnector Association="SMS_DBModel.fk_sales_uid" />
         <AssociationConnector Association="SMS_DBModel.fk_users_shid" />
+        <AssociationConnector Association="SMS_DBModel.fk_prod_unit_msr" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

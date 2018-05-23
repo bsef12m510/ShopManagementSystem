@@ -14,7 +14,16 @@ namespace WebSource.Models
     
     public partial class msrmnt_units
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public msrmnt_units()
+        {
+            this.products = new HashSet<product>();
+        }
+    
         public int sr_no { get; set; }
         public string description { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<product> products { get; set; }
     }
 }
