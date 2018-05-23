@@ -119,8 +119,12 @@ namespace WebSource.Controllers
             SMS_DBEntities1 db = new SMS_DBEntities1();
             var user = db.users.FirstOrDefault(y => y.user_id.Equals(userId));
             var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
+            List<msrmnt_units> list = new List<msrmnt_units>();
 
-            return Ok(db.msrmnt_units.ToArray());
+            foreach (var inventory in shop.inventories)
+                list.Add(inventory.product.msrmnt_units);
+
+            return Ok(list.ToArray());
         }
 
         [HttpGet]
