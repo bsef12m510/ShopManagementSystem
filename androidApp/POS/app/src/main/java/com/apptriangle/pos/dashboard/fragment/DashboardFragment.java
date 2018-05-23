@@ -197,6 +197,7 @@ public class DashboardFragment extends Fragment {
                 "com.appTriangle.pos", Context.MODE_PRIVATE);
 
         prefs.edit().putString("api_key", "").apply();
+        prefs.edit().putBoolean("is_remember_me", false).apply();
     }
 
     /**

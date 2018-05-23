@@ -70,7 +70,7 @@ public class PurchaseFragment extends Fragment {
     private View contentView;
     String[] listItems = {"item 1", "item 2 ", "list", "android"};
     private Button checkoutBtn, btnMore;
-    private ImageButton addProductBtn, addBrandBtn, editProductBtn, editBrandBtn, addModelBtn, editModelBtn,deleteBrandBtn, deleteProductTypeBtn, deleteModelBtn, addUoMBtn, editUoMBtn;
+    private ImageButton addProductBtn, addBrandBtn, editProductBtn, editBrandBtn, addModelBtn, editModelBtn, deleteBrandBtn, deleteProductTypeBtn, deleteModelBtn, addUoMBtn, editUoMBtn;
     private Spinner productTypesDropdown, brandsDropdown, modelsDropdown, uoMDropdown;
     private String pickerDateSring;
     private String newProductString, editProductSting, newBrandString, editBrandString, newModelString, editModelString, newUoMString, editUoMString;
@@ -91,14 +91,14 @@ public class PurchaseFragment extends Fragment {
     ArrayList<Brand> brandsList;
     ArrayList<UoM> uoMList;
     public PurchaseResponse purchase;
-    public Map<ProductType,List<Brand>> brandsMap = new HashMap<>();
-    public Map<Brand,List<JProduct>> modelsMap = new HashMap<>();
+    public Map<ProductType, List<Brand>> brandsMap = new HashMap<>();
+    public Map<Brand, List<JProduct>> modelsMap = new HashMap<>();
     public boolean isFirst = true;
 
     TextWatcher inputTextWatcher = new TextWatcher() {
         public void afterTextChanged(Editable s) {
-            if(s != null && !s.toString().trim().equalsIgnoreCase("")) {
-                if(!edtPrice.getText().toString().equals("")) {
+            if (s != null && !s.toString().trim().equalsIgnoreCase("")) {
+                if (!edtPrice.getText().toString().equals("")) {
                    /* price = Integer.parseInt(s.toString()) * selectedProduct.getUnitPrice();
                     edtPrice.setText(price.toString());
                     totalPrice = lastTotalPrice + price;
@@ -110,24 +110,28 @@ public class PurchaseFragment extends Fragment {
                 }
             }
         }
-        public void beforeTextChanged(CharSequence s, int start, int count, int after){
+
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         }
+
         public void onTextChanged(CharSequence s, int start, int before, int count) {
         }
     };
 
     TextWatcher priceTextWatcher = new TextWatcher() {
         public void afterTextChanged(Editable s) {
-            if(s != null && !s.toString().trim().equalsIgnoreCase("")) {
-                    if(!edtQty.getText().toString().equals("")) {
-                        price = Double.parseDouble(edtPrice.getText().toString());
-                        totalPrice = lastTotalPrice + (price * Double.parseDouble(edtQty.getText().toString()));
-                        edtTotalPrice.setText(Double.toString(price * Double.parseDouble(edtQty.getText().toString())));
-                    }
+            if (s != null && !s.toString().trim().equalsIgnoreCase("")) {
+                if (!edtQty.getText().toString().equals("")) {
+                    price = Double.parseDouble(edtPrice.getText().toString());
+                    totalPrice = lastTotalPrice + (price * Double.parseDouble(edtQty.getText().toString()));
+                    edtTotalPrice.setText(Double.toString(price * Double.parseDouble(edtQty.getText().toString())));
+                }
             }
         }
-        public void beforeTextChanged(CharSequence s, int start, int count, int after){
+
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         }
+
         public void onTextChanged(CharSequence s, int start, int before, int count) {
         }
     };
@@ -284,7 +288,7 @@ public class PurchaseFragment extends Fragment {
         checkoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(validate()) {
+                if (validate()) {
                     addProductToCart();
                     processPurchase();
                 }
@@ -304,7 +308,7 @@ public class PurchaseFragment extends Fragment {
     }
 
 
-    public void processPurchase(){
+    public void processPurchase() {
         purchase.products = new ArrayList<>();
         purchase.products.addAll(cart);
         purchase.total_amount = totalPrice;
@@ -322,7 +326,8 @@ public class PurchaseFragment extends Fragment {
             java.util.Date date = sdf1.parse(dateString);
             Timestamp sqlStartDate = new Timestamp(date.getTime());
             purchase.purch_dtime = sqlStartDate;
-        }catch (Exception e){}
+        } catch (Exception e) {
+        }
         purchase.apiKey = apiKey;
 
 
@@ -337,7 +342,7 @@ public class PurchaseFragment extends Fragment {
             public void onResponse(Call<Object> call, Response<Object> response) {
                 pd.hide();
                 if (response != null) {
-                    if(response.body() instanceof  String) {
+                    if (response.body() instanceof String) {
                         if ((String) response.body() != null) {
 
                             Toast.makeText(getActivity(), "DONE " + purchase.purch_id, Toast.LENGTH_SHORT).show();
@@ -395,7 +400,7 @@ public class PurchaseFragment extends Fragment {
         product.setQty(Integer.parseInt(edtQty.getText().toString()));
         product.setUnitPrice(Double.parseDouble(edtPrice.getText().toString()));
         product.setSpecs(edtSpecs.getText().toString());
-        setProductTypesDropdown(productsTypeList,productTypesDropdown,false,false);
+        setProductTypesDropdown(productsTypeList, productTypesDropdown, false, false);
         productTypesDropdown.setSelection(0);
         brandsDropdown.setSelection(0);
         modelsDropdown.setSelection(0);
@@ -454,21 +459,19 @@ public class PurchaseFragment extends Fragment {
             input.setText(selectedProduct != null ? selectedProduct.getProductName() : "");
         else if (identifier == 8)
             input.setText(selectedUoM != null ? selectedUoM.description : "");
-        else if(identifier == 11){
+        else if (identifier == 11) {
             input.setText(selectedProduct != null ? selectedProduct.getProductName() : "");
             input.setEnabled(false);
-        }
-        else if(identifier == 10){
+        } else if (identifier == 10) {
             input.setText(selectedBrand != null ? selectedBrand.getBrandName() : "");
             input.setEnabled(false);
-        }
-        else if(identifier == 9){
+        } else if (identifier == 9) {
             input.setText(selectedProductType != null ? selectedProductType.getTypeName() : "");
             input.setEnabled(false);
         }
         builder.setView(input);
-       String btnLabel = (identifier == 1 || identifier == 3 || identifier == 5 || identifier == 7) ? "Add" : "Edit";
-        if(identifier == 11 || identifier == 10 || identifier == 9)
+        String btnLabel = (identifier == 1 || identifier == 3 || identifier == 5 || identifier == 7) ? "Add" : "Edit";
+        if (identifier == 11 || identifier == 10 || identifier == 9)
             btnLabel = "Delete";
 
 // Set up the buttons
@@ -476,17 +479,18 @@ public class PurchaseFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (1 == identifier) {
+                    if (validateProductType(input.getText().toString().trim())) {
+                        newProductString = input.getText().toString().trim();
+                        ProductType tmp = new ProductType();
+                        tmp.setTypeName(newProductString);
+                        if (productsTypeList == null)
+                            productsTypeList = new ArrayList<>();
+                        productsTypeList.add(tmp);
+                        selectedProductType = tmp;
 
-                    newProductString = input.getText().toString().trim();
-                    ProductType tmp = new ProductType();
-                    tmp.setTypeName(newProductString);
-                    if (productsTypeList == null)
-                        productsTypeList = new ArrayList<>();
-                    productsTypeList.add(tmp);
-                    selectedProductType = tmp;
-
-                    setProductTypesDropdown(productsTypeList, productTypesDropdown, true, false);
-
+                        setProductTypesDropdown(productsTypeList, productTypesDropdown, true, false);
+                    } else
+                        Toast.makeText(getActivity(), "Added Already..", Toast.LENGTH_SHORT).show();
                 } else if (2 == identifier) {
 
                     editProductSting = input.getText().toString().trim();
@@ -509,29 +513,31 @@ public class PurchaseFragment extends Fragment {
                     }
 
                 } else if (3 == identifier) {
-                    newBrandString = input.getText().toString();
-                    Brand tmp = new Brand();
-                    tmp.setBrandName(newBrandString);
+                    if (validateBrand(input.getText().toString().trim())) {
+                        newBrandString = input.getText().toString();
+                        Brand tmp = new Brand();
+                        tmp.setBrandName(newBrandString);
 
-                    if (brandsList == null)
-                        brandsList = new ArrayList<>();
+                        if (brandsList == null)
+                            brandsList = new ArrayList<>();
 //                    if(brandsList.size() == 1 && brandsList.get(0).getBrandName().equalsIgnoreCase("Select Brand"))
 
-                    brandsList.add(tmp);
-                    if(selectedProductType.getTypeId() == null)
-                        brandsMap.put(selectedProductType,brandsList);
+                        brandsList.add(tmp);
+                        if (selectedProductType.getTypeId() == null)
+                            brandsMap.put(selectedProductType, brandsList);
 /*                    if(!brandsMap.containsKey(selectedProductType))
                         brandsMap.put(selectedProductType,new ArrayList<Brand>());
                     brandsMap.get(selectedProductType).add(tmp);*/
-                    selectedBrand = tmp;
-                    if(!isFirst && selectedProductType.getTypeId() == null){
+                        selectedBrand = tmp;
+                        if (!isFirst && selectedProductType.getTypeId() == null) {
 
-                        setBrandDropdown(brandsMap.get(selectedProductType), brandsDropdown, true,false);
-                    }
-                    else
-                        setBrandDropdown(brandsList, brandsDropdown, true,false);
-                }else if (4 == identifier) {
-                    String old ="";
+                            setBrandDropdown(brandsMap.get(selectedProductType), brandsDropdown, true, false);
+                        } else
+                            setBrandDropdown(brandsList, brandsDropdown, true, false);
+                    } else
+                        Toast.makeText(getActivity(), "Added Already..", Toast.LENGTH_SHORT).show();
+                } else if (4 == identifier) {
+                    String old = "";
                     editBrandString = input.getText().toString();
                     if (selectedBrand != null && selectedBrand.getBrandId() != null) {
                         for (int i = 0; i < brandsList.size(); i++) {
@@ -549,30 +555,32 @@ public class PurchaseFragment extends Fragment {
                                 old = brandsList.get(i).getBrandName();
                                 brandsList.get(i).setBrandName(editBrandString);
 //                                modelsMap.put(brandsList.get(i),modelsMap.get(old));
-                                setBrandDropdown(brandsList, brandsDropdown,true, true);
+                                setBrandDropdown(brandsList, brandsDropdown, true, true);
                                 break;
                             }
                         }
                     }
-                }else if (5 == identifier) {
-                    newModelString = input.getText().toString();
-                    JProduct tmp = new JProduct();
-                    tmp.setProductName(newModelString);
-                    if (productsList == null)
-                        productsList = new ArrayList<>();
-                    productsList.add(tmp);
-                    selectedProduct = tmp;
-                    if(selectedBrand.getBrandId() == null)
-                        modelsMap.put(selectedBrand,productsList);
-                    if(!isFirst && selectedBrand.getBrandId() == null){
+                } else if (5 == identifier) {
+                    if (validateModel(input.getText().toString().trim())) {
+                        newModelString = input.getText().toString();
+                        JProduct tmp = new JProduct();
+                        tmp.setProductName(newModelString);
+                        if (productsList == null)
+                            productsList = new ArrayList<>();
+                        productsList.add(tmp);
+                        selectedProduct = tmp;
+                        if (selectedBrand.getBrandId() == null)
+                            modelsMap.put(selectedBrand, productsList);
+                        if (!isFirst && selectedBrand.getBrandId() == null) {
                        /* if(!modelsMap.containsKey(selectedBrand))
                             modelsMap.put(selectedBrand,new ArrayList<JProduct>());
                         modelsMap.get(selectedBrand).add(tmp);*/
-                        setModelsDropdown(modelsMap.get(selectedBrand), modelsDropdown, true);
-                    }
-                    else
-                        setModelsDropdown(productsList, modelsDropdown, true);
-                }else if (6 == identifier) {
+                            setModelsDropdown(modelsMap.get(selectedBrand), modelsDropdown, true);
+                        } else
+                            setModelsDropdown(productsList, modelsDropdown, true);
+                    } else
+                        Toast.makeText(getActivity(), "Added Already..", Toast.LENGTH_SHORT).show();
+                } else if (6 == identifier) {
                     editModelString = input.getText().toString();
                     if (selectedProduct != null && selectedProduct.getProductId() != null) {
                         for (int i = 0; i < productsList.size(); i++) {
@@ -591,16 +599,19 @@ public class PurchaseFragment extends Fragment {
                             }
                         }
                     }
-                }else if (7 == identifier) {
-                    newUoMString = input.getText().toString();
-                    UoM tmp = new UoM();
-                    tmp.setDescription(newUoMString);
-                    if (uoMList == null)
-                        uoMList = new ArrayList<>();
-                    uoMList.add(tmp);
-                    selectedUoM = tmp;
-                    setUoMDropdown(uoMList, uoMDropdown, true);
-                }else if (8 == identifier) {
+                } else if (7 == identifier) {
+                    if (validateUoM(input.getText().toString().trim())) {
+                        newUoMString = input.getText().toString();
+                        UoM tmp = new UoM();
+                        tmp.setDescription(newUoMString);
+                        if (uoMList == null)
+                            uoMList = new ArrayList<>();
+                        uoMList.add(tmp);
+                        selectedUoM = tmp;
+                        setUoMDropdown(uoMList, uoMDropdown, true);
+                    } else
+                        Toast.makeText(getActivity(), "Added Already..", Toast.LENGTH_SHORT).show();
+                } else if (8 == identifier) {
                     editUoMString = input.getText().toString();
                     if (selectedUoM != null && selectedUoM.getSr_no() != null) {
                         for (int i = 0; i < uoMList.size(); i++) {
@@ -619,46 +630,44 @@ public class PurchaseFragment extends Fragment {
                             }
                         }
                     }
-                } else if(9 == identifier){
-                    if(selectedProductType.getTypeId() != null)
+                } else if (9 == identifier) {
+                    if (selectedProductType.getTypeId() != null)
                         deleteProductType();
 //                    else{
-                        for(int i =0; i< productsTypeList.size(); i++){
-                            if(productsTypeList.get(i).getTypeName().equalsIgnoreCase(selectedProductType.getTypeName())) {
-                                productsTypeList.remove(i);
-                                break;
-                            }
+                    for (int i = 0; i < productsTypeList.size(); i++) {
+                        if (productsTypeList.get(i).getTypeName().equalsIgnoreCase(selectedProductType.getTypeName())) {
+                            productsTypeList.remove(i);
+                            break;
                         }
-                        setProductTypesDropdown(productsTypeList,productTypesDropdown,false,false);
+                    }
+                    setProductTypesDropdown(productsTypeList, productTypesDropdown, false, false);
                     setBrandsDropdownLabel();
                     setModelsDropdownLabel();
 //                    }
-                }
-                else if(10 == identifier){
-                    if(selectedBrand.getBrandId() != null)
+                } else if (10 == identifier) {
+                    if (selectedBrand.getBrandId() != null)
                         deleteBrand();
 //                    else{
-                        for(int i =0; i< brandsList.size(); i++){
-                            if(brandsList.get(i).getBrandName().equalsIgnoreCase(selectedBrand.getBrandName())) {
-                                brandsList.remove(i);
-                                break;
-                            }
+                    for (int i = 0; i < brandsList.size(); i++) {
+                        if (brandsList.get(i).getBrandName().equalsIgnoreCase(selectedBrand.getBrandName())) {
+                            brandsList.remove(i);
+                            break;
                         }
-                        setBrandDropdown(brandsList,brandsDropdown,false,false);
-                        setModelsDropdownLabel();
+                    }
+                    setBrandDropdown(brandsList, brandsDropdown, false, false);
+                    setModelsDropdownLabel();
 //                    }
-                }
-                else if(11 == identifier){
-                    if(selectedProduct.getProductId() != null)
+                } else if (11 == identifier) {
+                    if (selectedProduct.getProductId() != null)
                         deleteModel();
 //                    else{
-                        for(int i =0; i< productsList.size(); i++){
-                            if(productsList.get(i).getProductName().equalsIgnoreCase(selectedProduct.getProductName())) {
-                                productsList.remove(i);
-                                break;
-                            }
+                    for (int i = 0; i < productsList.size(); i++) {
+                        if (productsList.get(i).getProductName().equalsIgnoreCase(selectedProduct.getProductName())) {
+                            productsList.remove(i);
+                            break;
                         }
-                        setModelsDropdown(productsList,modelsDropdown,false);
+                    }
+                    setModelsDropdown(productsList, modelsDropdown, false);
 //                    }
                 }
 
@@ -675,7 +684,63 @@ public class PurchaseFragment extends Fragment {
     }
 
 
-    public void deleteModel(){
+    public boolean validateProductType(String name) {
+        if (name == null || name.trim().equals(""))
+            return false;
+        if (productsTypeList == null)
+            return true;
+        else {
+            for (int i = 0; i < productsTypeList.size(); i++) {
+                if (productsTypeList.get(i).getTypeName().equalsIgnoreCase(name))
+                    return false;
+            }
+            return true;
+        }
+    }
+
+    public boolean validateBrand(String name) {
+        if (name == null || name.trim().equals(""))
+            return false;
+        if (brandsList == null)
+            return true;
+        else {
+            for (int i = 0; i < brandsList.size(); i++) {
+                if (brandsList.get(i).getBrandName().equalsIgnoreCase(name))
+                    return false;
+            }
+            return true;
+        }
+    }
+
+    public boolean validateModel(String name) {
+        if (name == null || name.trim().equals(""))
+            return false;
+        if (productsList == null)
+            return true;
+        else {
+            for (int i = 0; i < productsList.size(); i++) {
+                if (productsList.get(i).getProductName().equalsIgnoreCase(name))
+                    return false;
+            }
+            return true;
+        }
+    }
+
+    public boolean validateUoM(String name) {
+        if (name == null || name.trim().equals(""))
+            return false;
+        if (uoMList == null)
+            return true;
+        else {
+            for (int i = 0; i < uoMList.size(); i++) {
+                if (uoMList.get(i).getDescription().equalsIgnoreCase(name))
+                    return false;
+            }
+            return true;
+        }
+    }
+
+    public void deleteModel() {
         PurchaseService service =
                 ApiClient.getClient().create(PurchaseService.class);
 
@@ -686,8 +751,8 @@ public class PurchaseFragment extends Fragment {
             public void onResponse(Call<Object> call, Response<Object> response) {
                 pd.hide();
                 if (response != null) {
-                    if((boolean)response.body()){
-                        Toast.makeText(getActivity(),"Model deleted successfully.",Toast.LENGTH_SHORT).show();
+                    if ((boolean) response.body()) {
+                        Toast.makeText(getActivity(), "Model deleted successfully.", Toast.LENGTH_SHORT).show();
                     }
 
                 }
@@ -703,7 +768,7 @@ public class PurchaseFragment extends Fragment {
         });
     }
 
-    public void deleteBrand(){
+    public void deleteBrand() {
         PurchaseService service =
                 ApiClient.getClient().create(PurchaseService.class);
 
@@ -714,8 +779,8 @@ public class PurchaseFragment extends Fragment {
             public void onResponse(Call<Object> call, Response<Object> response) {
                 pd.hide();
                 if (response != null) {
-                    if((boolean)response.body()){
-                        Toast.makeText(getActivity(),"Brand deleted successfully.",Toast.LENGTH_SHORT).show();
+                    if ((boolean) response.body()) {
+                        Toast.makeText(getActivity(), "Brand deleted successfully.", Toast.LENGTH_SHORT).show();
                     }
 
                 }
@@ -731,7 +796,7 @@ public class PurchaseFragment extends Fragment {
         });
     }
 
-    public void deleteProductType(){
+    public void deleteProductType() {
         PurchaseService service =
                 ApiClient.getClient().create(PurchaseService.class);
 
@@ -742,8 +807,8 @@ public class PurchaseFragment extends Fragment {
             public void onResponse(Call<Object> call, Response<Object> response) {
                 pd.hide();
                 if (response != null) {
-                    if((boolean)response.body()){
-                        Toast.makeText(getActivity(),"type deleted successfully.",Toast.LENGTH_SHORT).show();
+                    if ((boolean) response.body()) {
+                        Toast.makeText(getActivity(), "type deleted successfully.", Toast.LENGTH_SHORT).show();
                     }
 
                 }
@@ -758,6 +823,7 @@ public class PurchaseFragment extends Fragment {
             }
         });
     }
+
     private void getApiKey() {
         SharedPreferences shared = getActivity().getSharedPreferences("com.appTriangle.pos", Context.MODE_PRIVATE);
         apiKey = shared.getString("api_key", "");
@@ -811,7 +877,7 @@ public class PurchaseFragment extends Fragment {
 
                     tmp.setTypeName("Select Product Type");
                     productsTypeList.add(0, tmp);
-                    setProductTypesDropdown(productsTypeList, productTypesDropdown,false,false);
+                    setProductTypesDropdown(productsTypeList, productTypesDropdown, false, false);
 
                 }
             }
@@ -853,14 +919,14 @@ public class PurchaseFragment extends Fragment {
                     tmp.setProductName("Select Model");
                     productsList.add(0, tmp);
 
-                    for(int i=0; i<productsListTmp.size(); i++){
+                    for (int i = 0; i < productsListTmp.size(); i++) {
                         productsList.add(new JProduct(productsListTmp.get(i)));
                     }
 
-                    if(!modelsMap.containsKey(selectedBrand))
-                        modelsMap.put(selectedBrand,productsList);
+                    if (!modelsMap.containsKey(selectedBrand))
+                        modelsMap.put(selectedBrand, productsList);
 
-                    setModelsDropdown(productsList, modelsDropdown,false);
+                    setModelsDropdown(productsList, modelsDropdown, false);
 
                 }
             }
@@ -881,7 +947,7 @@ public class PurchaseFragment extends Fragment {
         tmp.setBrandName("Select Brand");
 
         brandsList.add(0, tmp);
-        setBrandDropdown(brandsList, brandsDropdown, false,false);
+        setBrandDropdown(brandsList, brandsDropdown, false, false);
     }
 
     public void getBrands() {
@@ -889,7 +955,7 @@ public class PurchaseFragment extends Fragment {
                 ApiClient.getClient().create(SalesService.class);
         Call<List<Brand>> call;
 //        if (selectedProductType.getTypeId() != null)
-            call = service.getBrands(apiKey, selectedProductType.getTypeId());
+        call = service.getBrands(apiKey, selectedProductType.getTypeId());
 //        else
 //            call = service.getBrands(apiKey, selectedProductType.getTypeId());// get all brands here for a shop
         pd.show();
@@ -903,9 +969,9 @@ public class PurchaseFragment extends Fragment {
                     tmp.setBrandName("Select Brand");
 
                     brandsList.add(0, tmp);
-                    if(!brandsMap.containsKey(selectedProductType))
-                        brandsMap.put(selectedProductType,brandsList);
-                    setBrandDropdown(brandsList, brandsDropdown, false,false);
+                    if (!brandsMap.containsKey(selectedProductType))
+                        brandsMap.put(selectedProductType, brandsList);
+                    setBrandDropdown(brandsList, brandsDropdown, false, false);
 
                 }
             }
@@ -981,7 +1047,7 @@ public class PurchaseFragment extends Fragment {
             dropdown.setLayoutMode(android.R.layout.select_dialog_item);
         }
 
-        if(selectedUoM != null && isAddeorEdited) {
+        if (selectedUoM != null && isAddeorEdited) {
             for (int i = 0; i < list.size(); i++) {
                 if (list.get(i).getDescription().equalsIgnoreCase(selectedUoM.getDescription())) {
                     dropdown.setSelection(i);
@@ -992,7 +1058,7 @@ public class PurchaseFragment extends Fragment {
 
     }
 
-    public void setProductTypesDropdown(final List<ProductType> list, Spinner dropdown , final boolean isAddedOrEdited, final boolean isEdited) {
+    public void setProductTypesDropdown(final List<ProductType> list, Spinner dropdown, final boolean isAddedOrEdited, final boolean isEdited) {
         final ArrayAdapter<ProductType> spinnerArrayAdapter = new ArrayAdapter<ProductType>(
                 getActivity(), R.layout.spinner_item, list) {
             @Override
@@ -1036,27 +1102,27 @@ public class PurchaseFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
                 selectedProductType = (ProductType) parent.getItemAtPosition(position);
-                if(isAddedOrEdited && selectedProductType.getTypeId() == null &&  position != 0){
-                    if(!isEdited) {
+                if (isAddedOrEdited && selectedProductType.getTypeId() == null && position != 0) {
+                    if (!isEdited) {
                         brandsMap.put(selectedProductType, new ArrayList<Brand>());
                         setBrandsDropdownLabel();
 
                     }
-                }else if(isAddedOrEdited && selectedProductType.getTypeId() != null && position != 0) {
-                        if(!brandsMap.containsKey(selectedProductType))
-                            getBrands();
-                        else
-                            setBrandDropdown(brandsMap.get(selectedProductType),brandsDropdown,false,false);
-                }else if(!isAddedOrEdited && selectedProductType.getTypeId() != null && position != 0){
-                    if(!brandsMap.containsKey(selectedProductType))
+                } else if (isAddedOrEdited && selectedProductType.getTypeId() != null && position != 0) {
+                    if (!brandsMap.containsKey(selectedProductType))
                         getBrands();
                     else
-                        setBrandDropdown(brandsMap.get(selectedProductType),brandsDropdown,false,false);
-                }else if(!isAddedOrEdited && selectedProductType.getTypeId() == null && position != 0){
-                    if(!brandsMap.containsKey(selectedProductType))
+                        setBrandDropdown(brandsMap.get(selectedProductType), brandsDropdown, false, false);
+                } else if (!isAddedOrEdited && selectedProductType.getTypeId() != null && position != 0) {
+                    if (!brandsMap.containsKey(selectedProductType))
                         getBrands();
                     else
-                        setBrandDropdown(brandsMap.get(selectedProductType),brandsDropdown,false, false);
+                        setBrandDropdown(brandsMap.get(selectedProductType), brandsDropdown, false, false);
+                } else if (!isAddedOrEdited && selectedProductType.getTypeId() == null && position != 0) {
+                    if (!brandsMap.containsKey(selectedProductType))
+                        getBrands();
+                    else
+                        setBrandDropdown(brandsMap.get(selectedProductType), brandsDropdown, false, false);
                 }
                 setModelsDropdownLabel();
                 /*if(!isFirst && selectedProductType.getTypeId() == null){
@@ -1091,7 +1157,7 @@ public class PurchaseFragment extends Fragment {
             dropdown.setLayoutMode(android.R.layout.select_dialog_item);
         }
 
-        if(selectedProductType != null && isAddedOrEdited) {
+        if (selectedProductType != null && isAddedOrEdited) {
             for (int i = 0; i < list.size(); i++) {
                 if (list.get(i).getTypeName().equalsIgnoreCase(selectedProductType.getTypeName())) {
                     dropdown.setSelection(i);
@@ -1146,9 +1212,9 @@ public class PurchaseFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
                 selectedProduct = (JProduct) parent.getItemAtPosition(position);
-                if(isAddedOrEdited)
-                    modelsMap.put(selectedBrand,list);
-                if(selectedProduct.getProductId() != null)
+                if (isAddedOrEdited)
+                    modelsMap.put(selectedBrand, list);
+                if (selectedProduct.getProductId() != null)
                     edtPrice.setText(selectedProduct.getUnitPrice().toString());
 
 //                edtUoM.setText(selectedProduct.getUnitOfMsrmnt());
@@ -1168,7 +1234,7 @@ public class PurchaseFragment extends Fragment {
             dropdown.setLayoutMode(android.R.layout.select_dialog_item);
         }
 
-        if(selectedProduct != null && isAddedOrEdited) {
+        if (selectedProduct != null && isAddedOrEdited) {
             for (int i = 0; i < list.size(); i++) {
                 if (list.get(i).getProductName().equalsIgnoreCase(selectedProduct.getProductName())) {
                     dropdown.setSelection(i);
@@ -1179,7 +1245,7 @@ public class PurchaseFragment extends Fragment {
 
     }
 
-    public void setBrandDropdown(final List<Brand> list, Spinner dropdown, final boolean isAddedOrEdited,final boolean isEdited) {
+    public void setBrandDropdown(final List<Brand> list, Spinner dropdown, final boolean isAddedOrEdited, final boolean isEdited) {
         final ArrayAdapter<Brand> spinnerArrayAdapter = new ArrayAdapter<Brand>(
                 getActivity(), R.layout.spinner_item, list) {
             @Override
@@ -1223,30 +1289,30 @@ public class PurchaseFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
                 selectedBrand = (Brand) parent.getItemAtPosition(position);
-                if(isAddedOrEdited && selectedBrand.getBrandId() == null &&  position != 0){
-                    if(!isEdited) {
+                if (isAddedOrEdited && selectedBrand.getBrandId() == null && position != 0) {
+                    if (!isEdited) {
                         modelsMap.put(selectedBrand, new ArrayList<JProduct>());
                         setModelsDropdownLabel();
                     }
-                }else if(isAddedOrEdited && selectedBrand.getBrandId() != null && position != 0) {
-                    if(!modelsMap.containsKey(selectedBrand))
+                } else if (isAddedOrEdited && selectedBrand.getBrandId() != null && position != 0) {
+                    if (!modelsMap.containsKey(selectedBrand))
                         getAllModelsForProductType();
                     else
-                        setModelsDropdown(modelsMap.get(selectedBrand),modelsDropdown,false);
-                }else if(!isAddedOrEdited && selectedBrand.getBrandId() != null && position != 0){
-                    if(!modelsMap.containsKey(selectedBrand))
+                        setModelsDropdown(modelsMap.get(selectedBrand), modelsDropdown, false);
+                } else if (!isAddedOrEdited && selectedBrand.getBrandId() != null && position != 0) {
+                    if (!modelsMap.containsKey(selectedBrand))
                         getAllModelsForProductType();
                     else
-                        setModelsDropdown(modelsMap.get(selectedBrand),modelsDropdown,false);
-                }else if(!isAddedOrEdited && selectedBrand.getBrandId() == null && position != 0){
-                    if(!modelsMap.containsKey(selectedBrand))
+                        setModelsDropdown(modelsMap.get(selectedBrand), modelsDropdown, false);
+                } else if (!isAddedOrEdited && selectedBrand.getBrandId() == null && position != 0) {
+                    if (!modelsMap.containsKey(selectedBrand))
                         getAllModelsForProductType();
                     else
-                        setModelsDropdown(modelsMap.get(selectedBrand),modelsDropdown,false);
+                        setModelsDropdown(modelsMap.get(selectedBrand), modelsDropdown, false);
                 }
 
                 /*
-               *//* if(isAddedOrEdited) {
+                 *//* if(isAddedOrEdited) {
                     brandsMap.put(selectedProductType, list);
 
                 }*//*
@@ -1280,7 +1346,7 @@ public class PurchaseFragment extends Fragment {
             dropdown.setLayoutMode(android.R.layout.select_dialog_item);
         }
 
-        if(selectedBrand != null && isAddedOrEdited) {
+        if (selectedBrand != null && isAddedOrEdited) {
             for (int i = 0; i < list.size(); i++) {
                 if (list.get(i).getBrandName().equalsIgnoreCase(selectedBrand.getBrandName())) {
                     dropdown.setSelection(i);
@@ -1318,7 +1384,9 @@ public class PurchaseFragment extends Fragment {
                 return false;
             else
                 return true;
-        }catch(Exception e){return false;}
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     private void showDatePickerDialog(final TextView dateInputField) {
@@ -1333,11 +1401,11 @@ public class PurchaseFragment extends Fragment {
                 dpdCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
 //                if (dpdCalendar.compareTo(current) > -1) {
-                    final String myFormat = HALF_MONTH_DATE_FORMAT;
-                    SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+                final String myFormat = HALF_MONTH_DATE_FORMAT;
+                SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
-                    pickerDateSring = sdf.format(dpdCalendar.getTime());
-                    dateInputField.setText(pickerDateSring);
+                pickerDateSring = sdf.format(dpdCalendar.getTime());
+                dateInputField.setText(pickerDateSring);
 
 //                    fragment.setDateFrom(dateFrom);
 
