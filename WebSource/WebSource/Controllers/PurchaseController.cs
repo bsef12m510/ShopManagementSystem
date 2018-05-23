@@ -110,6 +110,8 @@ namespace WebSource.Controllers
                         });
 
                         db.SaveChanges();
+                        var pros= db.products.Where(y => y.product_name.ToLower().Equals(product.product_name.ToLower())).First(y=>y.inventories.Count == 0);
+                        prod_id = pros.product_id;
                     }
                     
 
@@ -119,8 +121,6 @@ namespace WebSource.Controllers
                         prod.product_name = product.product_name;
                         db.SaveChanges();
                     }
-                    else
-                        prod_id = db.products.First(y => y.product_name.ToLower().Equals(product.product_name.ToLower())).product_id;
 
                     var invObj = inventory.FirstOrDefault(y => y.product_id == prod_id);
                     if (invObj != null)
@@ -133,7 +133,9 @@ namespace WebSource.Controllers
                         {
                             product_id = prod_id,
                             shop_id = shop.shop_id,
-                            prod_quant = product.qty
+                            prod_quant = product.qty,
+                            is_brand_active = "Y",
+                            is_prod_active = "Y"
                         });
 
                     }
