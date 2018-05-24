@@ -4,8 +4,8 @@
     <item name="white" type="color">#ffffff</item>
     <item name="black" type="color">#000000</item>
     <item name="colorPrimary" type="color">#ffffff</item>
-    <item name="colorPrimaryDark" type="color">#2aa338</item>
-    <item name="colorAccent" type="color">#32c843</item>
+    <item name="colorPrimaryDark" type="color">#70798a</item>
+    <item name="colorAccent" type="color">#70798a</item>
     <item name="colorBlack" type="color">#000</item>
     <item name="buttonColor" type="color">#28c63b</item>aaa
     <item name="buttonGray" type="color">#aaa</item>

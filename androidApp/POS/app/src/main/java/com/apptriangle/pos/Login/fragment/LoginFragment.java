@@ -3,6 +3,8 @@ package com.apptriangle.pos.Login.fragment;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -17,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -55,6 +58,7 @@ public class LoginFragment extends Fragment {
     private Button  loginButton;
     private TextView registerButton;
     private View contentView;
+    private CheckBox cb_remember;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -82,6 +86,7 @@ public class LoginFragment extends Fragment {
     public void initialize(View contentView){
         container = (ScrollView) contentView.findViewById(R.id.container);
         registerButton = (TextView) contentView.findViewById(R.id.registerTextView);
+        cb_remember = (CheckBox) contentView.findViewById(R.id.cb_remember);
         underLineTetView(registerButton);
         loginButton = (Button)contentView.findViewById(R.id.loginButton);
         email = (EditText)contentView.findViewById(R.id.email);
@@ -156,6 +161,12 @@ public class LoginFragment extends Fragment {
                     pd.hide();
                     if (response != null) {
                         loginResponseData = (LoginResponse) response.body();
+                        if(cb_remember.isChecked()){
+                            SharedPreferences prefs = getActivity().getSharedPreferences(
+                                    "com.appTriangle.pos", Context.MODE_PRIVATE);
+
+                            prefs.edit().putBoolean("is_remember_me", true).apply();
+                        }
 
                         onSuccessfulLogin(loginResponseData,email.getText().toString());
                     }
