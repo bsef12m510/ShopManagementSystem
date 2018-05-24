@@ -41,17 +41,18 @@ namespace WebSource.Controllers
                     var prod_id = product.product_id;
                     var brand_id = -1;
                     var product_type = -1;
+                    inventory = shop.inventories.ToList();
 
                     if (null == inventory.FirstOrDefault(y => y.product.brand_id == product.brand.brand_id) &&
-                        null == inventory.FirstOrDefault(y => y.product.brand.brand_name.Equals(product.brand.brand_name.ToLower())))
+                        null == inventory.FirstOrDefault(y => y.product.brand.brand_name.ToLower().Equals(product.brand.brand_name.ToLower())))
                     {
                         db.brands.Add(new brand { brand_name = product.brand.brand_name });
                         db.SaveChanges();
                         brand_id = db.brands.Where(y => y.brand_name.Equals(product.brand.brand_name)).First(y => y.products.Count == 0).brand_id;
                     }
-                    else if (null != inventory.FirstOrDefault(y => y.product.brand.brand_name.Equals(product.brand.brand_name.ToLower())))
+                    else if (null != inventory.FirstOrDefault(y => y.product.brand.brand_name.ToLower().Equals(product.brand.brand_name.ToLower())))
                     {
-                        brand_id = inventory.FirstOrDefault(y => y.product.brand.brand_name.Equals(product.brand.brand_name.ToLower())).product.brand_id;
+                        brand_id = inventory.FirstOrDefault(y => y.product.brand.brand_name.ToLower().Equals(product.brand.brand_name.ToLower())).product.brand_id;
                     }
                     else if (null != db.brands.FirstOrDefault(y => y.brand_id == product.brand.brand_id) &&
                             product.brand.brand_name != null && !product.brand.brand_name.Equals(""))
