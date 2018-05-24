@@ -188,6 +188,7 @@ namespace WebSource.Controllers
 
 
                     i++;
+                    db.SaveChanges();
                 }
 
                 foreach (var purchase1 in purchases)
