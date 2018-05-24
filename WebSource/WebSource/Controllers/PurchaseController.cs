@@ -139,6 +139,10 @@ namespace WebSource.Controllers
                         });
 
                     }
+
+                    foreach (var inv in inventory.Where(y=>y.product.brand_id == brand_id)) {
+                        inv.is_brand_active = "Y";
+                    }
                     
                     if (i == purchase.products.Length)
                     {

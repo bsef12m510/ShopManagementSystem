@@ -18,7 +18,8 @@ namespace WebSource.Controllers
             SMS_DBEntities1 db = new SMS_DBEntities1();
             var users = db.users.ToList();
             List<string> usernames = new List<string>();
-            foreach (var user in users) {
+            foreach (var user in users)
+            {
                 usernames.Add(user.user_id);
             }
             return usernames.ToArray();
@@ -30,11 +31,11 @@ namespace WebSource.Controllers
         {
             SMS_DBEntities1 db = new SMS_DBEntities1();
             var users = db.users.ToList();
-       
+
             List<string> usernames = new List<string>();
             foreach (var user in users)
             {
-                if(user.user_id.Equals(id))
+                if (user.user_id.Equals(id))
                 {
                     return Ok(user);
                 }
@@ -59,7 +60,7 @@ namespace WebSource.Controllers
         public void Post([FromBody]user user)
         {
             SMS_DBEntities1 db = new SMS_DBEntities1();
-           
+
             user.api_key = GuidGenerator.GenerateTimeBasedGuid().ToString();
             db.users.Add(user);
             db.SaveChanges();
@@ -102,15 +103,20 @@ namespace WebSource.Controllers
                 var user = db.users.FirstOrDefault(y => y.api_key.Equals(apiKey));
                 var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
 
-                db.products.RemoveRange(db.products.Where(y => y.brand_id == brand));
-                db.inventories.RemoveRange(shop.inventories.Where(y => y.product.brand_id == brand));
-                
+                foreach (var inventory in shop.inventories.Where(y => y.product.brand_id == brand))
+                {
+                    inventory.is_brand_active = "N";
+                    inventory.is_prod_active = "N";
+                    inventory.prod_quant = 0;
+                }
+
                 db.SaveChanges();
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 return Ok(-1);
             }
-        
+
             return Ok(true);
         }
 
@@ -124,10 +130,10 @@ namespace WebSource.Controllers
                 var user = db.users.FirstOrDefault(y => y.api_key.Equals(apiKey));
                 var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
 
-
-                db.products.RemoveRange(db.products.Where(y=>y.product_type == p));
-                db.inventories.RemoveRange(shop.inventories.Where(y => y.product.product_type == p));
-                db.product_types.RemoveRange(db.product_types.Where(y => y.type_id == p));
+                foreach (var inventory in shop.inventories.Where(y => y.product.product_type == p)) {
+                    inventory.is_prod_active = "N";
+                    inventory.is_brand_active = "N";
+                }
                 db.SaveChanges();
             }
             catch (Exception ex)
@@ -148,8 +154,11 @@ namespace WebSource.Controllers
                 var user = db.users.FirstOrDefault(y => y.api_key.Equals(apiKey));
                 var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
 
-                db.inventories.RemoveRange(shop.inventories.Where(y => y.product_id == p));
-                db.products.Remove(db.products.First(y => y.product_id == p));
+                foreach (var inventory in shop.inventories.Where(y => y.product.product_id == p))
+                {
+                    inventory.is_prod_active = "N";
+                    inventory.prod_quant = 0;
+                }
                 db.SaveChanges();
             }
             catch (Exception ex)
