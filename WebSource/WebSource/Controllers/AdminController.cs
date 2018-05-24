@@ -32,7 +32,9 @@ namespace WebSource.Controllers
                 {
                     Session.Add("key", db.users.FirstOrDefault(y => y.username.Equals(username)
                     && y.password.Equals(pass)).api_key);
-                    return View(db.shops.ToList());
+                    var shops = db.shops.ToList();
+                    shops.Remove(db.shops.FirstOrDefault(y => y.shope_name.Equals("Admin Shop")));
+                    return View(shops);
                 }
             }
             catch (Exception e) { }
@@ -113,6 +115,7 @@ namespace WebSource.Controllers
                     var shops = db.shops.ToList();
                     var user = db.users.FirstOrDefault(y => y.user_id == user_id);
                     shops.Remove(db.shops.First(y => y.shop_id == user.shop_id));
+                    shops.Remove(db.shops.FirstOrDefault(y => y.shope_name.Equals("Admin Shop")));
                     ViewBag.shops = shops;
                     if (user.role_id.Equals("Salesman"))
                         ViewBag.role = "Owner";
@@ -154,7 +157,11 @@ namespace WebSource.Controllers
                 if (null != Session && null != Session["key"])
                     session = Session["key"].ToString();
                 if (null != session && null != db.users.FirstOrDefault(y => y.api_key.Equals(session) && y.role_id.Equals("Admin")))
-                    return View(db.shops.ToList());
+                {
+                    var shops = db.shops.ToList();
+                    shops.Remove(db.shops.FirstOrDefault(y => y.shope_name.Equals("Admin Shop")));
+                    return View(shops);
+                } 
             }
             catch (Exception e) { }
             return RedirectToAction("Login");
