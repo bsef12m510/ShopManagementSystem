@@ -1,17 +1,24 @@
 package com.apptriangle.pos.reports.fragment;
 
+import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,17 +27,21 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.apptriangle.pos.R;
 import com.apptriangle.pos.api.ApiClient;
 import com.apptriangle.pos.model.Brand;
 import com.apptriangle.pos.model.Product;
 import com.apptriangle.pos.model.ProductType;
+import com.apptriangle.pos.model.UoM;
 import com.apptriangle.pos.model.User;
+import com.apptriangle.pos.purchase.response.JProduct;
 import com.apptriangle.pos.reports.adaptor.ReportsAdaptor;
 import com.apptriangle.pos.reports.adaptor.TableViewAdapter;
 import com.apptriangle.pos.reports.model.Cell;
@@ -57,6 +68,8 @@ import java.util.Random;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static android.support.v4.content.PermissionChecker.checkSelfPermission;
 
 /**
  * Created by zeeshan on 4/5/2018.
@@ -103,6 +116,8 @@ public class ReportsFragment extends Fragment {
     ArrayList<User> usersList;
     public ArrayList<Product> responseList = new ArrayList<>();
     public boolean showDashboardData;
+    public TextView export;
+    private String fileName;
 
     public ReportsFragment() {
         // Required empty public constructor
@@ -132,7 +147,7 @@ public class ReportsFragment extends Fragment {
     }
 
     public void initialize() {
-        storeDataToFile();
+
         getApiKey();
         pd = new ProgressDialog(getActivity());
         pd.setMessage("Processing...");
@@ -148,6 +163,17 @@ public class ReportsFragment extends Fragment {
         btnGo = (Button) contentView.findViewById(R.id.btnGo);
         txtDateFrom = (TextView) contentView.findViewById(R.id.txtDateFrom);
         txtDateTo = (TextView) contentView.findViewById(R.id.txtDateTo);
+        export = (TextView) contentView.findViewById(R.id.export);
+
+        export.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (responseList != null && responseList.size() > 0)
+                    showDialog();
+                else
+                    Toast.makeText(getActivity(), "No data available..", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         setupDropdowns();
 
@@ -551,28 +577,39 @@ public class ReportsFragment extends Fragment {
     }
 
 
-    public void storeDataToFile(){
+    public void storeDataToFile(String name) {
         try {
 
             String baseDir = android.os.Environment.getExternalStorageDirectory().getAbsolutePath();
-            String fileName = "AnalysisData.csv";
+            String fileName = name + ".csv";
             String filePath = baseDir + File.separator + fileName;
-            File f = new File(filePath );
+            File f = new File(filePath);
             FileWriter mFileWriter;
             CSVWriter writer;
 // File exist
-            if(f.exists() && !f.isDirectory()){
-                mFileWriter = new FileWriter(filePath , true);
+            if (f.exists() && !f.isDirectory()) {
+                mFileWriter = new FileWriter(filePath, true);
                 writer = new CSVWriter(mFileWriter);
-            }
-            else {
+            } else {
                 writer = new CSVWriter(new FileWriter(filePath));
             }
             List<String[]> data = new ArrayList<String[]>();
-            data.add(new String[]{"India", "New Delhi"});
-            data.add(new String[]{"United States", "Washington D.C"});
-            data.add(new String[]{"Germany", "Berlin"});
 
+
+            data.add(new String[]{"Product", "Brand", "Model", "Stock", "UoM", "Unit/B-Price", "Current Stock", "Sold"});
+            String[] tmpArray;
+            for (int i = 0; i < responseList.size(); i++) {
+                tmpArray = new String[8];
+                tmpArray[0] = responseList.get(i).getProductType().getTypeName();
+                tmpArray[1] = responseList.get(i).getBrand().getBrandName();
+                tmpArray[2] = responseList.get(i).getProductName();
+                tmpArray[3] = Double.toString(responseList.get(i).getOtherThanCurrentInventoryQty() + responseList.get(i).getQty());
+                tmpArray[4] = responseList.get(i).getUnitOfMsrmnt().getDescription();
+                tmpArray[5] = Double.toString(responseList.get(i).getUnitPrice());
+                tmpArray[6] = Double.toString(responseList.get(i).getQty());
+                tmpArray[7] = Double.toString(responseList.get(i).getOtherThanCurrentInventoryQty());
+                data.add(tmpArray);
+            }
             writer.writeAll(data);
             writer.close();
 
@@ -587,7 +624,9 @@ public class ReportsFragment extends Fragment {
             writer.writeAll(data);
 
             writer.close();*/
-        }catch (Exception e){}
+        } catch (Exception e) {
+            Log.e("exception", e.toString());
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -924,5 +963,75 @@ public class ReportsFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
 //        void onCheckoutListener();
+    }
+
+
+    public void showDialog() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        builder.setTitle("Enter name for file..");
+
+// Set up the input
+        final EditText input = new EditText(getActivity());
+        input.setEnabled(true);
+// Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+
+
+        builder.setView(input);
+
+// Set up the buttons
+        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                if (input.getText().toString().trim() != "") {
+                    fileName = input.getText().toString().trim();
+
+
+                    if (Build.VERSION.SDK_INT >= 23) {
+                        int permissionCheck = checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+                            requestPermissions( new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                            return;
+                        }
+                    }
+
+                        storeDataToFile(input.getText().toString().trim());
+
+
+                } else
+                    Toast.makeText(getActivity(), "Please enter a name", Toast.LENGTH_SHORT).show();
+            }
+
+
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(checkSelfPermission(getActivity(), permissions[0]) == PackageManager.PERMISSION_GRANTED){
+            switch (requestCode) {
+
+                case 1:
+                    storeDataToFile(fileName);
+                    break;
+
+            }
+
+            Toast.makeText(getActivity(), "Permission granted", Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(getActivity(), "Permission denied", Toast.LENGTH_SHORT).show();
+        }
     }
 }

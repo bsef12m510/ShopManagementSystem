@@ -834,7 +834,7 @@ public class PurchaseFragment extends Fragment {
         PurchaseService service =
                 ApiClient.getClient().create(PurchaseService.class);
 
-        Call<List<UoM>> call = service.getMeasurementUnits("hrauf");
+        Call<List<UoM>> call = service.getMeasurementUnits(apiKey);
         pd.show();
         call.enqueue(new Callback<List<UoM>>() {
             @Override

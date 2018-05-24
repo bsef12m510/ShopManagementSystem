@@ -31,14 +31,38 @@
 
             android:tag="invisible">
 
-            <TextView
-                android:id="@+id/searchText"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                >
 
-                android:background="@color/transparent"
-                android:text="Search Report Option.."
-                 />
+                <TextView
+                    android:id="@+id/searchText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:background="@color/transparent"
+                    android:text="Search Report Option.."
+                    />
+
+                <TextView
+                    android:id="@+id/export"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:background="@color/transparent"
+                    android:text="Export as csv ?"
+                    android:textColor="@color/colorAccent"
+                    android:textStyle="bold|italic"
+                    android:textSize="16sp"
+                    />
+
+
+            </RelativeLayout>
+
+
 
             <RadioGroup
                 android:id="@+id/radioGroup1"

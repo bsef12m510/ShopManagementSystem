@@ -20,7 +20,7 @@ import retrofit2.http.Query;
 public interface PurchaseService {
 
     @GET("search/getMeasurementUnits")
-    Call<List<UoM>> getMeasurementUnits(@Query("userId") String userId);
+    Call<List<UoM>> getMeasurementUnits(@Query("apiKey") String apiKey);
 
     @GET("product/GetAllModelsForProductType")
     Call<List<JProduct>> getModels(@Query("apiKey") String apiKey, @Query("productTypeId") int productTypeId,  @Query("brandId") int brandId);

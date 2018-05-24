@@ -114,12 +114,12 @@ namespace WebSource.Controllers
 
         [HttpGet]
         [ActionName("getMeasurementUnits")]
-        public IHttpActionResult getMeasurementUnits(string userId)
+        public IHttpActionResult getMeasurementUnits(string apiKey)
         {
             SMS_DBEntities1 db = new SMS_DBEntities1();
-            var user = db.users.FirstOrDefault(y => y.user_id.Equals(userId));
+            var user = db.users.FirstOrDefault(y => y.api_key.Equals(apiKey));
             var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
-            List<msrmnt_units> list = new List<msrmnt_units>();
+            HashSet<msrmnt_units> list = new HashSet<msrmnt_units>();
 
             foreach (var inventory in shop.inventories)
                 list.Add(inventory.product.msrmnt_units);
