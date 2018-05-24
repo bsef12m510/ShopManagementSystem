@@ -42,7 +42,8 @@ namespace WebSource.Controllers
                     var brand_id = -1;
                     var product_type = -1;
 
-                    if (null == inventory.FirstOrDefault(y => y.product.brand_id == product.brand.brand_id))
+                    if (null == inventory.FirstOrDefault(y => y.product.brand_id == product.brand.brand_id) &&
+                        null == inventory.FirstOrDefault(y => y.product.brand.brand_name.Equals(product.brand.brand_name.ToLower())))
                     {
                         db.brands.Add(new brand { brand_name = product.brand.brand_name });
                         db.SaveChanges();
@@ -60,13 +61,14 @@ namespace WebSource.Controllers
                         db.SaveChanges();
                         brand_id = b.brand_id;
                     }
-                    if (null == inventory.FirstOrDefault(y => y.product.product_type == product.product_type.type_id))
+                    if (null == inventory.FirstOrDefault(y => y.product.product_type == product.product_type.type_id) &&
+                        null == inventory.FirstOrDefault(y => y.product.product_types.type_name.ToLower().Equals(product.product_type.type_name.ToLower())))
                     {
                         db.product_types.Add(new product_types { type_name = product.product_type.type_name });
                         db.SaveChanges();
                         product_type = db.product_types.Where(y => y.type_name.Equals(product.product_type.type_name)).First(y => y.products.Count == 0).type_id;
                     }
-                    else if (null == inventory.FirstOrDefault(y => y.product.product_types.type_name.ToLower().Equals(product.product_type.type_name.ToLower()))) {
+                    else if (null != inventory.FirstOrDefault(y => y.product.product_types.type_name.ToLower().Equals(product.product_type.type_name.ToLower()))) {
                         product_type = inventory.FirstOrDefault(y => y.product.product_types.type_name.ToLower().Equals(product.product_type.type_name.ToLower())).product.product_type;
                     }
                     else if (null != db.product_types.FirstOrDefault(y => y.type_id == product.product_type.type_id) &&
@@ -78,13 +80,14 @@ namespace WebSource.Controllers
                         product_type = p.type_id;
                     }
                     int msr_unit = -1;
-                    if (null == inventory.FirstOrDefault(y => y.product.msrmnt_units.sr_no == product.unit_of_msrmnt.sr_no))
+                    if (null == inventory.FirstOrDefault(y => y.product.msrmnt_units.sr_no == product.unit_of_msrmnt.sr_no) &&
+                        null == inventory.FirstOrDefault(y => y.product.msrmnt_units.description.ToLower().Equals(product.unit_of_msrmnt.description)))
                     {
                         db.msrmnt_units.Add(new msrmnt_units { description = product.unit_of_msrmnt.description });
                         db.SaveChanges();
                         msr_unit = db.msrmnt_units.Where(y => y.description.Equals(product.unit_of_msrmnt.description)).First(y => y.products.Count == 0).sr_no;
                     }
-                    else if (null == inventory.FirstOrDefault(y => y.product.msrmnt_units.description.ToLower().Equals(product.unit_of_msrmnt.description))){
+                    else if (null != inventory.FirstOrDefault(y => y.product.msrmnt_units.description.ToLower().Equals(product.unit_of_msrmnt.description))){
                         msr_unit = inventory.FirstOrDefault(y => y.product.msrmnt_units.description.ToLower().Equals(product.unit_of_msrmnt.description)).product.unit_of_msrmnt;
                     }
                     else
