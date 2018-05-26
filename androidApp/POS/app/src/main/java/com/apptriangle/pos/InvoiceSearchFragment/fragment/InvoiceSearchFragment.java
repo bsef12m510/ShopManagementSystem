@@ -106,9 +106,10 @@ public class InvoiceSearchFragment extends Fragment {
 
     public void initialize() {
         getApiKey();
-        pd = new ProgressDialog(getActivity());
-        pd.setMessage("Processing...");
-        pd.setCanceledOnTouchOutside(false);
+        /*pd = new ProgressDialog(getActivity());
+        pd.setMessage("Processing...");*/
+        /*pd = ProgressDialog.show(getActivity(), null, "Processing");
+        pd.setCanceledOnTouchOutside(false);*/
         btSearc = (Button) contentView.findViewById(R.id.btSearch);
         edtTotalAmnt = (EditText) contentView.findViewById(R.id.edtTotalAmnt);
         searchText = (EditText) contentView.findViewById(R.id.searchText);
@@ -142,11 +143,13 @@ public class InvoiceSearchFragment extends Fragment {
                 ApiClient.getClient().create(InvoiceService.class);
         Call<Invoice> call;
         call = service.getInvoiceById(apiKey, searchText.getText().toString());
-        pd.show();
+//        pd.show();
+        pd = ProgressDialog.show(getActivity(), null, "Processing");
+        pd.setCanceledOnTouchOutside(false);
         call.enqueue(new Callback<Invoice>() {
             @Override
             public void onResponse(Call<Invoice> call, Response<Invoice> response) {
-                pd.hide();
+                pd.dismiss();
                 if (response != null && response.body() != null) {
                     invoiceList.clear();
                     invObj = (Invoice) response.body();
@@ -169,7 +172,7 @@ public class InvoiceSearchFragment extends Fragment {
             public void onFailure(Call<Invoice> call, Throwable t) {
                 // Log error here since request failed
                 Log.e("failure", "failure");
-                pd.hide();
+                pd.dismiss();
 
             }
         });
@@ -180,11 +183,13 @@ public class InvoiceSearchFragment extends Fragment {
                 ApiClient.getClient().create(InvoiceService.class);
         Call<List<Invoice>> call;
         call = service.getInvoiceByCell(apiKey, searchText.getText().toString());
-        pd.show();
+//        pd.show();
+        pd = ProgressDialog.show(getActivity(), null, "Processing");
+        pd.setCanceledOnTouchOutside(false);
         call.enqueue(new Callback<List<Invoice>>() {
             @Override
             public void onResponse(Call<List<Invoice>> call, Response<List<Invoice>> response) {
-                pd.hide();
+                pd.dismiss();
                 if (response != null && response.body() != null) {
                     invoiceList.clear();
                     invoiceList = (List<Invoice>) response.body();
@@ -207,7 +212,7 @@ public class InvoiceSearchFragment extends Fragment {
             public void onFailure(Call<List<Invoice>> call, Throwable t) {
                 // Log error here since request failed
                 Log.e("failure", "failure");
-                pd.hide();
+                pd.dismiss();
 
             }
         });

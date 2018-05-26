@@ -78,9 +78,8 @@ public class LoginFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         initialize(contentView);
         setClickListeners();
-        pd = new ProgressDialog(getActivity());
-        pd.setMessage("Logging you in");
-        pd.setCanceledOnTouchOutside(false);
+       /* pd = ProgressDialog.show(getActivity(), null, "Logging you in...");
+        pd.setCanceledOnTouchOutside(false);*/
  }
 
     public void initialize(View contentView){
@@ -154,11 +153,13 @@ public class LoginFragment extends Fragment {
             RequestBody emailParam = RequestBody.create(MediaType.parse("text/plain"), email.getText().toString());
             RequestBody passParam = RequestBody.create(MediaType.parse("text/plain"), password.getText().toString());
             Call<LoginResponse> call = loginService.login( email.getText().toString(), password.getText().toString());
-            pd.show();
+//            pd.show();
+            pd = ProgressDialog.show(getActivity(), null, "Logging you in...");
+            pd.setCanceledOnTouchOutside(false);
             call.enqueue(new Callback<LoginResponse>() {
                 @Override
                 public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                    pd.hide();
+                    pd.dismiss();
                     if (response != null) {
                         loginResponseData = (LoginResponse) response.body();
                         if(cb_remember.isChecked()){
@@ -176,7 +177,7 @@ public class LoginFragment extends Fragment {
                 public void onFailure(Call<LoginResponse> call, Throwable t) {
                     // Log error here since request failed
                     Log.e("failure", "failure");
-                    pd.hide();
+                    pd.dismiss();
 //                    onSuccessfulLogin(null,email.getText().toString());
 
                 }

@@ -27,7 +27,7 @@ namespace WebSource.Controllers
                 var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
 
                 if (null != db.sales.Where(y => y.sale_id == invoiceId))
-                    invoice = new JInvoice(db.sales.Where(y => y.sale_id == invoiceId).ToList());
+                    invoice = new JInvoice(db.sales.Where(y => y.sale_id == invoiceId && y.shop_id == shop.shop_id).ToList());
                 else
                     return Ok(false);
             }
@@ -55,7 +55,7 @@ namespace WebSource.Controllers
                 }
                 var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
 
-                if (null != db.sales.Where(y => y.cust_phone == cust_phone))
+                if (null != db.sales.Where(y => y.cust_phone == cust_phone && y.shop_id == shop.shop_id))
                 {
                     var salesList = db.sales.Where(y => y.cust_phone == cust_phone).ToList();  // add cust phone for every row of same sale id in db
                     foreach (var salesWithCellNo in salesList.GroupBy(x => x.sale_id))

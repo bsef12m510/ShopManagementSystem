@@ -164,9 +164,10 @@ public class PurchaseFragment extends Fragment {
         purchase = new PurchaseResponse();
 
         getApiKey();
-        pd = new ProgressDialog(getActivity());
-        pd.setMessage("Processing...");
-        pd.setCanceledOnTouchOutside(false);
+        /*pd = new ProgressDialog(getActivity());
+        pd.setMessage("Processing...");*/
+       /* pd = ProgressDialog.show(getActivity(), null, "Processing");
+        pd.setCanceledOnTouchOutside(false);*/
 
         checkoutBtn = (Button) view.findViewById(R.id.checkoutBtn);
         btnMore = (Button) view.findViewById(R.id.btnMore);
@@ -208,7 +209,7 @@ public class PurchaseFragment extends Fragment {
             }
         });
 
-        getAllProductTypes();
+
         getAllUoM();
 
         addProductBtn.setOnClickListener(new View.OnClickListener() {
@@ -336,11 +337,13 @@ public class PurchaseFragment extends Fragment {
 
 
         Call<Object> call = service.processPurchase(purchase);
-        pd.show();
+//        pd.show();
+        pd = ProgressDialog.show(getActivity(), null, "Processing");
+        pd.setCanceledOnTouchOutside(false);
         call.enqueue(new Callback<Object>() {
             @Override
             public void onResponse(Call<Object> call, Response<Object> response) {
-                pd.hide();
+                pd.dismiss();
                 if (response != null) {
                     if (response.body() instanceof String) {
                         if ((String) response.body() != null) {
@@ -372,7 +375,7 @@ public class PurchaseFragment extends Fragment {
             public void onFailure(Call<Object> call, Throwable t) {
                 // Log error here since request failed
                 Log.e("failure", "failure");
-                pd.hide();
+                pd.dismiss();
 
             }
         });
@@ -745,11 +748,13 @@ public class PurchaseFragment extends Fragment {
                 ApiClient.getClient().create(PurchaseService.class);
 
         Call<Object> call = service.deleteProduct(apiKey, selectedProduct.getProductId());
-        pd.show();
+//        pd.show();
+        pd = ProgressDialog.show(getActivity(), null, "Processing");
+        pd.setCanceledOnTouchOutside(false);
         call.enqueue(new Callback<Object>() {
             @Override
             public void onResponse(Call<Object> call, Response<Object> response) {
-                pd.hide();
+                pd.dismiss();
                 if (response != null) {
                     if ((boolean) response.body()) {
                         Toast.makeText(getActivity(), "Model deleted successfully.", Toast.LENGTH_SHORT).show();
@@ -762,7 +767,7 @@ public class PurchaseFragment extends Fragment {
             public void onFailure(Call<Object> call, Throwable t) {
                 // Log error here since request failed
                 Log.e("failure", "failure");
-                pd.hide();
+                pd.dismiss();
 
             }
         });
@@ -773,11 +778,13 @@ public class PurchaseFragment extends Fragment {
                 ApiClient.getClient().create(PurchaseService.class);
 
         Call<Object> call = service.deleteBrand(apiKey, selectedBrand.getBrandId());
-        pd.show();
+//        pd.show();
+        pd = ProgressDialog.show(getActivity(), null, "Processing");
+        pd.setCanceledOnTouchOutside(false);
         call.enqueue(new Callback<Object>() {
             @Override
             public void onResponse(Call<Object> call, Response<Object> response) {
-                pd.hide();
+                pd.dismiss();
                 if (response != null) {
                     if ((boolean) response.body()) {
                         Toast.makeText(getActivity(), "Brand deleted successfully.", Toast.LENGTH_SHORT).show();
@@ -790,7 +797,7 @@ public class PurchaseFragment extends Fragment {
             public void onFailure(Call<Object> call, Throwable t) {
                 // Log error here since request failed
                 Log.e("failure", "failure");
-                pd.hide();
+                pd.dismiss();
 
             }
         });
@@ -801,11 +808,13 @@ public class PurchaseFragment extends Fragment {
                 ApiClient.getClient().create(PurchaseService.class);
 
         Call<Object> call = service.deleteProductType(apiKey, selectedProductType.getTypeId());
-        pd.show();
+//        pd.show();
+        pd = ProgressDialog.show(getActivity(), null, "Processing");
+        pd.setCanceledOnTouchOutside(false);
         call.enqueue(new Callback<Object>() {
             @Override
             public void onResponse(Call<Object> call, Response<Object> response) {
-                pd.hide();
+                pd.dismiss();
                 if (response != null) {
                     if ((boolean) response.body()) {
                         Toast.makeText(getActivity(), "type deleted successfully.", Toast.LENGTH_SHORT).show();
@@ -818,7 +827,7 @@ public class PurchaseFragment extends Fragment {
             public void onFailure(Call<Object> call, Throwable t) {
                 // Log error here since request failed
                 Log.e("failure", "failure");
-                pd.hide();
+                pd.dismiss();
 
             }
         });
@@ -835,11 +844,13 @@ public class PurchaseFragment extends Fragment {
                 ApiClient.getClient().create(PurchaseService.class);
 
         Call<List<UoM>> call = service.getMeasurementUnits(apiKey);
-        pd.show();
+//        pd.show();
+        pd = ProgressDialog.show(getActivity(), null, "Processing");
+        pd.setCanceledOnTouchOutside(false);
         call.enqueue(new Callback<List<UoM>>() {
             @Override
             public void onResponse(Call<List<UoM>> call, Response<List<UoM>> response) {
-                pd.hide();
+//                pd.dismiss();
                 if (response != null) {
                     uoMList = (ArrayList<UoM>) response.body();
 
@@ -849,14 +860,15 @@ public class PurchaseFragment extends Fragment {
                     setUoMDropdown(uoMList, uoMDropdown, false);
 
                 }
+                getAllProductTypes();
             }
 
             @Override
             public void onFailure(Call<List<UoM>> call, Throwable t) {
                 // Log error here since request failed
                 Log.e("failure", "failure");
-                pd.hide();
-
+//                pd.dismiss();
+                getAllProductTypes();
             }
         });
     }
@@ -866,11 +878,13 @@ public class PurchaseFragment extends Fragment {
                 ApiClient.getClient().create(SalesService.class);
 
         Call<List<ProductType>> call = service.getAllProductTypes(apiKey);
-        pd.show();
+//        pd.show();
+//        pd = ProgressDialog.show(getActivity(), null, "Processing");
+//        pd.setCanceledOnTouchOutside(false);
         call.enqueue(new Callback<List<ProductType>>() {
             @Override
             public void onResponse(Call<List<ProductType>> call, Response<List<ProductType>> response) {
-                pd.hide();
+                pd.dismiss();
                 if (response != null) {
                     productsTypeList = (ArrayList<ProductType>) response.body();
                     ProductType tmp = new ProductType();
@@ -886,7 +900,7 @@ public class PurchaseFragment extends Fragment {
             public void onFailure(Call<List<ProductType>> call, Throwable t) {
                 // Log error here since request failed
                 Log.e("failure", "failure");
-                pd.hide();
+                pd.dismiss();
 
             }
         });
@@ -906,11 +920,13 @@ public class PurchaseFragment extends Fragment {
                 ApiClient.getClient().create(SalesService.class);
 
         Call<List<Product>> call = service.getModels(apiKey, selectedProductType.getTypeId(), selectedBrand.getBrandId());
-        pd.show();
+//        pd.show();
+        pd = ProgressDialog.show(getActivity(), null, "Processing");
+        pd.setCanceledOnTouchOutside(false);
         call.enqueue(new Callback<List<Product>>() {
             @Override
             public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
-                pd.hide();
+                pd.dismiss();
                 if (response != null) {
                     List<Product> productsListTmp = (ArrayList<Product>) response.body();
 
@@ -935,7 +951,7 @@ public class PurchaseFragment extends Fragment {
             public void onFailure(Call<List<Product>> call, Throwable t) {
                 // Log error here since request failed
                 Log.e("failure", "failure");
-                pd.hide();
+                pd.dismiss();
 
             }
         });
@@ -958,11 +974,13 @@ public class PurchaseFragment extends Fragment {
         call = service.getBrands(apiKey, selectedProductType.getTypeId());
 //        else
 //            call = service.getBrands(apiKey, selectedProductType.getTypeId());// get all brands here for a shop
-        pd.show();
+//        pd.show();
+        pd = ProgressDialog.show(getActivity(), null, "Processing");
+        pd.setCanceledOnTouchOutside(false);
         call.enqueue(new Callback<List<Brand>>() {
             @Override
             public void onResponse(Call<List<Brand>> call, Response<List<Brand>> response) {
-                pd.hide();
+                pd.dismiss();
                 if (response != null && response.body() != null) {
                     brandsList = (ArrayList<Brand>) response.body();
                     Brand tmp = new Brand();
@@ -980,7 +998,7 @@ public class PurchaseFragment extends Fragment {
             public void onFailure(Call<List<Brand>> call, Throwable t) {
                 // Log error here since request failed
                 Log.e("failure", "failure");
-                pd.hide();
+                pd.dismiss();
 
             }
         });

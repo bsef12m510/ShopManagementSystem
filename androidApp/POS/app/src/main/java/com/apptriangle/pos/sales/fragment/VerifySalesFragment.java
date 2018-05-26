@@ -92,9 +92,9 @@ public class VerifySalesFragment extends Fragment {
 
     public void initialize(){
 
-        pd = new ProgressDialog(getActivity());
-        pd.setMessage("Processing...");
-        pd.setCanceledOnTouchOutside(false);
+      /*  pd = new ProgressDialog(getActivity());
+        pd.setMessage("Processing...");*/
+//        pd.setCanceledOnTouchOutside(false);
 
         finishBtn = (Button)contentView.findViewById(R.id.finishButton);
         edtTotalAmnt = (EditText) contentView.findViewById(R.id.edtTotalAmnt);
@@ -152,11 +152,13 @@ public class VerifySalesFragment extends Fragment {
 
 
         Call<Object> call = service.processSale(sale);
-        pd.show();
+//        pd.show();
+        pd = ProgressDialog.show(getActivity(), null, "Processing");
+        pd.setCanceledOnTouchOutside(false);
         call.enqueue(new Callback<Object>() {
             @Override
             public void onResponse(Call<Object> call, Response<Object> response) {
-                pd.hide();
+                pd.dismiss();
                 if (response != null) {
                    if((Double)response.body() > 0) {
                        sale.sale_id = (Double)response.body();
@@ -171,7 +173,7 @@ public class VerifySalesFragment extends Fragment {
             public void onFailure(Call<Object> call, Throwable t) {
                 // Log error here since request failed
                 Log.e("failure", "failure");
-                pd.hide();
+                pd.dismiss();
 
             }
         });

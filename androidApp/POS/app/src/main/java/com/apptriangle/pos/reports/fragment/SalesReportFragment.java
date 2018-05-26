@@ -128,9 +128,10 @@ public class SalesReportFragment extends Fragment {
     }
     public void initialize(){
         getApiKey();
-        pd = new ProgressDialog(getActivity());
-        pd.setMessage("Processing...");
-        pd.setCanceledOnTouchOutside(false);
+      /*  pd = new ProgressDialog(getActivity());
+        pd.setMessage("Processing...");*/
+        /*pd = ProgressDialog.show(getActivity(), null, "Processing");
+        pd.setCanceledOnTouchOutside(false);*/
         tableView = (TableView)contentView.findViewById(R.id.content_container);
         customContainer = (CardView)contentView.findViewById(R.id.customContainer);
         productsDropdown = (Spinner) contentView.findViewById(R.id.productsDropdown);
@@ -215,11 +216,13 @@ public class SalesReportFragment extends Fragment {
         Call<List<Sale>> call = service.getSalesReportData(apiKey, convertDate(txtDateFrom.getText().toString()),
                 convertDate(txtDateTo.getText().toString()), ((selectedProductType != null) ? selectedProductType.getTypeId() : -1),
                 ((selectedBrand != null) ? selectedBrand.getBrandId() : -1), ((selectedUser != null) ? selectedUser.user_id : ""));
-        pd.show();
+//        pd.show();
+        pd = ProgressDialog.show(getActivity(), null, "Processing");
+        pd.setCanceledOnTouchOutside(false);
         call.enqueue(new Callback<List<Sale>>() {
             @Override
             public void onResponse(Call<List<Sale>> call, Response<List<Sale>> response) {
-                pd.hide();
+                pd.dismiss();
                 if (response != null && response.body() != null) {
                     ROW_SIZE = response.body().size();
                     responseList = (ArrayList<Sale>) response.body();
@@ -246,7 +249,7 @@ public class SalesReportFragment extends Fragment {
             public void onFailure(Call<List<Sale>> call, Throwable t) {
                 // Log error here since request failed
                 Log.e("failure", "failure");
-                pd.hide();
+                pd.dismiss();
 
             }
         });
@@ -271,11 +274,13 @@ public class SalesReportFragment extends Fragment {
                 ApiClient.getClient().create(ReportService.class);
 
         Call<List<User>> call = service.getUsers(apiKey);
-        pd.show();
+//        pd.show();
+        pd = ProgressDialog.show(getActivity(), null, "Processing");
+        pd.setCanceledOnTouchOutside(false);
         call.enqueue(new Callback<List<User>>() {
             @Override
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                pd.hide();
+                pd.dismiss();
                 if (response != null) {
                     usersList = (ArrayList<User>) response.body();
                     User tmp = new User();
@@ -291,7 +296,7 @@ public class SalesReportFragment extends Fragment {
             public void onFailure(Call<List<User>> call, Throwable t) {
                 // Log error here since request failed
                 Log.e("failure", "failure");
-                pd.hide();
+                pd.dismiss();
 
             }
         });
@@ -302,11 +307,13 @@ public class SalesReportFragment extends Fragment {
                 ApiClient.getClient().create(SalesService.class);
 
         Call<List<ProductType>> call = service.getAllProductTypes(apiKey);
-        pd.show();
+//        pd.show();
+        pd = ProgressDialog.show(getActivity(), null, "Processing");
+        pd.setCanceledOnTouchOutside(false);
         call.enqueue(new Callback<List<ProductType>>() {
             @Override
             public void onResponse(Call<List<ProductType>> call, Response<List<ProductType>> response) {
-                pd.hide();
+                pd.dismiss();
                 if (response != null) {
                     productsList = (ArrayList<ProductType>) response.body();
                     ProductType tmp = new ProductType();
@@ -322,7 +329,7 @@ public class SalesReportFragment extends Fragment {
             public void onFailure(Call<List<ProductType>> call, Throwable t) {
                 // Log error here since request failed
                 Log.e("failure", "failure");
-                pd.hide();
+                pd.dismiss();
 
             }
         });
@@ -333,11 +340,13 @@ public class SalesReportFragment extends Fragment {
                 ApiClient.getClient().create(SalesService.class);
 
         Call<List<Brand>> call = service.getBrands(apiKey, selectedProductType.getTypeId());
-        pd.show();
+//        pd.show();
+        pd = ProgressDialog.show(getActivity(), null, "Processing");
+        pd.setCanceledOnTouchOutside(false);
         call.enqueue(new Callback<List<Brand>>() {
             @Override
             public void onResponse(Call<List<Brand>> call, Response<List<Brand>> response) {
-                pd.hide();
+                pd.dismiss();
                 if (response != null && response.body() != null) {
                     brandsList = (ArrayList<Brand>) response.body();
                     Brand tmp = new Brand();
@@ -353,7 +362,7 @@ public class SalesReportFragment extends Fragment {
             public void onFailure(Call<List<Brand>> call, Throwable t) {
                 // Log error here since request failed
                 Log.e("failure", "failure");
-                pd.hide();
+                pd.dismiss();
 
             }
         });

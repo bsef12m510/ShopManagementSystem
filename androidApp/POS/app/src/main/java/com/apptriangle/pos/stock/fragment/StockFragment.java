@@ -69,9 +69,10 @@ public class StockFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        pd = new ProgressDialog(getActivity());
-        pd.setMessage("Processing...");
-        pd.setCanceledOnTouchOutside(false);
+        /*pd = new ProgressDialog(getActivity());
+        pd.setMessage("Processing...");*/
+        /*pd = ProgressDialog.show(getActivity(), null, "Processing");
+        pd.setCanceledOnTouchOutside(false);*/
         lytEmpty = (LinearLayout) contentView.findViewById(R.id.lytEmpty);
         btnSearch =(Button)contentView.findViewById(R.id.btnSearch);
         searchText = (EditText)contentView.findViewById(R.id.searchText);
@@ -129,11 +130,13 @@ public class StockFragment extends Fragment {
 
 
         Call<List<StockResponse>> call = service.getAllInventoryProducts(apiKey);
-        pd.show();
+//        pd.show();
+        pd = ProgressDialog.show(getActivity(), null, "Processing");
+        pd.setCanceledOnTouchOutside(false);
         call.enqueue(new Callback<List<StockResponse>>() {
             @Override
             public void onResponse(Call<List<StockResponse>> call, Response<List<StockResponse>> response) {
-                pd.hide();
+                pd.dismiss();
                 if (response != null) {
                     inventoryProducts = response.body();
                     if (inventoryProducts.size() > 0)
@@ -152,7 +155,7 @@ public class StockFragment extends Fragment {
             public void onFailure(Call<List<StockResponse>> call, Throwable t) {
                 // Log error here since request failed
                 Log.e("failure", "failure");
-                pd.hide();
+                pd.dismiss();
 
             }
         });
@@ -163,12 +166,14 @@ public class StockFragment extends Fragment {
                 ApiClient.getClient().create(StockService.class);
 
 
-        Call<List<StockResponse>> call = service.searchByProduct("hrauf",searchText.getText().toString().trim() );
-        pd.show();
+        Call<List<StockResponse>> call = service.searchByProduct(apiKey,searchText.getText().toString().trim() );
+//        pd.show();
+        pd = ProgressDialog.show(getActivity(), null, "Processing");
+        pd.setCanceledOnTouchOutside(false);
         call.enqueue(new Callback<List<StockResponse>>() {
             @Override
             public void onResponse(Call<List<StockResponse>> call, Response<List<StockResponse>> response) {
-                pd.hide();
+                pd.dismiss();
                 if (response != null) {
                     inventoryProducts = response.body();
                     if (inventoryProducts.size() > 0)
@@ -187,7 +192,7 @@ public class StockFragment extends Fragment {
             public void onFailure(Call<List<StockResponse>> call, Throwable t) {
                 // Log error here since request failed
                 Log.e("failure", "failure");
-                pd.hide();
+                pd.dismiss();
 
             }
         });
@@ -199,11 +204,13 @@ public class StockFragment extends Fragment {
 
 
         Call<List<StockResponse>> call = service.searchByBrand(apiKey,searchText.getText().toString().trim() );
-        pd.show();
+//        pd.show();
+        pd = ProgressDialog.show(getActivity(), null, "Processing");
+        pd.setCanceledOnTouchOutside(false);
         call.enqueue(new Callback<List<StockResponse>>() {
             @Override
             public void onResponse(Call<List<StockResponse>> call, Response<List<StockResponse>> response) {
-                pd.hide();
+                pd.dismiss();
                 if (response != null) {
                     inventoryProducts = response.body();
                     if (inventoryProducts.size() > 0)
@@ -222,7 +229,7 @@ public class StockFragment extends Fragment {
             public void onFailure(Call<List<StockResponse>> call, Throwable t) {
                 // Log error here since request failed
                 Log.e("failure", "failure");
-                pd.hide();
+                pd.dismiss();
 
             }
         });
@@ -234,11 +241,13 @@ public class StockFragment extends Fragment {
 
 
         Call<List<StockResponse>> call = service.searchByModel(apiKey,searchText.getText().toString().trim() );
-        pd.show();
+//        pd.show();
+        pd = ProgressDialog.show(getActivity(), null, "Processing");
+        pd.setCanceledOnTouchOutside(false);
         call.enqueue(new Callback<List<StockResponse>>() {
             @Override
             public void onResponse(Call<List<StockResponse>> call, Response<List<StockResponse>> response) {
-                pd.hide();
+                pd.dismiss();
                 if (response != null) {
                     inventoryProducts = response.body();
                     if (inventoryProducts.size() > 0)
@@ -257,7 +266,7 @@ public class StockFragment extends Fragment {
             public void onFailure(Call<List<StockResponse>> call, Throwable t) {
                 // Log error here since request failed
                 Log.e("failure", "failure");
-                pd.hide();
+                pd.dismiss();
 
             }
         });

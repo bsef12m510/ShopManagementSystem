@@ -35,7 +35,7 @@ import java.util.List;
 
 
 public class MainDrawerActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, AdminDashboardFragment.OnFragmentInteractionListener,ReportsFragment.OnFragmentInteractionListener,SalesReportFragment.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener, AdminDashboardFragment.OnFragmentInteractionListener, ReportsFragment.OnFragmentInteractionListener, SalesReportFragment.OnFragmentInteractionListener {
 
     ExpandableAdapter listAdapter;
     ExpandableListView expListView;
@@ -48,7 +48,8 @@ public class MainDrawerActivity extends AppCompatActivity
     public static String TAG_PLANS = "plansFragment";
     public NavigationView navigationView;
 
-    private TextView userNameTextView,emailTextView;
+    private TextView userNameTextView, emailTextView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,9 +66,9 @@ public class MainDrawerActivity extends AppCompatActivity
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        View  headerView=(View)navigationView.getHeaderView(0);
-        userNameTextView=(TextView)headerView.findViewById(R.id.header_username);
-        emailTextView=(TextView)headerView.findViewById(R.id.header_email);
+        View headerView = (View) navigationView.getHeaderView(0);
+        userNameTextView = (TextView) headerView.findViewById(R.id.header_username);
+        emailTextView = (TextView) headerView.findViewById(R.id.header_email);
 
        /* // get the listview
         expListView = (ExpandableListView) findViewById(R.id.navigationmenu);
@@ -81,7 +82,7 @@ public class MainDrawerActivity extends AppCompatActivity
         expListView.setAdapter(listAdapter);
 */
 //        getSavedHeaderData();
-        replaceFragment(new AdminDashboardFragment(),"asd");
+        replaceFragment(new AdminDashboardFragment(), "asd");
     }
 
     private void prepareListData() {
@@ -101,20 +102,18 @@ public class MainDrawerActivity extends AppCompatActivity
         top250.add("Customize Report");
 
 
-
-
         // Header, Child data
 
         listDataChild.put(listDataHeader.get(2), top250);
     }
 
 
-    private void getSavedHeaderData()
-    {
-        SharedPreferences shared = getSharedPreferences( "com.appTriangle.pos", Context.MODE_PRIVATE);
+    private void getSavedHeaderData() {
+        SharedPreferences shared = getSharedPreferences("com.appTriangle.pos", Context.MODE_PRIVATE);
         userNameTextView.setText(shared.getString("username", ""));
-        emailTextView.setText(shared.getString("role",""));
+        emailTextView.setText(shared.getString("role", ""));
     }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -154,18 +153,18 @@ public class MainDrawerActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_home) {
-            Fragment fragment =  new AdminDashboardFragment();
-            replaceFragment(fragment,"adminDashboardFragment");
+            Fragment fragment = new AdminDashboardFragment();
+            replaceFragment(fragment, "adminDashboardFragment");
         } else if (id == R.id.nav_sales) {
             Fragment fragment = new SalesReportFragment();
-            replaceFragment(fragment,"salesReportFragment");
+            replaceFragment(fragment, "salesReportFragment");
 
-        }else if (id == R.id.nav_inventory) {
+        } else if (id == R.id.nav_inventory) {
             Fragment fragment = new ReportsFragment();
-            replaceFragment(fragment,"reportsFragment");
+            replaceFragment(fragment, "reportsFragment");
         } else if (id == R.id.nav_account) {
 
-        }else if (id == R.id.nav_logout) {
+        } else if (id == R.id.nav_logout) {
             confirmAndLogout(this);
         }
 
@@ -174,7 +173,7 @@ public class MainDrawerActivity extends AppCompatActivity
         return true;
     }
 
-    public  void confirmAndLogout(final Activity activity) {
+    public void confirmAndLogout(final Activity activity) {
         if (!activity.isFinishing()) {
             android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(activity);
             alertDialogBuilder.setTitle("Are you sure you want to logout?")
@@ -202,10 +201,9 @@ public class MainDrawerActivity extends AppCompatActivity
 
     }
 
-    void logout()
-    {
+    void logout() {
         deleteApiKey();
-        Intent intent=new Intent(MainDrawerActivity.this, PublicActivity.class);
+        Intent intent = new Intent(MainDrawerActivity.this, PublicActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
@@ -219,16 +217,16 @@ public class MainDrawerActivity extends AppCompatActivity
         prefs.edit().putBoolean("is_remember_me", false).apply();
     }
 
-/*    @Override
-    public void onFragmentInteraction(Uri uri) {
+    /*    @Override
+        public void onFragmentInteraction(Uri uri) {
 
-        fromPlagFragment = true;
-    }*/
-    public void replaceFragment(Fragment fragment,String TAG) {
+            fromPlagFragment = true;
+        }*/
+    public void replaceFragment(Fragment fragment, String TAG) {
         // Insert the fragment by replacing any existing fragment
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.content_frame, fragment,TAG)
+                .replace(R.id.content_frame, fragment, TAG)
                 .commit();
     }
 
@@ -236,10 +234,10 @@ public class MainDrawerActivity extends AppCompatActivity
     public void onFragmentInteraction(ArrayList<Product> dataList, boolean isSale) {
         Fragment fragment = new ReportsFragment();
         navigationView.setCheckedItem(R.id.nav_inventory);
-        ((ReportsFragment)fragment).responseList = dataList;
-        ((ReportsFragment)fragment).showDashboardData = true;
-        ((ReportsFragment)fragment).isSale = isSale;
-        replaceFragment(fragment,"reportsFragment");
+        ((ReportsFragment) fragment).responseList = dataList;
+        ((ReportsFragment) fragment).showDashboardData = true;
+        ((ReportsFragment) fragment).isSale = isSale;
+        replaceFragment(fragment, "reportsFragment");
 
 
     }
@@ -252,17 +250,17 @@ public class MainDrawerActivity extends AppCompatActivity
         }
         return super.onKeyDown(keyCode, event);
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        Fragment fragment;
-        if(requestCode == 234) {
+        Fragment fragment = null;
+        if (requestCode == 1) {
             fragment = getFragmentManager().findFragmentByTag("plagFrag");
-        }else{
-            fragment = getFragmentManager().findFragmentByTag("plansFragment");
         }
-        fragment.onActivityResult(requestCode, resultCode, data);
+        if (null != fragment)
+            fragment.onActivityResult(requestCode, resultCode, data);
 
     }
 }

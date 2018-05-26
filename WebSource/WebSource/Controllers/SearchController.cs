@@ -18,9 +18,9 @@ namespace WebSource.Controllers
             //  IEnumerable<product> products = db.products.Where(x => x.product_name.Equals(product_name));
             var products = new List<product>();
             var user_id = userId;
-            var user = db.users.FirstOrDefault(y => y.user_id.Equals(user_id));
+            var user = db.users.FirstOrDefault(y => y.api_key.Equals(user_id));
             var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
-            var inventory = db.inventories.Where(y => y.shop_id == shop.shop_id);
+            var inventory = db.inventories.Where(y => y.shop_id == shop.shop_id && !(y.is_brand_active.Equals("N") || y.is_prod_active.Equals("N")));
 
 
             //var inventory = db.inventories;
@@ -63,7 +63,7 @@ namespace WebSource.Controllers
             SMS_DBEntities1 db = new SMS_DBEntities1();
             var user = db.users.FirstOrDefault(y => y.api_key.Equals(apiKey));
             var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
-            var inventory = db.inventories.Where(y => y.shop_id == shop.shop_id);
+            var inventory = db.inventories.Where(y => y.shop_id == shop.shop_id && !(y.is_brand_active.Equals("N") || y.is_prod_active.Equals("N")));
 
             var cproducts = new List<CInventory>();
             foreach (var i in inventory)
@@ -91,7 +91,7 @@ namespace WebSource.Controllers
             SMS_DBEntities1 db = new SMS_DBEntities1();
             var user = db.users.FirstOrDefault(y => y.api_key.Equals(apiKey));
             var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
-            var inventory = db.inventories.Where(y => y.shop_id == shop.shop_id);
+            var inventory = db.inventories.Where(y => y.shop_id == shop.shop_id && !(y.is_brand_active.Equals("N") || y.is_prod_active.Equals("N")));
 
             var cproducts = new List<CInventory>();
             foreach (var i in inventory)

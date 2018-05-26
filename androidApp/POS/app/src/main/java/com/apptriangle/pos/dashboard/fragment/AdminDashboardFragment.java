@@ -86,9 +86,10 @@ public class AdminDashboardFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         getApiKey();
-        pd = new ProgressDialog(getActivity());
-        pd.setMessage("Processing...");
-        pd.setCanceledOnTouchOutside(false);
+        /*pd = new ProgressDialog(getActivity());
+        pd.setMessage("Processing...");*/
+       /* pd = ProgressDialog.show(getActivity(), null, "Processing");
+        pd.setCanceledOnTouchOutside(false);*/
         pager = (ViewPager) contentView.findViewById(R.id.viewPager);
         lytLowStock = (LinearLayout) contentView.findViewById(R.id.lytLowStock);
         lytInventory = (LinearLayout) contentView.findViewById(R.id.lytInventory);
@@ -138,12 +139,13 @@ public class AdminDashboardFragment extends Fragment {
                 ApiClient.getClient().create(DashboardService.class);
         Call<List<Product>> call;
         call = service.getTopSellingProducts(apiKey);
-        pd.show();
-
+//        pd.show();
+        pd = ProgressDialog.show(getActivity(), null, "Processing");
+        pd.setCanceledOnTouchOutside(false);
         call.enqueue(new Callback<List<Product>>() {
             @Override
             public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
-//                pd.hide();
+
                 if (response != null && response.body() != null) {
                     topSellingProductsList.clear();
                     topSellingProductsList = (ArrayList<Product>) response.body();
@@ -184,7 +186,7 @@ public class AdminDashboardFragment extends Fragment {
             public void onFailure(Call<List<Product>> call, Throwable t) {
                 // Log error here since request failed
                 Log.e("failure", "failure");
-//                pd.hide();
+
                 getInventory();
             }
         });
@@ -195,12 +197,12 @@ public class AdminDashboardFragment extends Fragment {
                 ApiClient.getClient().create(DashboardService.class);
         Call<List<Product>> call;
         call = service.getInventory(apiKey);
-//        pd.show();
+
 
         call.enqueue(new Callback<List<Product>>() {
             @Override
             public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
-//                pd.hide();
+
                 if (response != null && response.body() != null) {
                     inventoryList.clear();
                     inventoryList = (ArrayList<Product>) response.body();
@@ -215,7 +217,7 @@ public class AdminDashboardFragment extends Fragment {
             public void onFailure(Call<List<Product>> call, Throwable t) {
                 // Log error here since request failed
                 Log.e("failure", "failure");
-//                pd.hide();
+
                 getLowStockProducts();
 
             }
@@ -227,12 +229,12 @@ public class AdminDashboardFragment extends Fragment {
                 ApiClient.getClient().create(DashboardService.class);
         Call<List<Product>> call;
         call = service.getLowStockProducts(apiKey);
-//        pd.show();
+
 
         call.enqueue(new Callback<List<Product>>() {
             @Override
             public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
-//                pd.hide();
+
                 if (response != null && response.body() != null) {
                     lowStockProductsList.clear();
                     lowStockProductsList = (ArrayList<Product>) response.body();
@@ -247,7 +249,7 @@ public class AdminDashboardFragment extends Fragment {
             public void onFailure(Call<List<Product>> call, Throwable t) {
                 // Log error here since request failed
                 Log.e("failure", "failure");
-//                pd.hide();
+
                 getMonthlySales();
             }
         });
@@ -258,12 +260,12 @@ public class AdminDashboardFragment extends Fragment {
                 ApiClient.getClient().create(DashboardService.class);
         Call<List<MonthlySalesResponse>> call;
         call = service.getSalesAmountByMonth(apiKey);
-//        pd.show();
+
 
         call.enqueue(new Callback<List<MonthlySalesResponse>>() {
             @Override
             public void onResponse(Call<List<MonthlySalesResponse>> call, Response<List<MonthlySalesResponse>> response) {
-                pd.hide();
+                pd.dismiss();
                 if (response != null && response.body() != null) {
                     monthlySalesResponseArrayList.clear();
                     monthlySalesResponseArrayList = (ArrayList<MonthlySalesResponse>) response.body();
@@ -279,7 +281,7 @@ public class AdminDashboardFragment extends Fragment {
             public void onFailure(Call<List<MonthlySalesResponse>> call, Throwable t) {
                 // Log error here since request failed
                 Log.e("failure", "failure");
-                pd.hide();
+                pd.dismiss();
 
             }
         });

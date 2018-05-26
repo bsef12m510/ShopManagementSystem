@@ -116,9 +116,10 @@ public class InvoiceFragment extends Fragment {
 
     public void initialize() {
         getApiKey();
-        pd = new ProgressDialog(getActivity());
-        pd.setMessage("Processing...");
-        pd.setCanceledOnTouchOutside(false);
+       /* pd = new ProgressDialog(getActivity());
+        pd.setMessage("Processing...");*/
+       /* pd = ProgressDialog.show(getActivity(), null, "Processing");
+        pd.setCanceledOnTouchOutside(false);*/
         finishBtn = (Button) contentView.findViewById(R.id.finishButton);
         edtTotalAmnt = (EditText) contentView.findViewById(R.id.edtTotalAmnt);
         searchText = (EditText) contentView.findViewById(R.id.searchText);
@@ -228,11 +229,13 @@ public class InvoiceFragment extends Fragment {
                     ApiClient.getClient().create(InvoiceService.class);
             Call<Object> call;
             call = service.updatePayment(apiKey, selectedInvoice.invoiceId, Double.parseDouble(edtPaidAmnt.getText().toString()));
-            pd.show();
+//            pd.show();
+            pd = ProgressDialog.show(getActivity(), null, "Processing");
+            pd.setCanceledOnTouchOutside(false);
             call.enqueue(new Callback<Object>() {
                 @Override
                 public void onResponse(Call<Object> call, Response<Object> response) {
-                    pd.hide();
+                    pd.dismiss();
                     if (response != null && response.body() != null) {
                         if (response.body() instanceof Boolean) {
                             if ((boolean) response.body())
@@ -250,7 +253,7 @@ public class InvoiceFragment extends Fragment {
                 public void onFailure(Call<Object> call, Throwable t) {
                     // Log error here since request failed
                     Log.e("failure", "failure");
-                    pd.hide();
+                    pd.dismiss();
                     Toast.makeText(getActivity(), "Unable to update payment", Toast.LENGTH_SHORT).show();
 
                     Intent intent = new Intent(getActivity(), SecureActivity.class);

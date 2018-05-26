@@ -101,9 +101,10 @@ public class SalesFragment extends Fragment {
         cart = new ArrayList<>();
 
         getApiKey();
-        pd = new ProgressDialog(getActivity());
-        pd.setMessage("Processing...");
-        pd.setCanceledOnTouchOutside(false);
+        /*pd = new ProgressDialog(getActivity());
+        pd.setMessage("Processing...");*/
+       /* pd = ProgressDialog.show(getActivity(), null, "Processing");
+        pd.setCanceledOnTouchOutside(false);*/
 
         productTypesDropdown = (Spinner) view.findViewById(R.id.productsDropdown);
         brandsDropdown = (Spinner) view.findViewById(R.id.brandsDropdown);
@@ -184,11 +185,13 @@ public class SalesFragment extends Fragment {
                 ApiClient.getClient().create(SalesService.class);
 
         Call<List<ProductType>> call = service.getAllProductTypes(apiKey);
-        pd.show();
+//        pd.show();
+        pd = ProgressDialog.show(getActivity(), null, "Processing");
+        pd.setCanceledOnTouchOutside(false);
         call.enqueue(new Callback<List<ProductType>>() {
             @Override
             public void onResponse(Call<List<ProductType>> call, Response<List<ProductType>> response) {
-                pd.hide();
+                pd.dismiss();
                 if (response != null) {
                     ArrayList<ProductType> productsList = (ArrayList<ProductType>) response.body();
                     ProductType tmp = new ProductType();
@@ -204,7 +207,7 @@ public class SalesFragment extends Fragment {
             public void onFailure(Call<List<ProductType>> call, Throwable t) {
                 // Log error here since request failed
                 Log.e("failure", "failure");
-                pd.hide();
+                pd.dismiss();
 
             }
         });
@@ -215,11 +218,13 @@ public class SalesFragment extends Fragment {
                 ApiClient.getClient().create(SalesService.class);
 
         Call<List<Product>> call = service.getModels(apiKey,selectedProductType.getTypeId(),selectedBrand.getBrandId());
-        pd.show();
+//        pd.show();
+        pd = ProgressDialog.show(getActivity(), null, "Processing");
+        pd.setCanceledOnTouchOutside(false);
         call.enqueue(new Callback<List<Product>>() {
             @Override
             public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
-                pd.hide();
+                pd.dismiss();
                 if (response != null) {
                     ArrayList<Product> productsList = (ArrayList<Product>) response.body();
                     Product tmp = new Product();
@@ -235,7 +240,7 @@ public class SalesFragment extends Fragment {
             public void onFailure(Call<List<Product>> call, Throwable t) {
                 // Log error here since request failed
                 Log.e("failure", "failure");
-                pd.hide();
+                pd.dismiss();
 
             }
         });
@@ -246,11 +251,13 @@ public class SalesFragment extends Fragment {
                 ApiClient.getClient().create(SalesService.class);
 
         Call<List<Brand>> call = service.getBrands(apiKey, selectedProductType.getTypeId());
-        pd.show();
+//        pd.show();
+        pd = ProgressDialog.show(getActivity(), null, "Processing");
+        pd.setCanceledOnTouchOutside(false);
         call.enqueue(new Callback<List<Brand>>() {
             @Override
             public void onResponse(Call<List<Brand>> call, Response<List<Brand>> response) {
-                pd.hide();
+                pd.dismiss();
                 if (response != null && response.body() != null) {
                     ArrayList<Brand> brandsList = (ArrayList<Brand>) response.body();
                     Brand tmp = new Brand();
@@ -266,7 +273,7 @@ public class SalesFragment extends Fragment {
             public void onFailure(Call<List<Brand>> call, Throwable t) {
                 // Log error here since request failed
                 Log.e("failure", "failure");
-                pd.hide();
+                pd.dismiss();
 
             }
         });

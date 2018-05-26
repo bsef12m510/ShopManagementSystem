@@ -13,6 +13,8 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
@@ -149,9 +151,9 @@ public class ReportsFragment extends Fragment {
     public void initialize() {
 
         getApiKey();
-        pd = new ProgressDialog(getActivity());
+        /*pd = new ProgressDialog(getActivity());
         pd.setMessage("Processing...");
-        pd.setCanceledOnTouchOutside(false);
+        pd.setCanceledOnTouchOutside(false);*/
         tableView = (TableView) contentView.findViewById(R.id.content_container);
         customContainer = (CardView) contentView.findViewById(R.id.customContainer);
         title_container = (CardView) contentView.findViewById(R.id.card_view);
@@ -256,11 +258,14 @@ public class ReportsFragment extends Fragment {
         Call<List<Product>> call = service.getReportData(apiKey, convertDate(txtDateFrom.getText().toString()),
                 convertDate(txtDateTo.getText().toString()), ((selectedProductType != null) ? selectedProductType.getTypeId() : -1),
                 ((selectedBrand != null) ? selectedBrand.getBrandId() : -1), ((selectedUser != null) ? selectedUser.user_id : ""));
-        pd.show();
+//        pd.show();
+
+        pd = ProgressDialog.show(getActivity(), null, "Processing...");
+        pd.setCanceledOnTouchOutside(false);
         call.enqueue(new Callback<List<Product>>() {
             @Override
             public void onResponse(Call<List<Product>> call, Response<List<Product>> response) {
-                pd.hide();
+                pd.dismiss();
                 if (response != null && response.body() != null) {
                     ROW_SIZE = response.body().size();
                     responseList = new ArrayList<>();
@@ -277,7 +282,7 @@ public class ReportsFragment extends Fragment {
             public void onFailure(Call<List<Product>> call, Throwable t) {
                 // Log error here since request failed
                 Log.e("failure", "failure");
-                pd.hide();
+                pd.dismiss();
 
             }
         });
@@ -302,11 +307,14 @@ public class ReportsFragment extends Fragment {
                 ApiClient.getClient().create(ReportService.class);
 
         Call<List<User>> call = service.getUsers(apiKey);
-        pd.show();
+//        pd.show();
+        pd = ProgressDialog.show(getActivity(), null, "Processing...");
+        pd.setCanceledOnTouchOutside(false);
         call.enqueue(new Callback<List<User>>() {
             @Override
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                pd.hide();
+//                pd.hide();
+//                pd.dismiss();
                 if (response != null) {
                     usersList = (ArrayList<User>) response.body();
                     User tmp = new User();
@@ -316,13 +324,16 @@ public class ReportsFragment extends Fragment {
                     setUsersDropdown(usersList, usersDropdown);
 
                 }
+                getAllProductTypes();
             }
 
             @Override
             public void onFailure(Call<List<User>> call, Throwable t) {
                 // Log error here since request failed
                 Log.e("failure", "failure");
-                pd.hide();
+//                pd.hide();
+//                pd.dismiss();
+                getAllProductTypes();
 
             }
         });
@@ -333,11 +344,14 @@ public class ReportsFragment extends Fragment {
                 ApiClient.getClient().create(SalesService.class);
 
         Call<List<ProductType>> call = service.getAllProductTypes(apiKey);
-        pd.show();
+//        pd.show();
+//        pd = ProgressDialog.show(getActivity(), null, "Processing...");
+//        pd.setCanceledOnTouchOutside(false);
         call.enqueue(new Callback<List<ProductType>>() {
             @Override
             public void onResponse(Call<List<ProductType>> call, Response<List<ProductType>> response) {
-                pd.hide();
+//                pd.hide();
+                pd.dismiss();
                 if (response != null) {
                     productsList = (ArrayList<ProductType>) response.body();
                     ProductType tmp = new ProductType();
@@ -353,7 +367,8 @@ public class ReportsFragment extends Fragment {
             public void onFailure(Call<List<ProductType>> call, Throwable t) {
                 // Log error here since request failed
                 Log.e("failure", "failure");
-                pd.hide();
+//                pd.hide();
+                pd.dismiss();
 
             }
         });
@@ -364,11 +379,14 @@ public class ReportsFragment extends Fragment {
                 ApiClient.getClient().create(SalesService.class);
 
         Call<List<Brand>> call = service.getBrands(apiKey, selectedProductType.getTypeId());
-        pd.show();
+//        pd.show();
+        pd = ProgressDialog.show(getActivity(), null, "Processing...");
+        pd.setCanceledOnTouchOutside(false);
         call.enqueue(new Callback<List<Brand>>() {
             @Override
             public void onResponse(Call<List<Brand>> call, Response<List<Brand>> response) {
-                pd.hide();
+//                pd.hide();
+                pd.dismiss();
                 if (response != null && response.body() != null) {
                     brandsList = (ArrayList<Brand>) response.body();
                     Brand tmp = new Brand();
@@ -384,16 +402,18 @@ public class ReportsFragment extends Fragment {
             public void onFailure(Call<List<Brand>> call, Throwable t) {
                 // Log error here since request failed
                 Log.e("failure", "failure");
-                pd.hide();
+//                pd.hide();
+                pd.dismiss();
 
             }
         });
     }
 
     public void setupDropdowns() {
-        setBrandsDropdownLabel();
-        getAllProductTypes();
         getUsers();
+//        setBrandsDropdownLabel();
+
+
 
     }
 
@@ -986,14 +1006,19 @@ public class ReportsFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                if (input.getText().toString().trim() != "") {
+                if (!input.getText().toString().trim().equals("")) {
                     fileName = input.getText().toString().trim();
 
 
                     if (Build.VERSION.SDK_INT >= 23) {
-                        int permissionCheck = checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                        int permissionCheck = checkSelfPermission( getActivity(),Manifest.permission.WRITE_EXTERNAL_STORAGE) ;
+
                         if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-                            requestPermissions( new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                            dialog.cancel();
+                            dialog.dismiss();
+
+                            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+
                             return;
                         }
                     }
@@ -1020,7 +1045,7 @@ public class ReportsFragment extends Fragment {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(checkSelfPermission(getActivity(), permissions[0]) == PackageManager.PERMISSION_GRANTED){
+        if(ContextCompat.checkSelfPermission(getActivity(), permissions[0]) == PackageManager.PERMISSION_GRANTED){
             switch (requestCode) {
 
                 case 1:
@@ -1034,4 +1059,24 @@ public class ReportsFragment extends Fragment {
             Toast.makeText(getActivity(), "Permission denied", Toast.LENGTH_SHORT).show();
         }
     }
+/*    @Override
+    public void onStart() {
+        if(null != pd)
+            pd.hide();
+
+        super.onStart();
+    }*/
+
+   /* public void onPause(){
+        PowerManager pm =(PowerManager) getActivity().getSystemService(Context.POWER_SERVICE);
+        Boolean screenOn = Build.VERSION.SDK_INT < 20 ? pm.isScreenOn() : pm.isInteractive();
+        if(null != pd)
+            pd.hide();
+       *//* if(!isChangingConfigurations() && screenOn){
+            //TODO take action for non screen sleep event
+        } else {
+            //TODO take action for screen sleep event
+        }*//*
+        super.onPause();
+    }*/
 }
