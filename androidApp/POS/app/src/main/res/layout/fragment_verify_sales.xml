@@ -257,7 +257,7 @@
                     android:textColor="@drawable/edit_text_selector"
                     android:background="@color/white"
                     android:gravity="end"
-                    android:hint="Enter due amount"
+                    android:hint="0.00TK"
                     android:layout_gravity="end"/>
             </LinearLayout>
         </android.support.v7.widget.CardView>

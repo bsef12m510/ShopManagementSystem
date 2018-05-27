@@ -263,7 +263,7 @@ namespace WebSource.Controllers
                 if (null != shop)
                 {
 
-                    var sales = db.Database.SqlQuery<TodaySale>("select product_id,sum(prod_quant) total_items,sum(total_amt) total_sale from sales where agent_id = @user and sale_date =CAST(GETDATE() AS DATE) group by product_id;", new SqlParameter("@user", user.user_id)).ToList();
+                    var sales = db.Database.SqlQuery<TodaySale>("select product_id,sum(prod_quant) total_items,sum(isnull(total_amt,0)) total_sale from sales where agent_id = @user and sale_date =CAST(GETDATE() AS DATE) group by product_id;", new SqlParameter("@user", user.user_id)).ToList();
                     
                     return Ok(sales);
                 }

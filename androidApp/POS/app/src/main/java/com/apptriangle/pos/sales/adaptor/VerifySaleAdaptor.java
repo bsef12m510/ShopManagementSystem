@@ -60,11 +60,22 @@ public class VerifySaleAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHol
         if(invoiceScreen)
             viewHolder.checkbox.setVisibility(View.GONE);
         else{
-            if(viewHolder.checkbox.isChecked()) {
+            /*if(viewHolder.checkbox.isChecked()) {
                 product.setChecked(true);
                 totalAmount = totalAmount + (product.getOtherThanCurrentInventoryQty() * product.getUnitPrice());
             }else {
                 product.setChecked(false);
+                totalAmount = totalAmount - (product.getOtherThanCurrentInventoryQty() * product.getUnitPrice());
+                if(totalAmount < 0)
+                    totalAmount = 0.0;
+            }*/
+            if(product.isChecked()) {
+                viewHolder.checkbox.setChecked(true);
+                product.setChecked(true);
+                totalAmount = totalAmount + (product.getOtherThanCurrentInventoryQty() * product.getUnitPrice());
+            }else {
+                product.setChecked(false);
+                viewHolder.checkbox.setChecked(false);
                 totalAmount = totalAmount - (product.getOtherThanCurrentInventoryQty() * product.getUnitPrice());
                 if(totalAmount < 0)
                     totalAmount = 0.0;

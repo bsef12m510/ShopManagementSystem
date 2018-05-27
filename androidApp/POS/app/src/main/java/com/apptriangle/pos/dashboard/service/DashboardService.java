@@ -2,6 +2,7 @@ package com.apptriangle.pos.dashboard.service;
 
 import com.apptriangle.pos.Login.response.LoginResponse;
 import com.apptriangle.pos.dashboard.response.MonthlySalesResponse;
+import com.apptriangle.pos.dashboard.response.TodaySaleResponse;
 import com.apptriangle.pos.model.Product;
 
 import java.util.List;
@@ -22,4 +23,7 @@ public interface DashboardService {
 
     @GET("reports/GetSalesAmountByMonth")
     Call<List<MonthlySalesResponse>> getSalesAmountByMonth(@Query("apiKey") String apiKey);
+
+    @GET("reports/GetTodaySale")
+    Call<List<TodaySaleResponse>> getTodaySale(@Query("apiKey") String apiKey);
 }

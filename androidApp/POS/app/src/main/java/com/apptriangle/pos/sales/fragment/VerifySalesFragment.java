@@ -123,6 +123,9 @@ public class VerifySalesFragment extends Fragment {
             SalesResponse tmp = new SalesResponse();
             stockResponseArrayList.add(tmp);
         }
+        for (int i = 0; i < sale.products.size(); i++) {
+            sale.products.get(i).setChecked(true);
+        }
 
 //        adaptor = new VerifySaleAdaptor(getActivity(), stockResponseArrayList, false);
         adaptor = new VerifySaleAdaptor(getActivity(), sale.products, false);
