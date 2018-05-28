@@ -233,6 +233,7 @@ public class ReportsFragment extends Fragment {
 
 
         if (showDashboardData) {
+            export.setVisibility(View.GONE);
             title_container.setVisibility(View.GONE);
             customContainer.setVisibility(View.GONE);
             tableView.setVisibility(View.VISIBLE);
@@ -546,7 +547,7 @@ public class ReportsFragment extends Fragment {
                     } else if (j == 4) {
                         text = responseList.get(i).getUnitOfMsrmnt().getDescription();
                     } else if (j == 5) {
-                        text = Double.toString(responseList.get(i).getUnitPrice());
+                        text = Double.toString(responseList.get(i).getUnitPrice()) + "TK";
                     } else if (j == 6) {
                         text = Integer.toString(responseList.get(i).getQty());
                     } else {
@@ -576,7 +577,7 @@ public class ReportsFragment extends Fragment {
                         text = responseList.get(i).getUnitOfMsrmnt().getDescription();
 
                     } else if (j == 4) {
-                        text = Double.toString(responseList.get(i).getUnitPrice());
+                        text = Double.toString(responseList.get(i).getUnitPrice()) +"TK";
                     } else {
                         text = Integer.toString(responseList.get(i).getQty());
                     }
@@ -625,13 +626,14 @@ public class ReportsFragment extends Fragment {
                 tmpArray[2] = responseList.get(i).getProductName();
                 tmpArray[3] = Double.toString(responseList.get(i).getOtherThanCurrentInventoryQty() + responseList.get(i).getQty());
                 tmpArray[4] = responseList.get(i).getUnitOfMsrmnt().getDescription();
-                tmpArray[5] = Double.toString(responseList.get(i).getUnitPrice());
+                tmpArray[5] = Double.toString(responseList.get(i).getUnitPrice()) + "TK";
                 tmpArray[6] = Double.toString(responseList.get(i).getQty());
                 tmpArray[7] = Double.toString(responseList.get(i).getOtherThanCurrentInventoryQty());
                 data.add(tmpArray);
             }
             writer.writeAll(data);
             writer.close();
+            Toast.makeText(getActivity(),"File Saved",Toast.LENGTH_SHORT).show();
 
            /* String csv = android.os.Environment.getExternalStorageDirectory().getAbsolutePath();
             CSVWriter writer = new CSVWriter(new FileWriter(csv));

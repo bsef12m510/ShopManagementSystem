@@ -27,7 +27,7 @@ public class VerifySaleAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHol
     private LayoutInflater mLayoutInflater;
     private int count;
     private boolean invoiceScreen;
-    public Double totalAmount =0.0;
+    public Double totalAmount = 0.0;
     public VerifySalesFragment parentFrag;
     public boolean isFromInvoiceSearchScreen;
 
@@ -50,16 +50,16 @@ public class VerifySaleAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHol
         final MyViewHolder viewHolder = (MyViewHolder) holder;
         final Product product = transactionsList.get(position);
         viewHolder.product.setText(product.getProductName());
-        if(!isFromInvoiceSearchScreen) {
+        if (!isFromInvoiceSearchScreen) {
             viewHolder.qty.setText(Integer.toString(product.getOtherThanCurrentInventoryQty()));
-            viewHolder.price.setText(Double.toString(product.getOtherThanCurrentInventoryQty() * product.getUnitPrice()));
-        }else{
+            viewHolder.price.setText(Double.toString(product.getOtherThanCurrentInventoryQty() * product.getUnitPrice())+"TK");
+        } else {
             viewHolder.qty.setText(Integer.toString(product.getQty()));
-            viewHolder.price.setText(Double.toString(product.getQty() * product.getUnitPrice()));
+            viewHolder.price.setText(Double.toString(product.getQty() * product.getUnitPrice()) + "TK");
         }
-        if(invoiceScreen)
+        if (invoiceScreen)
             viewHolder.checkbox.setVisibility(View.GONE);
-        else{
+        else {
             /*if(viewHolder.checkbox.isChecked()) {
                 product.setChecked(true);
                 totalAmount = totalAmount + (product.getOtherThanCurrentInventoryQty() * product.getUnitPrice());
@@ -69,42 +69,42 @@ public class VerifySaleAdaptor extends RecyclerView.Adapter<RecyclerView.ViewHol
                 if(totalAmount < 0)
                     totalAmount = 0.0;
             }*/
-            if(product.isChecked()) {
+            if (product.isChecked()) {
                 viewHolder.checkbox.setChecked(true);
                 product.setChecked(true);
                 totalAmount = totalAmount + (product.getOtherThanCurrentInventoryQty() * product.getUnitPrice());
-            }else {
+            } else {
                 product.setChecked(false);
                 viewHolder.checkbox.setChecked(false);
                 totalAmount = totalAmount - (product.getOtherThanCurrentInventoryQty() * product.getUnitPrice());
-                if(totalAmount < 0)
+                if (totalAmount < 0)
                     totalAmount = 0.0;
             }
             parentFrag.totalAmount = totalAmount;
-            parentFrag.edtTotalAmnt.setText(totalAmount.toString());
+            parentFrag.edtTotalAmnt.setText(totalAmount.toString() + "TK");
 
 
             viewHolder.checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                    if(b){
+                    if (b) {
                         product.setChecked(true);
                         totalAmount = totalAmount + (product.getOtherThanCurrentInventoryQty() * product.getUnitPrice());
-                    }else {
+                    } else {
                         product.setChecked(false);
                         totalAmount = totalAmount - (product.getOtherThanCurrentInventoryQty() * product.getUnitPrice());
-                        if(totalAmount < 0)
+                        if (totalAmount < 0)
                             totalAmount = 0.0;
                     }
                     parentFrag.totalAmount = totalAmount;
-                    parentFrag.edtTotalAmnt.setText(totalAmount.toString());
+                    parentFrag.edtTotalAmnt.setText(totalAmount.toString() + "TK");
 
-                    if(parentFrag.paidAmount != null && !parentFrag.edtPaidAmnt.getText().toString().trim().equals("")) {
-                        if( parentFrag.totalAmount - parentFrag.paidAmount < 0) {
+                    if (parentFrag.paidAmount != null && !parentFrag.edtPaidAmnt.getText().toString().trim().equals("")) {
+                        if (parentFrag.totalAmount - parentFrag.paidAmount < 0) {
                             parentFrag.dueAmount = 0.0;
-                            parentFrag.edtDueAmnt.setText("0.0");
-                        }else {
-                            parentFrag.edtDueAmnt.setText(Double.toString(parentFrag.totalAmount - parentFrag.paidAmount));
+                            parentFrag.edtDueAmnt.setText("0.0TK");
+                        } else {
+                            parentFrag.edtDueAmnt.setText(Double.toString(parentFrag.totalAmount - parentFrag.paidAmount) + "TK");
                             parentFrag.dueAmount = parentFrag.totalAmount - parentFrag.paidAmount;
                         }
                     }

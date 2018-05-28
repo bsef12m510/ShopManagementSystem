@@ -7,6 +7,7 @@ import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.Image;
@@ -34,6 +35,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.apptriangle.pos.R;
+import com.apptriangle.pos.SecureActivity;
 import com.apptriangle.pos.api.ApiClient;
 import com.apptriangle.pos.model.Brand;
 import com.apptriangle.pos.model.Product;
@@ -106,7 +108,7 @@ public class PurchaseFragment extends Fragment {
 
                     price = Double.parseDouble(edtPrice.getText().toString());
                     totalPrice = lastTotalPrice + (price * Double.parseDouble(edtQty.getText().toString()));
-                    edtTotalPrice.setText(Double.toString(price * Double.parseDouble(edtQty.getText().toString())));
+                    edtTotalPrice.setText(Double.toString(price * Double.parseDouble(edtQty.getText().toString()))+"TK");
                 }
             }
         }
@@ -124,7 +126,7 @@ public class PurchaseFragment extends Fragment {
                 if (!edtQty.getText().toString().equals("")) {
                     price = Double.parseDouble(edtPrice.getText().toString());
                     totalPrice = lastTotalPrice + (price * Double.parseDouble(edtQty.getText().toString()));
-                    edtTotalPrice.setText(Double.toString(price * Double.parseDouble(edtQty.getText().toString())));
+                    edtTotalPrice.setText(Double.toString(price * Double.parseDouble(edtQty.getText().toString()))+"TK");
                 }
             }
         }
@@ -365,6 +367,9 @@ public class PurchaseFragment extends Fragment {
                             totalPrice = 0.0;
                             edtTotalPrice.setText("");
                             onCheckoutButtonPressed();
+                            Intent intent = new Intent(getActivity(), SecureActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
                         }
                     }
 
@@ -376,6 +381,9 @@ public class PurchaseFragment extends Fragment {
                 // Log error here since request failed
                 Log.e("failure", "failure");
                 pd.dismiss();
+                Intent intent = new Intent(getActivity(), SecureActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
 
             }
         });

@@ -119,10 +119,10 @@ namespace WebSource.Controllers
             SMS_DBEntities1 db = new SMS_DBEntities1();
             var user = db.users.FirstOrDefault(y => y.api_key.Equals(apiKey));
             var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
-            HashSet<msrmnt_units> list = new HashSet<msrmnt_units>();
+            HashSet<CUoM> list = new HashSet<CUoM>();
 
             foreach (var inventory in shop.inventories)
-                list.Add(inventory.product.msrmnt_units);
+                list.Add(new CUoM(inventory.product.msrmnt_units));
 
             return Ok(list.ToArray());
         }

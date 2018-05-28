@@ -163,9 +163,9 @@ public class MainDrawerActivity extends AppCompatActivity
         } else if (id == R.id.nav_inventory) {
             Fragment fragment = new ReportsFragment();
             replaceFragment(fragment, "reportsFragment");
-        } else if (id == R.id.nav_account) {
+        } /*else if (id == R.id.nav_account) {
 
-        } else if (id == R.id.nav_logout) {
+        }*/ else if (id == R.id.nav_logout) {
             confirmAndLogout(this);
         }
 

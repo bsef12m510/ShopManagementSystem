@@ -61,7 +61,7 @@ public class VerifySalesFragment extends Fragment {
                 dueAmount = totalAmount - paidAmount;
                 if(dueAmount < 0)
                     dueAmount = 0.0;
-                edtDueAmnt.setText(dueAmount.toString());
+                edtDueAmnt.setText(dueAmount.toString()+"TK");
             }
         }
         public void beforeTextChanged(CharSequence s, int start, int count, int after){

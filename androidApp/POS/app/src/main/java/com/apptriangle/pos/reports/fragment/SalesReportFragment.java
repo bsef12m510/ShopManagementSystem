@@ -1,16 +1,22 @@
 package com.apptriangle.pos.reports.fragment;
 
+import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,10 +25,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.apptriangle.pos.R;
 import com.apptriangle.pos.api.ApiClient;
@@ -41,7 +49,10 @@ import com.apptriangle.pos.reports.service.ReportService;
 import com.apptriangle.pos.sales.response.SalesResponse;
 import com.apptriangle.pos.sales.restInterface.SalesService;
 import com.apptriangle.pos.tableview.TableView;
+import com.opencsv.CSVWriter;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -56,6 +67,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.support.v4.content.PermissionChecker.checkSelfPermission;
+
 /**
  * Created by zeeshan on 5/3/2018.
  */
@@ -63,7 +76,7 @@ public class SalesReportFragment extends Fragment {
     public static String HALF_MONTH_DATE_FORMAT = "MMM dd, yyyy";
     public static String SERVER_DATE_FORMAT = "MM/dd/yyyy";
     String pickerDateSring;
-    private CardView customContainer;
+    private CardView customContainer, title_container;
     private LinearLayout dateFromContainer, dateToContainer;
     private Button btnGo;
     private TextView txtDateFrom, txtDateTo;
@@ -100,6 +113,9 @@ public class SalesReportFragment extends Fragment {
     ArrayList<User> usersList;
     ArrayList<Sale> responseList;
     HashMap<Integer,CSale> salesMap = new HashMap();
+    public boolean showDashboardData;
+    public TextView export;
+    private String fileName;
 
     public SalesReportFragment() {
         // Required empty public constructor
@@ -133,6 +149,7 @@ public class SalesReportFragment extends Fragment {
         /*pd = ProgressDialog.show(getActivity(), null, "Processing");
         pd.setCanceledOnTouchOutside(false);*/
         tableView = (TableView)contentView.findViewById(R.id.content_container);
+        title_container = (CardView) contentView.findViewById(R.id.card_view);
         customContainer = (CardView)contentView.findViewById(R.id.customContainer);
         productsDropdown = (Spinner) contentView.findViewById(R.id.productsDropdown);
         brandsDropdown = (Spinner) contentView.findViewById(R.id.brandsDropdown);
@@ -142,6 +159,17 @@ public class SalesReportFragment extends Fragment {
         btnGo =(Button)contentView.findViewById(R.id.btnGo);
         txtDateFrom = (TextView)contentView.findViewById(R.id.txtDateFrom);
         txtDateTo = (TextView)contentView.findViewById(R.id.txtDateTo);
+        export = (TextView) contentView.findViewById(R.id.export);
+
+        export.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (responseList != null && responseList.size() > 0)
+                    showDialog();
+                else
+                    Toast.makeText(getActivity(), "No data available..", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         setupDropdowns();
 
@@ -194,7 +222,6 @@ public class SalesReportFragment extends Fragment {
             SalesResponse tmp = new SalesResponse();
             list.add(tmp);
         }
-
 
 
        /* recyclerView = (RecyclerView)contentView.findViewById(R.id.rcView);
@@ -290,14 +317,15 @@ public class SalesReportFragment extends Fragment {
                     setUsersDropdown(usersList, usersDropdown);
 
                 }
+                getAllProductTypes();
             }
 
             @Override
             public void onFailure(Call<List<User>> call, Throwable t) {
                 // Log error here since request failed
                 Log.e("failure", "failure");
-                pd.dismiss();
-
+//                pd.dismiss();
+                getAllProductTypes();
             }
         });
     }
@@ -308,8 +336,8 @@ public class SalesReportFragment extends Fragment {
 
         Call<List<ProductType>> call = service.getAllProductTypes(apiKey);
 //        pd.show();
-        pd = ProgressDialog.show(getActivity(), null, "Processing");
-        pd.setCanceledOnTouchOutside(false);
+       /* pd = ProgressDialog.show(getActivity(), null, "Processing");
+        pd.setCanceledOnTouchOutside(false);*/
         call.enqueue(new Callback<List<ProductType>>() {
             @Override
             public void onResponse(Call<List<ProductType>> call, Response<List<ProductType>> response) {
@@ -369,8 +397,6 @@ public class SalesReportFragment extends Fragment {
     }
 
     public void setupDropdowns(){
-        setBrandsDropdownLabel();
-        getAllProductTypes();
         getUsers();
 
     }
@@ -484,11 +510,11 @@ public class SalesReportFragment extends Fragment {
                 } else if (j == 5) {
                     text = responseList.get(i).cproduct.getUnitOfMsrmnt().description;
                 } else if (j == 6){
-                    text = Double.toString(responseList.get(i).cproduct.getUnitPrice());
+                    text = Double.toString(responseList.get(i).cproduct.getUnitPrice())+"TK";
                 } else if (j == 7){
                     text = Integer.toString(responseList.get(i).prod_qty);
                 } else if (j == 8){
-                    text = Double.toString(responseList.get(i).cproduct.getUnitPrice() * responseList.get(i).prod_qty);
+                    text = Double.toString(responseList.get(i).cproduct.getUnitPrice() * responseList.get(i).prod_qty)+"TK";
                 } else {
                     text = responseList.get(i).agent.user_id;
                 }
@@ -846,5 +872,134 @@ public class SalesReportFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
 //        void onCheckoutListener();
+    }
+
+    public void storeDataToFile(String name) {
+        try {
+
+            String baseDir = android.os.Environment.getExternalStorageDirectory().getAbsolutePath();
+            String fileName = name + ".csv";
+            String filePath = baseDir + File.separator + fileName;
+            File f = new File(filePath);
+            FileWriter mFileWriter;
+            CSVWriter writer;
+// File exist
+            if (f.exists() && !f.isDirectory()) {
+                mFileWriter = new FileWriter(filePath, true);
+                writer = new CSVWriter(mFileWriter);
+            } else {
+                writer = new CSVWriter(new FileWriter(filePath));
+            }
+            List<String[]> data = new ArrayList<String[]>();
+
+            data.add(new String[]{"Date", "Invoice No", "Customer", "Product", "Brand", "UoM", "Unit/S-Price", "Unit/Quantity", "Total Price","Sold By"});
+
+            String[] tmpArray;
+            for (int i = 0; i < responseList.size(); i++) {
+                tmpArray = new String[8];
+                tmpArray[0] = responseList.get(i).saleDate.toString();
+                tmpArray[1] = Integer.toString(responseList.get(i).sale_id);
+                tmpArray[2] = responseList.get(i).cust_name;
+                tmpArray[3] = responseList.get(i).cproduct.getProductName();
+                tmpArray[4] =  responseList.get(i).cproduct.getBrand().getBrandName();
+                tmpArray[5] =responseList.get(i).cproduct.getUnitOfMsrmnt().description;
+                tmpArray[6] = Double.toString(responseList.get(i).cproduct.getUnitPrice())+"TK";
+                tmpArray[7] = Integer.toString(responseList.get(i).prod_qty);
+                tmpArray[8]=Double.toString(responseList.get(i).cproduct.getUnitPrice() * responseList.get(i).prod_qty)+"TK";
+                tmpArray[9]= responseList.get(i).agent.user_id;;
+                data.add(tmpArray);
+            }
+            writer.writeAll(data);
+            writer.close();
+            Toast.makeText(getActivity(),"File Saved",Toast.LENGTH_SHORT).show();
+           /* String csv = android.os.Environment.getExternalStorageDirectory().getAbsolutePath();
+            CSVWriter writer = new CSVWriter(new FileWriter(csv));
+
+            List<String[]> data = new ArrayList<String[]>();
+            data.add(new String[]{"India", "New Delhi"});
+            data.add(new String[]{"United States", "Washington D.C"});
+            data.add(new String[]{"Germany", "Berlin"});
+
+            writer.writeAll(data);
+
+            writer.close();*/
+        } catch (Exception e) {
+            Log.e("exception", e.toString());
+        }
+    }
+
+
+    public void showDialog() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        builder.setTitle("Enter name for file..");
+
+// Set up the input
+        final EditText input = new EditText(getActivity());
+        input.setEnabled(true);
+// Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+
+
+        builder.setView(input);
+
+// Set up the buttons
+        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                if (!input.getText().toString().trim().equals("")) {
+                    fileName = input.getText().toString().trim();
+
+
+                    if (Build.VERSION.SDK_INT >= 23) {
+                        int permissionCheck = checkSelfPermission( getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) ;
+
+                        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+                            dialog.cancel();
+                            dialog.dismiss();
+
+                            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+
+                            return;
+                        }
+                    }
+
+                    storeDataToFile(input.getText().toString().trim());
+
+
+                } else
+                    Toast.makeText(getActivity(), "Please enter a name", Toast.LENGTH_SHORT).show();
+            }
+
+
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(ContextCompat.checkSelfPermission(getActivity(), permissions[0]) == PackageManager.PERMISSION_GRANTED){
+            switch (requestCode) {
+
+                case 1:
+                    storeDataToFile(fileName);
+                    break;
+
+            }
+
+            Toast.makeText(getActivity(), "Permission granted", Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(getActivity(), "Permission denied", Toast.LENGTH_SHORT).show();
+        }
     }
 }

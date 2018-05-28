@@ -78,7 +78,7 @@ public class InvoiceFragment extends Fragment {
                     dueAmount = totalAmount - paidAmount;
                 if (dueAmount < 0)
                     dueAmount = 0.0;
-                edtDueAmnt.setText(dueAmount.toString());
+                edtDueAmnt.setText(dueAmount.toString()+"TK");
             }
         }
 
@@ -137,9 +137,9 @@ public class InvoiceFragment extends Fragment {
             if (cart != null) {
                 edtCustNo.setText(cart.cust_phone);
                 edtCustName.setText(cart.cust_name);
-                edtTotalAmnt.setText(cart.total_amount.toString());
-                edtPaidAmnt.setText(cart.amount_paid.toString());
-                edtDueAmnt.setText(Double.toString(cart.total_amount - cart.amount_paid));
+                edtTotalAmnt.setText(cart.total_amount.toString()+"TK");
+                edtPaidAmnt.setText(cart.amount_paid.toString()+"TK");
+                edtDueAmnt.setText(Double.toString(cart.total_amount - cart.amount_paid)+"TK");
             } else {
                 if (selectedInvoice.amount_paid < selectedInvoice.total_amount) {
                     edtPaidAmnt.setEnabled(true);
@@ -150,9 +150,9 @@ public class InvoiceFragment extends Fragment {
 
                 edtCustNo.setText(selectedInvoice.cust_phone);
                 edtCustName.setText(selectedInvoice.cust_name);
-                edtTotalAmnt.setText(Double.toString(selectedInvoice.total_amount));
-                edtPaidAmnt.setText(Double.toString(selectedInvoice.amount_paid));
-                edtDueAmnt.setText(Double.toString(selectedInvoice.total_amount - selectedInvoice.amount_paid));
+                edtTotalAmnt.setText(Double.toString(selectedInvoice.total_amount)+"TK");
+                edtPaidAmnt.setText(Double.toString(selectedInvoice.amount_paid)+"TK");
+                edtDueAmnt.setText(Double.toString(selectedInvoice.total_amount - selectedInvoice.amount_paid)+"TK");
             }
         }
         recyclerView = (RecyclerView) contentView.findViewById(R.id.sales_recycler_view);
@@ -177,6 +177,7 @@ public class InvoiceFragment extends Fragment {
         }
 
         if (cart != null) {
+            finishBtn.setText("Back To Home");
             adaptor = new VerifySaleAdaptor(getActivity(), cart.products, true);
 
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

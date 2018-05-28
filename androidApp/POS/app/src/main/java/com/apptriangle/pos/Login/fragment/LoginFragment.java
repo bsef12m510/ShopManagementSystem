@@ -90,8 +90,8 @@ public class LoginFragment extends Fragment {
         loginButton = (Button)contentView.findViewById(R.id.loginButton);
         email = (EditText)contentView.findViewById(R.id.email);
         password = (EditText)contentView.findViewById(R.id.password);
-        email.setText("hrauf");
-        password.setText("123");
+        email.setText("");
+        password.setText("");
     }
     void underLineTetView(TextView textView)
     {

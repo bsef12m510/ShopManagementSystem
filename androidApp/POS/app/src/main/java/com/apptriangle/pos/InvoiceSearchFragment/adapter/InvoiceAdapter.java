@@ -47,8 +47,8 @@ public class InvoiceAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         final InvoiceAdapter.MyViewHolder viewHolder = (InvoiceAdapter.MyViewHolder) holder;
         final Invoice product = transactionsList.get(position);
         viewHolder.product.setText(Integer.toString(product.invoiceId));
-        viewHolder.qty.setText(Double.toString(product.amount_paid));
-        viewHolder.price.setText(Double.toString(product.total_amount ));
+        viewHolder.qty.setText(Double.toString(product.amount_paid)+"TK");
+        viewHolder.price.setText(Double.toString(product.total_amount )+"TK");
 
 
         viewHolder.container.setOnClickListener(new View.OnClickListener() {

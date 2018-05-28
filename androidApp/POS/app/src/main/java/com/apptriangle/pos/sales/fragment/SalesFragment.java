@@ -66,7 +66,7 @@ public class SalesFragment extends Fragment {
                 price = Integer.parseInt(s.toString()) * selectedProduct.getUnitPrice();
                 edtPrice.setText(price.toString());
                 totalPrice = lastTotalPrice + price;
-                edtTotalPrice.setText(totalPrice.toString());
+                edtTotalPrice.setText(totalPrice.toString()+"TK");
             }
         }
         public void beforeTextChanged(CharSequence s, int start, int count, int after){
@@ -166,7 +166,7 @@ public class SalesFragment extends Fragment {
         edtQty.setText("");
         edtPrice.setText("");
         edtDiscount.setText("");
-        edtTotalPrice.setText(totalPrice.toString());
+        edtTotalPrice.setText(totalPrice.toString()+"TK");
 
         cart.add(product);
         Toast.makeText(getActivity(),"Product added to card...",Toast.LENGTH_SHORT).show();

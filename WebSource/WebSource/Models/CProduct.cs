@@ -12,7 +12,7 @@ namespace WebSource.Models
         public CProductType product_type { get; set; }
         public CBrand brand { get; set; }
         public string specs { get; set; }
-        public msrmnt_units unit_of_msrmnt { get; set; }
+        public CUoM unit_of_msrmnt { get; set; }
         public double unit_price { get; set; }
         public string product_image { get; set; }
         public int? qty { get; set; }
@@ -28,7 +28,8 @@ namespace WebSource.Models
             if(null != b)
                 brand = new CBrand(b);
             specs = p.specs;
-            unit_of_msrmnt = u;
+            if (null != u)
+                unit_of_msrmnt = new CUoM(u);
             unit_price = p.unit_price;
             product_image = p.product_image;
             qty = qt;
@@ -44,7 +45,8 @@ namespace WebSource.Models
             if (null != brand)
                 brand = new CBrand(b);
             specs = p.specs;
-            unit_of_msrmnt = u;
+            if(null != u)
+                unit_of_msrmnt = new CUoM(u);
             unit_price = p.unit_price;
             product_image = p.product_image;
             qty = qt;
@@ -61,7 +63,8 @@ namespace WebSource.Models
             if (null != brand)
                 brand = new CBrand(b);
             specs = p.specs;
-            unit_of_msrmnt = u;
+            if (null != u)
+                unit_of_msrmnt = new CUoM(u);
             unit_price = p.unit_price;
             product_image = p.product_image;
             qty = qt;

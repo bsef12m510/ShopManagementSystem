@@ -190,7 +190,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
-                android:text="Price*"
+                android:text="Price/Qty*"
                 android:textSize="16sp"
                 />
 
@@ -271,7 +271,7 @@
                 android:gravity="end"
                 android:enabled="false"
                 android:textColor="@drawable/edit_text_selector"
-                android:hint="Enter total price"
+                android:hint="0.00TK"
                 android:inputType="number"
                 android:layout_gravity="end"/>
 

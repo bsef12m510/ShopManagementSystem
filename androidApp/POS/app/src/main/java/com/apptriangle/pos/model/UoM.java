@@ -14,15 +14,15 @@ public class UoM {
         this.description = description;
     }
 
-    public String getSr_no() {
+    public Integer getSr_no() {
         return sr_no;
     }
 
-    public void setSr_no(String sr_no) {
+    public void setSr_no(Integer sr_no) {
         this.sr_no = sr_no;
     }
 
-    public String sr_no;
+    public Integer sr_no;
 
     public String toString(){
         return description;

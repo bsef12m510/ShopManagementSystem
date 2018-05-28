@@ -362,7 +362,7 @@ public class AdminDashboardFragment extends Fragment {
         public MyPagerAdapter(FragmentManager fm) {
             super(fm);
 //            mFragmentTitleList.add("Pie");
-            mFragmentTitleList.add("Bar");
+            mFragmentTitleList.add("Monthly Sales Graph");
         }
 
         @Override
