@@ -27,10 +27,10 @@ namespace WebSource.Controllers
                 var username = Request.Form["username"].ToString();
                 var pass = Request.Form["password"].ToString();
 
-                if (null != db.users.FirstOrDefault(y => y.username.Equals(username)
+                if (null != db.users.FirstOrDefault(y => y.user_id.Equals(username)
                     && y.password.Equals(pass) && y.role_id.Equals("Admin")))
                 {
-                    Session.Add("key", db.users.FirstOrDefault(y => y.username.Equals(username)
+                    Session.Add("key", db.users.FirstOrDefault(y => y.user_id.Equals(username)
                     && y.password.Equals(pass)).api_key);
                     var shops = db.shops.ToList();
                     shops.Remove(db.shops.FirstOrDefault(y => y.shope_name.Equals("Admin Shop")));
