@@ -25,8 +25,11 @@ import android.widget.TextView;
 import com.apptriangle.pos.dashboard.fragment.AdminDashboardFragment;
 import com.apptriangle.pos.dashboard.fragment.DashboardFragment;
 import com.apptriangle.pos.model.Product;
+import com.apptriangle.pos.purchase.fragemnt.PurchaseFragment;
 import com.apptriangle.pos.reports.fragment.ReportsFragment;
 import com.apptriangle.pos.reports.fragment.SalesReportFragment;
+import com.apptriangle.pos.sales.fragment.SalesFragment;
+import com.apptriangle.pos.sales.response.SalesResponse;
 import com.apptriangle.pos.util.expandableListAdapter.ExpandableAdapter;
 
 import java.util.ArrayList;
@@ -35,7 +38,7 @@ import java.util.List;
 
 
 public class MainDrawerActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, AdminDashboardFragment.OnFragmentInteractionListener, ReportsFragment.OnFragmentInteractionListener, SalesReportFragment.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener, AdminDashboardFragment.OnFragmentInteractionListener, ReportsFragment.OnFragmentInteractionListener, SalesReportFragment.OnFragmentInteractionListener,SalesFragment.OnFragmentInteractionListener, PurchaseFragment.OnFragmentInteractionListener {
 
     ExpandableAdapter listAdapter;
     ExpandableListView expListView;
@@ -163,9 +166,13 @@ public class MainDrawerActivity extends AppCompatActivity
         } else if (id == R.id.nav_inventory) {
             Fragment fragment = new ReportsFragment();
             replaceFragment(fragment, "reportsFragment");
-        } /*else if (id == R.id.nav_account) {
-
-        }*/ else if (id == R.id.nav_logout) {
+        } else if (id == R.id.sales) {
+            Fragment fragment = new SalesFragment();
+            replaceFragment(fragment, "salesFragment");
+        }else if (id == R.id.purchase) {
+            Fragment fragment = new PurchaseFragment();
+            replaceFragment(fragment, "purchaseFragment");
+        } else if (id == R.id.nav_logout) {
             confirmAndLogout(this);
         }
 
@@ -228,6 +235,7 @@ public class MainDrawerActivity extends AppCompatActivity
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.content_frame, fragment, TAG)
+                .addToBackStack(TAG)
                 .commit();
     }
 
@@ -262,6 +270,16 @@ public class MainDrawerActivity extends AppCompatActivity
         }
         if (null != fragment)
             fragment.onActivityResult(requestCode, resultCode, data);
+
+    }
+
+    @Override
+    public void onCheckoutListenerPurchase() {
+
+    }
+
+    @Override
+    public void onCheckoutListener(SalesResponse sale) {
 
     }
 }

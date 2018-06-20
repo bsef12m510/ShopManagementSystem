@@ -1,4 +1,5 @@
-
+WebSource/WebSource/obj/Release/
+WebSource/packages/
 WebSource/WebSource/App_Data/SMS_DB_log.ldf
 WebSource/WebSource/bin/
 *.dll

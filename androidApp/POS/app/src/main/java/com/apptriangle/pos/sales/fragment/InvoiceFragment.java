@@ -72,8 +72,13 @@ public class InvoiceFragment extends Fragment {
                     paidAmount = paidAmount + Double.parseDouble(s.toString());
                 else
                     paidAmount = Double.parseDouble(s.toString());*/
-                if (!fromHome && cart == null)
-                    dueAmount = totalAmount - (paidAmount + Double.parseDouble(s.toString()));
+                if (!fromHome && cart == null) {
+                    try {
+                        dueAmount = totalAmount - (paidAmount + Double.parseDouble(s.toString().replace("TK","")));
+                    }catch(Exception e){
+//                        dueAmount = totalAmount - (paidAmount + Double.parseDouble(s.toString()));
+                    }
+                }
                 else
                     dueAmount = totalAmount - paidAmount;
                 if (dueAmount < 0)

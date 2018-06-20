@@ -88,7 +88,7 @@ public class SalesReportFragment extends Fragment {
     private ProductType selectedProductType;
     private Brand selectedBrand;
     private OnFragmentInteractionListener mListener;
-    public static final int COLUMN_SIZE = 10;
+    public static final int COLUMN_SIZE = 11;
     public static int ROW_SIZE = 1;
     // Columns indexes
     public static final int MOOD_COLUMN_INDEX = 3;
@@ -100,7 +100,7 @@ public class SalesReportFragment extends Fragment {
     public static final int BOY = 0;
     public static final int GIRL = 1;
     private View contentView;
-    String[] listItems = {"item 1", "item 2 ", "list", "android" };
+    String[] listItems = {"item 1", "item 2 ", "list", "android"};
     private Button checkoutBtn;
     TableView tableView;
     private ProgressDialog pd;
@@ -112,7 +112,7 @@ public class SalesReportFragment extends Fragment {
     ArrayList<Brand> brandsList;
     ArrayList<User> usersList;
     ArrayList<Sale> responseList;
-    HashMap<Integer,CSale> salesMap = new HashMap();
+    HashMap<Integer, CSale> salesMap = new HashMap();
     public boolean showDashboardData;
     public TextView export;
     private String fileName;
@@ -137,28 +137,30 @@ public class SalesReportFragment extends Fragment {
         contentView = inflater.inflate(R.layout.fragment_reports, container, false);
         return contentView;
     }
+
     private void getApiKey() {
         SharedPreferences shared = getActivity().getSharedPreferences("com.appTriangle.pos", Context.MODE_PRIVATE);
         apiKey = shared.getString("api_key", "");
 
     }
-    public void initialize(){
+
+    public void initialize() {
         getApiKey();
       /*  pd = new ProgressDialog(getActivity());
         pd.setMessage("Processing...");*/
         /*pd = ProgressDialog.show(getActivity(), null, "Processing");
         pd.setCanceledOnTouchOutside(false);*/
-        tableView = (TableView)contentView.findViewById(R.id.content_container);
+        tableView = (TableView) contentView.findViewById(R.id.content_container);
         title_container = (CardView) contentView.findViewById(R.id.card_view);
-        customContainer = (CardView)contentView.findViewById(R.id.customContainer);
+        customContainer = (CardView) contentView.findViewById(R.id.customContainer);
         productsDropdown = (Spinner) contentView.findViewById(R.id.productsDropdown);
         brandsDropdown = (Spinner) contentView.findViewById(R.id.brandsDropdown);
         usersDropdown = (Spinner) contentView.findViewById(R.id.usersDropdown);
-        dateFromContainer = (LinearLayout)contentView.findViewById(R.id.dateFromContainer);
-        dateToContainer = (LinearLayout)contentView.findViewById(R.id.dateToContainer);
-        btnGo =(Button)contentView.findViewById(R.id.btnGo);
-        txtDateFrom = (TextView)contentView.findViewById(R.id.txtDateFrom);
-        txtDateTo = (TextView)contentView.findViewById(R.id.txtDateTo);
+        dateFromContainer = (LinearLayout) contentView.findViewById(R.id.dateFromContainer);
+        dateToContainer = (LinearLayout) contentView.findViewById(R.id.dateToContainer);
+        btnGo = (Button) contentView.findViewById(R.id.btnGo);
+        txtDateFrom = (TextView) contentView.findViewById(R.id.txtDateFrom);
+        txtDateTo = (TextView) contentView.findViewById(R.id.txtDateTo);
         export = (TextView) contentView.findViewById(R.id.export);
 
         export.setOnClickListener(new View.OnClickListener() {
@@ -185,7 +187,7 @@ public class SalesReportFragment extends Fragment {
                 showDatePickerDialog(txtDateTo);
             }
         });
-        btnGo.setOnClickListener(new View.OnClickListener(){
+        btnGo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 tableView.setVisibility(View.VISIBLE);
@@ -194,12 +196,12 @@ public class SalesReportFragment extends Fragment {
             }
         });
 
-        radioGroup =(RadioGroup)contentView.findViewById(R.id.radioGroup1);
+        radioGroup = (RadioGroup) contentView.findViewById(R.id.radioGroup1);
 
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                switch(i){
+                switch (i) {
                     case R.id.radio0:
                         customContainer.setVisibility(View.GONE);
                         tableView.setVisibility(View.VISIBLE);
@@ -218,7 +220,7 @@ public class SalesReportFragment extends Fragment {
             }
         });
         List<SalesResponse> list = new ArrayList<>();
-        for (int i = 0; i <20 ; i++) {
+        for (int i = 0; i < 20; i++) {
             SalesResponse tmp = new SalesResponse();
             list.add(tmp);
         }
@@ -236,7 +238,7 @@ public class SalesReportFragment extends Fragment {
     }
 
 
-    public void getReportData(){
+    public void getReportData() {
         ReportService service =
                 ApiClient.getClient().create(ReportService.class);
 
@@ -253,7 +255,7 @@ public class SalesReportFragment extends Fragment {
                 if (response != null && response.body() != null) {
                     ROW_SIZE = response.body().size();
                     responseList = (ArrayList<Sale>) response.body();
-                    if(responseList != null) {
+                    if (responseList != null) {
                        /* for (int i = 0; i < responseList.size(); i++) {
                             if(salesMap.containsKey(responseList.get(i).sale_id)){
                                 salesMap.get(responseList.get(i).sale_id).cust_name = responseList.get(i).cust_name;
@@ -282,7 +284,7 @@ public class SalesReportFragment extends Fragment {
         });
     }
 
-    public String  convertDate(String dateString){
+    public String convertDate(String dateString) {
         SimpleDateFormat df = new SimpleDateFormat(HALF_MONTH_DATE_FORMAT);
         Date startDate;
         try {
@@ -296,7 +298,7 @@ public class SalesReportFragment extends Fragment {
         }
     }
 
-    public void getUsers(){
+    public void getUsers() {
         ReportService service =
                 ApiClient.getClient().create(ReportService.class);
 
@@ -313,7 +315,7 @@ public class SalesReportFragment extends Fragment {
                     User tmp = new User();
 
                     tmp.user_id = "Select User";
-                    usersList.add(0,tmp);
+                    usersList.add(0, tmp);
                     setUsersDropdown(usersList, usersDropdown);
 
                 }
@@ -330,7 +332,7 @@ public class SalesReportFragment extends Fragment {
         });
     }
 
-    public void getAllProductTypes(){
+    public void getAllProductTypes() {
         SalesService service =
                 ApiClient.getClient().create(SalesService.class);
 
@@ -347,7 +349,7 @@ public class SalesReportFragment extends Fragment {
                     ProductType tmp = new ProductType();
 
                     tmp.setTypeName("Select Product Type");
-                    productsList.add(0,tmp);
+                    productsList.add(0, tmp);
                     setProductTypesDropdown(productsList, productsDropdown);
 
                 }
@@ -363,7 +365,7 @@ public class SalesReportFragment extends Fragment {
         });
     }
 
-    public void getBrands(){
+    public void getBrands() {
         SalesService service =
                 ApiClient.getClient().create(SalesService.class);
 
@@ -380,7 +382,7 @@ public class SalesReportFragment extends Fragment {
                     Brand tmp = new Brand();
                     tmp.setBrandName("Select Brand");
 
-                    brandsList.add(0,tmp);
+                    brandsList.add(0, tmp);
                     setBrandDropdown(brandsList, brandsDropdown);
 
                 }
@@ -396,12 +398,12 @@ public class SalesReportFragment extends Fragment {
         });
     }
 
-    public void setupDropdowns(){
+    public void setupDropdowns() {
         getUsers();
 
     }
 
-    public void displayReport(){
+    public void displayReport() {
         // Create our custom TableView Adapter
         TableViewAdapter adapter = new TableViewAdapter(getActivity());
 
@@ -446,7 +448,7 @@ public class SalesReportFragment extends Fragment {
     private List<RowHeader> getRowHeaderList() {
         List<RowHeader> list = new ArrayList<>();
         for (int i = 0; i < ROW_SIZE; i++) {
-            String rh = Integer.toString(i+1) ;
+            String rh = Integer.toString(i + 1);
 
             RowHeader header = new RowHeader(String.valueOf(i), rh);
             list.add(header);
@@ -460,23 +462,25 @@ public class SalesReportFragment extends Fragment {
         List<ColumnHeader> list = new ArrayList<>();
         String title;
         for (int i = 0; i < COLUMN_SIZE; i++) {
-            if(i == 0)
+            if (i == 0)
                 title = "Date";
-            else if(i == 1)
+            else if (i == 1)
                 title = "Invoice No";
-            else if(i == 2)
+            else if (i == 2)
                 title = "Customer";
-            else if(i == 3)
+            else if (i == 3)
                 title = "Product";
-            else if(i == 4)
+            else if (i == 4)
                 title = "Brand";
-            else if(i == 5)
+            else if (i == 5)
+                title = "Model";
+            else if (i == 6)
                 title = "UoM";
-            else if(i == 6)
+            else if (i == 7)
                 title = "Unit/S-Price";
-            else if(i == 7)
+            else if (i == 8)
                 title = "Unit/Quantity";
-            else if(i == 8)
+            else if (i == 9)
                 title = "Total Price";
             else
                 title = "Sold By";
@@ -504,17 +508,19 @@ public class SalesReportFragment extends Fragment {
                 } else if (j == 2) {
                     text = responseList.get(i).cust_name;
                 } else if (j == 3) {
-                    text = responseList.get(i).cproduct.getProductName();
+                    text = responseList.get(i).cproduct.getProductType().getTypeName();
                 } else if (j == 4) {
                     text = responseList.get(i).cproduct.getBrand().getBrandName();
                 } else if (j == 5) {
+                    text = responseList.get(i).cproduct.getProductName();
+                } else if (j == 6) {
                     text = responseList.get(i).cproduct.getUnitOfMsrmnt().description;
-                } else if (j == 6){
-                    text = Double.toString(responseList.get(i).cproduct.getUnitPrice())+"TK";
-                } else if (j == 7){
+                } else if (j == 7) {
+                    text = Double.toString(responseList.get(i).cproduct.getUnitPrice()) + "TK";
+                } else if (j == 8) {
                     text = Integer.toString(responseList.get(i).prod_qty);
-                } else if (j == 8){
-                    text = Double.toString(responseList.get(i).cproduct.getUnitPrice() * responseList.get(i).prod_qty)+"TK";
+                } else if (j == 9) {
+                    text = Double.toString(responseList.get(i).cproduct.getUnitPrice() * responseList.get(i).prod_qty) + "TK";
                 } else {
                     text = responseList.get(i).agent.user_id;
                 }
@@ -535,7 +541,6 @@ public class SalesReportFragment extends Fragment {
     }
 
 
-
     // TODO: Rename method, update argument and hook method into UI event
     public void onCheckoutButtonPressed() {
         if (mListener != null) {
@@ -543,8 +548,7 @@ public class SalesReportFragment extends Fragment {
         }
     }
 
-    void setTitle()
-    {
+    void setTitle() {
         ((Activity) getActivity()).setTitle("REPORT");
     }
 
@@ -564,7 +568,6 @@ public class SalesReportFragment extends Fragment {
                     + " must implement OnFragmentInteractionListener");
         }
     }
-
 
 
     private void showDatePickerDialog(final TextView dateInputField) {
@@ -690,11 +693,11 @@ public class SalesReportFragment extends Fragment {
         dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(position != 0) {
+                if (position != 0) {
                     selectedProductType = (ProductType) parent.getItemAtPosition(position);
 
                     getBrands();
-                }else{
+                } else {
                     selectedProductType = null;
                     setBrandsDropdownLabel();
                 }
@@ -768,7 +771,7 @@ public class SalesReportFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                if(position != 0)
+                if (position != 0)
                     selectedBrand = (Brand) parent.getItemAtPosition(position);
                 else
                     selectedBrand = null;
@@ -832,7 +835,7 @@ public class SalesReportFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                if(position != 0)
+                if (position != 0)
                     selectedUser = (User) parent.getItemAtPosition(position);
                 else
                     selectedUser = null;
@@ -892,26 +895,28 @@ public class SalesReportFragment extends Fragment {
             }
             List<String[]> data = new ArrayList<String[]>();
 
-            data.add(new String[]{"Date", "Invoice No", "Customer", "Product", "Brand", "UoM", "Unit/S-Price", "Unit/Quantity", "Total Price","Sold By"});
+            data.add(new String[]{"Date", "Invoice No", "Customer", "Product", "Brand", "Model", "UoM", "Unit/S-Price", "Unit/Quantity", "Total Price", "Sold By"});
 
             String[] tmpArray;
             for (int i = 0; i < responseList.size(); i++) {
-                tmpArray = new String[8];
+                tmpArray = new String[11];
                 tmpArray[0] = responseList.get(i).saleDate.toString();
                 tmpArray[1] = Integer.toString(responseList.get(i).sale_id);
                 tmpArray[2] = responseList.get(i).cust_name;
-                tmpArray[3] = responseList.get(i).cproduct.getProductName();
-                tmpArray[4] =  responseList.get(i).cproduct.getBrand().getBrandName();
-                tmpArray[5] =responseList.get(i).cproduct.getUnitOfMsrmnt().description;
-                tmpArray[6] = Double.toString(responseList.get(i).cproduct.getUnitPrice())+"TK";
-                tmpArray[7] = Integer.toString(responseList.get(i).prod_qty);
-                tmpArray[8]=Double.toString(responseList.get(i).cproduct.getUnitPrice() * responseList.get(i).prod_qty)+"TK";
-                tmpArray[9]= responseList.get(i).agent.user_id;;
+                tmpArray[3] = responseList.get(i).cproduct.getProductType().getTypeName();
+                tmpArray[4] = responseList.get(i).cproduct.getBrand().getBrandName();
+                tmpArray[5] = responseList.get(i).cproduct.getProductName();
+                tmpArray[6] = responseList.get(i).cproduct.getUnitOfMsrmnt().description;
+                tmpArray[7] = Double.toString(responseList.get(i).cproduct.getUnitPrice()) + "TK";
+                tmpArray[8] = Integer.toString(responseList.get(i).prod_qty);
+                tmpArray[9] = Double.toString(responseList.get(i).cproduct.getUnitPrice() * responseList.get(i).prod_qty) + "TK";
+                tmpArray[10] = responseList.get(i).agent.user_id;
+                ;
                 data.add(tmpArray);
             }
             writer.writeAll(data);
             writer.close();
-            Toast.makeText(getActivity(),"File Saved",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "File Saved", Toast.LENGTH_SHORT).show();
            /* String csv = android.os.Environment.getExternalStorageDirectory().getAbsolutePath();
             CSVWriter writer = new CSVWriter(new FileWriter(csv));
 
@@ -954,7 +959,7 @@ public class SalesReportFragment extends Fragment {
 
 
                     if (Build.VERSION.SDK_INT >= 23) {
-                        int permissionCheck = checkSelfPermission( getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) ;
+                        int permissionCheck = checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
                         if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
                             dialog.cancel();
@@ -988,7 +993,7 @@ public class SalesReportFragment extends Fragment {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(ContextCompat.checkSelfPermission(getActivity(), permissions[0]) == PackageManager.PERMISSION_GRANTED){
+        if (ContextCompat.checkSelfPermission(getActivity(), permissions[0]) == PackageManager.PERMISSION_GRANTED) {
             switch (requestCode) {
 
                 case 1:
@@ -998,7 +1003,7 @@ public class SalesReportFragment extends Fragment {
             }
 
             Toast.makeText(getActivity(), "Permission granted", Toast.LENGTH_SHORT).show();
-        }else{
+        } else {
             Toast.makeText(getActivity(), "Permission denied", Toast.LENGTH_SHORT).show();
         }
     }

@@ -64,7 +64,7 @@ public class SalesFragment extends Fragment {
         public void afterTextChanged(Editable s) {
             if(s != null && !s.toString().trim().equalsIgnoreCase("")) {
                 price = Integer.parseInt(s.toString()) * selectedProduct.getUnitPrice();
-                edtPrice.setText(price.toString());
+                edtPrice.setText(Double.toString(selectedProduct.getUnitPrice()));
                 totalPrice = lastTotalPrice + price;
                 edtTotalPrice.setText(totalPrice.toString()+"TK");
             }

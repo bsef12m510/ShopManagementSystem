@@ -1404,10 +1404,10 @@ public class PurchaseFragment extends Fragment {
                 return false;
             else if (edtTotalPrice.getText().toString().trim().equalsIgnoreCase(""))
                 return false;
-            else if (edtSpecs.getText().toString().trim().equalsIgnoreCase(""))
+           /* else if (edtSpecs.getText().toString().trim().equalsIgnoreCase(""))
                 return false;
             else if (edtSupplier.getText().toString().trim().equalsIgnoreCase(""))
-                return false;
+                return false;*/
             else
                 return true;
         } catch (Exception e) {
