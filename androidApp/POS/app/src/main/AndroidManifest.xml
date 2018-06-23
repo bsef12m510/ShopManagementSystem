@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
@@ -23,16 +23,19 @@
             android:name=".PublicActivity"
             android:label="@string/app_name"
             android:theme="@style/FormsTheme"
+            android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".MainDrawerActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan|adjustResize"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".SecureActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait"/>
     </application>
 

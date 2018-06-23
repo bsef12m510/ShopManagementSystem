@@ -166,7 +166,7 @@ public class PublicActivity extends AppCompatActivity implements LoginFragment.O
             intent = new Intent(PublicActivity.this,MainDrawerActivity.class);
         else
             intent = new Intent(PublicActivity.this,SecureActivity.class);*/
-        if(response.getRole_id().equalsIgnoreCase("admin"))
+        if(response.getRole_id().equalsIgnoreCase("owner"))
             intent = new Intent(PublicActivity.this,MainDrawerActivity.class);
         else
             intent = new Intent(PublicActivity.this,SecureActivity.class);

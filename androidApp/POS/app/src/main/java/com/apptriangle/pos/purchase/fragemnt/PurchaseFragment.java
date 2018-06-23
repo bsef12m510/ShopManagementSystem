@@ -34,6 +34,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.apptriangle.pos.MainDrawerActivity;
 import com.apptriangle.pos.R;
 import com.apptriangle.pos.SecureActivity;
 import com.apptriangle.pos.api.ApiClient;
@@ -137,6 +138,7 @@ public class PurchaseFragment extends Fragment {
         public void onTextChanged(CharSequence s, int start, int before, int count) {
         }
     };
+    private String role;
 
     public PurchaseFragment() {
         // Required empty public constructor
@@ -146,11 +148,17 @@ public class PurchaseFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        getSavedHeaderData();
         initialize(contentView);
         setBrandsDropdownLabel();
         setModelsDropdownLabel();
         setTitle();
 
+    }
+
+    private void getSavedHeaderData() {
+        SharedPreferences shared = getActivity().getSharedPreferences("com.appTriangle.pos", Context.MODE_PRIVATE);
+        role = shared.getString("role", "");
     }
 
     @Override
@@ -367,7 +375,7 @@ public class PurchaseFragment extends Fragment {
                             totalPrice = 0.0;
                             edtTotalPrice.setText("");
                             onCheckoutButtonPressed();
-                            Intent intent = new Intent(getActivity(), SecureActivity.class);
+                            Intent intent = new Intent(getActivity(),"owner".equalsIgnoreCase(role) ? MainDrawerActivity.class : SecureActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);
                         }
@@ -381,7 +389,7 @@ public class PurchaseFragment extends Fragment {
                 // Log error here since request failed
                 Log.e("failure", "failure");
                 pd.dismiss();
-                Intent intent = new Intent(getActivity(), SecureActivity.class);
+                Intent intent = new Intent(getActivity(),"owner".equalsIgnoreCase(role) ? MainDrawerActivity.class : SecureActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
 
@@ -1404,10 +1412,10 @@ public class PurchaseFragment extends Fragment {
                 return false;
             else if (edtTotalPrice.getText().toString().trim().equalsIgnoreCase(""))
                 return false;
-            else if (edtSpecs.getText().toString().trim().equalsIgnoreCase(""))
+           /* else if (edtSpecs.getText().toString().trim().equalsIgnoreCase(""))
                 return false;
             else if (edtSupplier.getText().toString().trim().equalsIgnoreCase(""))
-                return false;
+                return false;*/
             else
                 return true;
         } catch (Exception e) {

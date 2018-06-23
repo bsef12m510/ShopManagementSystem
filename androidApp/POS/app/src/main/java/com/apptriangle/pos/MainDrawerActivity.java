@@ -3,6 +3,7 @@ package com.apptriangle.pos;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,11 +23,19 @@ import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 
+import com.apptriangle.pos.InvoiceSearchFragment.fragment.InvoiceSearchFragment;
 import com.apptriangle.pos.dashboard.fragment.AdminDashboardFragment;
 import com.apptriangle.pos.dashboard.fragment.DashboardFragment;
+import com.apptriangle.pos.model.Invoice;
 import com.apptriangle.pos.model.Product;
+import com.apptriangle.pos.purchase.fragemnt.PurchaseFragment;
 import com.apptriangle.pos.reports.fragment.ReportsFragment;
 import com.apptriangle.pos.reports.fragment.SalesReportFragment;
+import com.apptriangle.pos.sales.fragment.InvoiceFragment;
+import com.apptriangle.pos.sales.fragment.SalesFragment;
+import com.apptriangle.pos.sales.fragment.VerifySalesFragment;
+import com.apptriangle.pos.sales.response.SalesResponse;
+import com.apptriangle.pos.stock.fragment.StockFragment;
 import com.apptriangle.pos.util.expandableListAdapter.ExpandableAdapter;
 
 import java.util.ArrayList;
@@ -35,7 +44,7 @@ import java.util.List;
 
 
 public class MainDrawerActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, AdminDashboardFragment.OnFragmentInteractionListener, ReportsFragment.OnFragmentInteractionListener, SalesReportFragment.OnFragmentInteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener, AdminDashboardFragment.OnFragmentInteractionListener, ReportsFragment.OnFragmentInteractionListener, SalesReportFragment.OnFragmentInteractionListener,SalesFragment.OnFragmentInteractionListener, VerifySalesFragment.OnFragmentInteractionListener, InvoiceFragment.OnFragmentInteractionListener, InvoiceSearchFragment.OnFragmentInteractionListener, PurchaseFragment.OnFragmentInteractionListener, StockFragment.OnFragmentInteractionListener {
 
     ExpandableAdapter listAdapter;
     ExpandableListView expListView;
@@ -83,7 +92,7 @@ public class MainDrawerActivity extends AppCompatActivity
         expListView.setAdapter(listAdapter);
 */
 //        getSavedHeaderData();
-        replaceFragment(new AdminDashboardFragment(), "asd");
+        replaceFragment(new AdminDashboardFragment(), "adminDashboardFragment");
     }
 
     private void prepareListData() {
@@ -163,9 +172,13 @@ public class MainDrawerActivity extends AppCompatActivity
         } else if (id == R.id.nav_inventory) {
             Fragment fragment = new ReportsFragment();
             replaceFragment(fragment, "reportsFragment");
-        } /*else if (id == R.id.nav_account) {
-
-        }*/ else if (id == R.id.nav_logout) {
+        } else if (id == R.id.sales) {
+            Fragment fragment = new SalesFragment();
+            replaceFragment(fragment, "salesFragment");
+        }else if (id == R.id.purchase) {
+            Fragment fragment = new PurchaseFragment();
+            replaceFragment(fragment, "purchaseFragment");
+        } else if (id == R.id.nav_logout) {
             confirmAndLogout(this);
         }
 
@@ -228,6 +241,7 @@ public class MainDrawerActivity extends AppCompatActivity
         FragmentManager fragmentManager = getFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.content_frame, fragment, TAG)
+                .addToBackStack(TAG)
                 .commit();
     }
 
@@ -245,10 +259,44 @@ public class MainDrawerActivity extends AppCompatActivity
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
+        AdminDashboardFragment myFragment = (AdminDashboardFragment)getFragmentManager().findFragmentByTag("adminDashboardFragment");
+        if (keyCode == KeyEvent.KEYCODE_BACK && myFragment != null && myFragment.isVisible()) {
             //preventing default implementation previous to android.os.Build.VERSION_CODES.ECLAIR
             return true;
         }
+
+        SalesFragment myFragment3 = (SalesFragment)getFragmentManager().findFragmentByTag("salesFragment");
+        if (keyCode == KeyEvent.KEYCODE_BACK && myFragment3 != null && myFragment3.isVisible()) {
+            Intent intent = new Intent(MainDrawerActivity.this, MainDrawerActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            return true;
+        }
+
+        SalesReportFragment myFragment1 = (SalesReportFragment)getFragmentManager().findFragmentByTag("salesReportFragment");
+        if (keyCode == KeyEvent.KEYCODE_BACK && myFragment1 != null && myFragment1.isVisible()) {
+            Intent intent = new Intent(MainDrawerActivity.this, MainDrawerActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            return true;
+        }
+
+        ReportsFragment myFragment2 = (ReportsFragment)getFragmentManager().findFragmentByTag("reportsFragment");
+        if (keyCode == KeyEvent.KEYCODE_BACK && myFragment2 != null && myFragment2.isVisible()) {
+            Intent intent = new Intent(MainDrawerActivity.this, MainDrawerActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            return true;
+        }
+
+        PurchaseFragment myFragment4 = (PurchaseFragment) getFragmentManager().findFragmentByTag("purchaseFragment");
+        if (keyCode == KeyEvent.KEYCODE_BACK && myFragment4 != null && myFragment4.isVisible()) {
+            Intent intent = new Intent(MainDrawerActivity.this, MainDrawerActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            return true;
+        }
+
         return super.onKeyDown(keyCode, event);
     }
 
@@ -263,5 +311,77 @@ public class MainDrawerActivity extends AppCompatActivity
         if (null != fragment)
             fragment.onActivityResult(requestCode, resultCode, data);
 
+    }
+
+    @Override
+    public void onCheckoutListenerPurchase() {
+
+    }
+
+    @Override
+    public void onCheckoutListener(SalesResponse sale) {
+        FragmentManager fm = getFragmentManager();
+
+        // replace
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.setCustomAnimations(R.anim.slide_in_left,
+                R.anim.slide_out_right,R.anim.slide_in_left,
+                R.anim.slide_out_right);
+
+        VerifySalesFragment frg =  new VerifySalesFragment();
+        frg.setCart(sale);
+        ft.replace(R.id.content_frame, frg,"verifySalesFragment");
+
+        ft.addToBackStack("verifySalesFragment");
+        ft.commit();
+    }
+
+
+    @Override
+    public void onFinishClicked(SalesResponse sale) {
+        FragmentManager fm = getFragmentManager();
+
+        // replace
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.setCustomAnimations(R.anim.slide_in_left,
+                R.anim.slide_out_right,R.anim.slide_in_left,
+                R.anim.slide_out_right);
+
+        InvoiceFragment frg = new InvoiceFragment();
+        frg.cart =sale;
+        ft.replace(R.id.content_frame,frg,"invoiceFragment");
+
+        ft.addToBackStack("invoiceFragment");
+        ft.commit();
+    }
+
+    @Override
+    public void onFragmentInteraction() {
+
+    }
+
+    @Override
+    public void onStockFragmentListener(){
+
+    }
+
+
+    @Override
+    public void onInvoiceSearchFragmentInteraction(Invoice selectedInvoice) {
+        FragmentManager fm = getFragmentManager();
+
+        // replace
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.setCustomAnimations(R.anim.slide_in_left,
+                R.anim.slide_out_right,R.anim.slide_in_left,
+                R.anim.slide_out_right);
+
+        InvoiceFragment fragment = new InvoiceFragment();
+
+        fragment.selectedInvoice = selectedInvoice;
+        ft.replace(R.id.content_frame,fragment ,"invoiceDetailFragment");
+
+        ft.addToBackStack("invoiceDetailFragment");
+        ft.commit();
     }
 }

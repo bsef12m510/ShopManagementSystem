@@ -7,10 +7,16 @@
 
             android:checked="true"
             android:title="Dashboard" />
-       <!-- <item
-            android:id="@+id/nav_account"
+        <item
+            android:id="@+id/sales"
 
-            android:title="Inventory" />-->
+            android:title="Sales" />
+
+        <item
+            android:id="@+id/purchase"
+
+            android:title="Purchase" />
+
         <item
             android:id="@+id/nav_sales"
 

@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.apptriangle.pos.InvoiceSearchFragment.adapter.InvoiceAdapter;
 import com.apptriangle.pos.InvoiceSearchFragment.fragment.InvoiceSearchFragment;
 import com.apptriangle.pos.InvoiceSearchFragment.service.InvoiceService;
+import com.apptriangle.pos.MainDrawerActivity;
 import com.apptriangle.pos.R;
 import com.apptriangle.pos.SecureActivity;
 import com.apptriangle.pos.api.ApiClient;
@@ -72,8 +73,13 @@ public class InvoiceFragment extends Fragment {
                     paidAmount = paidAmount + Double.parseDouble(s.toString());
                 else
                     paidAmount = Double.parseDouble(s.toString());*/
-                if (!fromHome && cart == null)
-                    dueAmount = totalAmount - (paidAmount + Double.parseDouble(s.toString()));
+                if (!fromHome && cart == null) {
+                    try {
+                        dueAmount = totalAmount - (paidAmount + Double.parseDouble(s.toString().replace("TK","")));
+                    }catch(Exception e){
+//                        dueAmount = totalAmount - (paidAmount + Double.parseDouble(s.toString()));
+                    }
+                }
                 else
                     dueAmount = totalAmount - paidAmount;
                 if (dueAmount < 0)
@@ -88,6 +94,7 @@ public class InvoiceFragment extends Fragment {
         public void onTextChanged(CharSequence s, int start, int before, int count) {
         }
     };
+    private String role;
 
     public InvoiceFragment() {
         // Required empty public constructor
@@ -97,7 +104,13 @@ public class InvoiceFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setTitle();
+        getSavedHeaderData();
         initialize();
+    }
+
+    private void getSavedHeaderData() {
+        SharedPreferences shared = getActivity().getSharedPreferences("com.appTriangle.pos", Context.MODE_PRIVATE);
+        role = shared.getString("role", "");
     }
 
     @Override
@@ -195,14 +208,14 @@ public class InvoiceFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (cart != null) {
-                    Intent intent = new Intent(getActivity(), SecureActivity.class);
+                    Intent intent = new Intent(getActivity(), "owner".equalsIgnoreCase(role) ? MainDrawerActivity.class : SecureActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                 } else {
                     if (edtPaidAmnt.isEnabled())
                         updateInvoice();
                     else {
-                        Intent intent = new Intent(getActivity(), SecureActivity.class);
+                        Intent intent = new Intent(getActivity(), "owner".equalsIgnoreCase(role) ? MainDrawerActivity.class : SecureActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                     }
@@ -210,7 +223,6 @@ public class InvoiceFragment extends Fragment {
             }
         });
     }
-
 
     public void updateInvoice() {
         boolean isOk = false;
