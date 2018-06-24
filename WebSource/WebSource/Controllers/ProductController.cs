@@ -346,6 +346,24 @@ namespace WebSource.Controllers
                 return Ok(cproducts);
             }
         }
+
+        [HttpGet]
+        [ActionName("getProductQuantity")]
+        public IHttpActionResult getProductQuantity(string apiKey, int product)
+        {
+            var cproducts = new List<CProduct>();
+            SMS_DBEntities1 db = new SMS_DBEntities1();
+            var user = db.users.FirstOrDefault(y => y.api_key.Equals(apiKey));
+            if (null != user)
+            {
+                var shop = db.shops.FirstOrDefault(x => x.shop_id == user.shop_id);
+                var inv = shop.inventories.FirstOrDefault(y=>y.product_id == product);
+                if (inv != null)
+                    return Ok(inv.prod_quant);
+            }
+
+            return Ok(0);
+        }
     }
 
 }

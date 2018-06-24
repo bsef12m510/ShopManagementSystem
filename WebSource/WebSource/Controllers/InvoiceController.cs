@@ -40,6 +40,32 @@ namespace WebSource.Controllers
             return Ok(invoice);
         }
 
+        [ActionName("GetAllSaleInvoice")]
+        public IHttpActionResult getAllSaleInvoice(String apiKey)
+        {
+            JInvoice invoice = null;
+
+            try
+            {
+                SMS_DBEntities1 db = new SMS_DBEntities1();
+                var user = db.users.FirstOrDefault(y => y.api_key.Equals(apiKey));
+                if (null == user)
+                {
+                    return Ok();
+                }
+                var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
+
+                return Ok(new JInvoice(shop.sales.ToList()));
+            }
+            catch (Exception ex)
+            {
+                //ok = false;
+            }
+            finally { }
+
+            return Ok();
+        }
+
         [ActionName("GetSalesInvoiceByCell")]
         public IHttpActionResult GetSalesInvoiceByCell(String apiKey, String cust_phone)
         {
