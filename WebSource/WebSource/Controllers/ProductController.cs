@@ -35,7 +35,7 @@ namespace WebSource.Controllers
                 }
 
                 distinctList = prodTypeList.GroupBy(x => x.type_id).Select(x => x.First());
-
+                db.Dispose();
                 return Ok(distinctList);
             }
             else
@@ -188,7 +188,7 @@ namespace WebSource.Controllers
             DateTime dateFrom = new DateTime(dateTo.Year, dateTo.Month, 1);
             SMS_DBEntities1 db = new SMS_DBEntities1();
             var user = db.users.FirstOrDefault(x => x.api_key.Equals(apiKey));
-            if (null != user && user.role_id.Equals("admin"))
+            if (null != user && user.role_id.Equals("Owner"))
             {
                 var productsMap = new Dictionary<int, CProduct>();
                 var cproducts = new List<CProduct>();
@@ -272,7 +272,7 @@ namespace WebSource.Controllers
 
             SMS_DBEntities1 db = new SMS_DBEntities1();
             var user = db.users.FirstOrDefault(x => x.api_key.Equals(apiKey));
-            if (null != user && user.role_id.Equals("admin"))
+            if (null != user && user.role_id.Equals("Owner"))
             {
                 var shop = db.shops.FirstOrDefault(x => x.shop_id == user.shop_id);
                 if (shop != null)
