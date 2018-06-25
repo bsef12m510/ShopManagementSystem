@@ -53,7 +53,7 @@ namespace WebSource.Controllers
                     return Ok();
                 }
                 var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
-                var sales = db.Database.SqlQuery<String>("select product_id,sum(prod_quant) total_items,sum(isnull(total_amt,0)) total_sale from sales where agent_id = @user and sale_date =CAST(GETDATE() AS DATE) group by product_id;", new SqlParameter("@user", user.user_id)).ToList();
+                var sales = db.Database.SqlQuery<String>("select distinct(sale_id) from sales;").ToList();
                 foreach (var sale in sales) {
                     invoices.Add(new JInvoice(shop.sales.Where(y=>y.sale_id.Equals(sale)).ToList()));
                 }

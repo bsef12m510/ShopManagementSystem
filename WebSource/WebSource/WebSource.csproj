@@ -244,6 +244,9 @@
     <Compile Include="Models\msrmnt_units.cs">
       <DependentUpon>SMS_Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\sale.cs">
+      <DependentUpon>SMS_Model.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\SaleByMonth.cs" />
     <Compile Include="Models\SProduct.cs" />
     <Compile Include="Models\TodaySale.cs" />
@@ -259,9 +262,6 @@
       <DependentUpon>SMS_Model.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\purchase.cs">
-      <DependentUpon>SMS_Model.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\sale.cs">
       <DependentUpon>SMS_Model.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\shop.cs">
