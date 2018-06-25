@@ -12,7 +12,7 @@ namespace WebSource.Controllers
     {
 
         [ActionName("GetSalesInvoice")]
-        public IHttpActionResult getSalesInvoice(String apiKey, int invoiceId)
+        public IHttpActionResult getSalesInvoice(String apiKey, string invoiceId)
         {
             JInvoice invoice = null;
 
@@ -26,8 +26,8 @@ namespace WebSource.Controllers
                 }
                 var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
 
-                if (null != db.sales.Where(y => y.sale_id == invoiceId))
-                    invoice = new JInvoice(db.sales.Where(y => y.sale_id == invoiceId && y.shop_id == shop.shop_id).ToList());
+                if (null != db.sales.Where(y => y.sale_id.Contains(invoiceId)))
+                    invoice = new JInvoice(db.sales.Where(y => y.sale_id.Contains(invoiceId) && y.shop_id == shop.shop_id).ToList());
                 else
                     return Ok(false);
             }
@@ -40,11 +40,10 @@ namespace WebSource.Controllers
             return Ok(invoice);
         }
 
-        [ActionName("GetAllSaleInvoice")]
-        public IHttpActionResult getAllSaleInvoice(String apiKey)
+        [ActionName("GetAllSaleInvoices")]
+        public IHttpActionResult getAllSaleInvoices(String apiKey)
         {
-            JInvoice invoice = null;
-
+            List<JInvoice> invoices = new List<JInvoice>();
             try
             {
                 SMS_DBEntities1 db = new SMS_DBEntities1();
@@ -54,8 +53,11 @@ namespace WebSource.Controllers
                     return Ok();
                 }
                 var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
-
-                return Ok(new JInvoice(shop.sales.ToList()));
+                var sales = db.Database.SqlQuery<String>("select product_id,sum(prod_quant) total_items,sum(isnull(total_amt,0)) total_sale from sales where agent_id = @user and sale_date =CAST(GETDATE() AS DATE) group by product_id;", new SqlParameter("@user", user.user_id)).ToList();
+                foreach (var sale in sales) {
+                    invoices.Add(new JInvoice(shop.sales.Where(y=>y.sale_id.Equals(sale)).ToList()));
+                }
+                return Ok(invoices);
             }
             catch (Exception ex)
             {
@@ -81,7 +83,7 @@ namespace WebSource.Controllers
                 }
                 var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
 
-                if (null != db.sales.Where(y => y.cust_phone == cust_phone && y.shop_id == shop.shop_id))
+                if (null != db.sales.Where(y => y.cust_phone.Contains(cust_phone) && y.shop_id == shop.shop_id))
                 {
                     var salesList = db.sales.Where(y => y.cust_phone == cust_phone).ToList();  // add cust phone for every row of same sale id in db
                     foreach (var salesWithCellNo in salesList.GroupBy(x => x.sale_id))
@@ -138,7 +140,7 @@ namespace WebSource.Controllers
 
         [HttpGet]
         [ActionName("clearSaleInvoicePayment")]
-        public IHttpActionResult clearSaleInvoicePayment(String apiKey, int invoiceId, double amt)
+        public IHttpActionResult clearSaleInvoicePayment(String apiKey, String invoiceId, double amt)
         {
             sale invoice = null;
 
@@ -152,7 +154,7 @@ namespace WebSource.Controllers
                 }
                 var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
 
-                invoice = db.sales.FirstOrDefault(y => y.sale_id == invoiceId);
+                invoice = db.sales.FirstOrDefault(y => y.sale_id.Equals(invoiceId));
 
                 if (null == invoice)
                     return Ok(false);

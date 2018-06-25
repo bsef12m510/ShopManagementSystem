@@ -232,6 +232,7 @@
     <Compile Include="Models\CPurchase.cs" />
     <Compile Include="Models\CSale.cs" />
     <Compile Include="Models\CShop.cs" />
+    <Compile Include="Models\CUoM.cs" />
     <Compile Include="Models\CUser.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\JBrand.cs" />
@@ -363,6 +364,7 @@
     <Content Include="pug\includes\modals\logout.pug" />
     <Content Include="pug\includes\navbar.pug" />
     <Content Include="pug\includes\scroll-to-top.pug" />
+    <None Include="Properties\PublishProfiles\shopmanager.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />

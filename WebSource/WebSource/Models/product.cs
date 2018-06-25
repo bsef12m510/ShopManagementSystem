@@ -37,8 +37,8 @@ namespace WebSource.Models
         public virtual product_types product_types { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<purchase> purchases { get; set; }
+        public virtual msrmnt_units msrmnt_units { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<sale> sales { get; set; }
-        public virtual msrmnt_units msrmnt_units { get; set; }
     }
 }

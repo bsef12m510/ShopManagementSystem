@@ -8,7 +8,7 @@ namespace WebSource.Models
     public class CSale
     {
         public int? shop_id { get; set; }
-        public int sale_id { get; set; }
+        public string sale_id { get; set; }
         public CProduct cproduct { get; set; }
         public CUser agent { get; set; }
         public int? prod_qty { get; set; }

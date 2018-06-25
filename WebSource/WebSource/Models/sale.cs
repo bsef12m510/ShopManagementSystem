@@ -15,7 +15,7 @@ namespace WebSource.Models
     public partial class sale
     {
         public int sr_no { get; set; }
-        public int sale_id { get; set; }
+        public string sale_id { get; set; }
         public int product_id { get; set; }
         public Nullable<int> shop_id { get; set; }
         public int prod_quant { get; set; }
@@ -30,8 +30,8 @@ namespace WebSource.Models
         public System.DateTime sale_date { get; set; }
         public System.TimeSpan sale_time { get; set; }
     
-        public virtual shop shop { get; set; }
         public virtual product product { get; set; }
+        public virtual shop shop { get; set; }
         public virtual user user { get; set; }
     }
 }

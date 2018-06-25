@@ -7,7 +7,7 @@ namespace WebSource.Models
 {
     public class JInvoice
     {
-        public int invoiceId{ get; set;}
+        public string invoiceId { get; set;}
         public string str_invoiceId { get; set; }
         public int shopID { get; set; }
         public string agentID { get; set; }
@@ -23,7 +23,7 @@ namespace WebSource.Models
         {
             this.agentID = invoice.First(y=>y.is_invoice.Equals("Y")).agent_id;
             this.shopID = (int)invoice.First(y=>y.is_invoice.Equals("Y")).shop_id;
-            this.invoiceId = (int)invoice.First(y=>y.is_invoice.Equals("Y")).sale_id;
+            this.invoiceId = invoice.First(y=>y.is_invoice.Equals("Y")).sale_id;
             this.amount_paid = (double)invoice.First(y=>y.is_invoice.Equals("Y")).paid_amt;
             this.total_amount = (double)invoice.First(y=>y.is_invoice.Equals("Y")).total_amt;
             this.cust_name = invoice.First(y => y.is_invoice.Equals("Y")).cust_name;
@@ -35,7 +35,7 @@ namespace WebSource.Models
                                             , qty = sale.prod_quant, unit_price = sale.product.unit_price });
             }
         }
-
+        
         public JInvoice(List<purchase> invoice) {
             this.agentID = invoice.First(y=>y.is_invoice.Equals("Y")).agent_id;
             this.shopID = (int)invoice.First(y=>y.is_invoice.Equals("Y")).shop_id;

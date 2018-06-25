@@ -14,7 +14,7 @@ namespace WebSource.Controllers
         [ActionName("SaleProduct")]
         public IHttpActionResult saleProducts(JSale sale)
         {
-            int sale_id = -1;
+            string sale_id = "";
 
             try
             {
@@ -27,12 +27,15 @@ namespace WebSource.Controllers
                 var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
                 var inventory = db.inventories.Where(y => y.shop_id == shop.shop_id);
                 int i = 1;
-                sale_id = 1;
+
                 try {
-                    sale_id = db.sales.Max(y => y.sale_id)+1;
+                    int sr_no = db.sales.Max(y => y.sr_no) + 1;
+                    sale_id = DateTime.Today.Date.ToString("ddMMyyyy") + sr_no.ToString("000") + "";
                 }
                 catch(Exception ex)
-                {}
+                {
+                    sale_id = DateTime.Today.Date.ToString("ddMMyyyy") + "001";
+                }
 
                 foreach (var product in sale.products)
                 {
@@ -92,7 +95,7 @@ namespace WebSource.Controllers
             }
             catch (Exception ex)
             {
-                sale_id = -1;
+                sale_id = "Error";
             }
             finally { }
 
