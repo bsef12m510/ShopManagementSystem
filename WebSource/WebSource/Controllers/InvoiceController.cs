@@ -14,7 +14,7 @@ namespace WebSource.Controllers
         [ActionName("GetSalesInvoice")]
         public IHttpActionResult getSalesInvoice(String apiKey, string invoiceId)
         {
-            JInvoice invoice = null;
+            List<JInvoice> invoicesList = new List<JInvoice>();
 
             try
             {
@@ -26,8 +26,14 @@ namespace WebSource.Controllers
                 }
                 var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
 
-                if (null != db.sales.Where(y => y.sale_id.Contains(invoiceId)))
-                    invoice = new JInvoice(db.sales.Where(y => y.sale_id.Contains(invoiceId) && y.shop_id == shop.shop_id).ToList());
+                if (null != db.sales.Where(y => y.sale_id.Contains(invoiceId))) {
+                    var salesList = db.sales.Where(y => y.sale_id.Contains(invoiceId)).ToList();
+                    foreach (var sales in salesList.GroupBy(x => x.sale_id))
+                    {
+                        invoicesList.Add(new JInvoice(sales.ToList()));
+                    }
+                }
+                    
                 else
                     return Ok(false);
             }
@@ -37,7 +43,7 @@ namespace WebSource.Controllers
             }
             finally { }
 
-            return Ok(invoice);
+            return Ok(invoicesList);
         }
 
         [ActionName("GetAllSaleInvoices")]
@@ -53,9 +59,9 @@ namespace WebSource.Controllers
                     return Ok();
                 }
                 var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
-                var sales = db.Database.SqlQuery<String>("select distinct(sale_id) from sales;").ToList();
-                foreach (var sale in sales) {
-                    invoices.Add(new JInvoice(shop.sales.Where(y=>y.sale_id.Equals(sale)).ToList()));
+                foreach (var sale in shop.sales.GroupBy(x => x.sale_id))
+                {
+                    invoices.Add(new JInvoice(sale.ToList()));
                 }
                 return Ok(invoices);
             }
@@ -85,7 +91,7 @@ namespace WebSource.Controllers
 
                 if (null != db.sales.Where(y => y.cust_phone.Contains(cust_phone) && y.shop_id == shop.shop_id))
                 {
-                    var salesList = db.sales.Where(y => y.cust_phone == cust_phone).ToList();  // add cust phone for every row of same sale id in db
+                    var salesList = db.sales.Where(y => y.cust_phone.Contains(cust_phone)).ToList();  // add cust phone for every row of same sale id in db
                     foreach (var salesWithCellNo in salesList.GroupBy(x => x.sale_id))
                     {
                         //eventsInYear.Key - year
