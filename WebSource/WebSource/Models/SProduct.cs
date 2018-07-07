@@ -9,5 +9,6 @@ namespace WebSource.Models
     {
         public int product_id { get; set; }
         public int qty { get; set; }
+        public double amount { get; set; }
     }
 }

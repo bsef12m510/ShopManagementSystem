@@ -32,7 +32,7 @@ namespace WebSource.Models
             products = new List<JProduct>();
             foreach (var sale in invoice) {
                 products.Add(new JProduct { product_id = sale.product.product_id, product_name = sale.product.product_name
-                                            , qty = sale.prod_quant, unit_price = sale.product.unit_price });
+                                            , qty = sale.prod_quant, unit_price = (double)sale.total_amt });
             }
         }
         

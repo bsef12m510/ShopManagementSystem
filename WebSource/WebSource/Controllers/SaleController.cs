@@ -82,6 +82,8 @@ namespace WebSource.Controllers
                                 sale_date = DateTime.Today,
                                 agent_id = user.user_id,
                                 sale_time = DateTime.Now.TimeOfDay,
+                                total_amt = product.amount,
+                                paid_amt = product.amount,
                                 shop_id = shop.shop_id,
                                 product_id = product.product_id,
                                 prod_quant = (int)product.qty,
