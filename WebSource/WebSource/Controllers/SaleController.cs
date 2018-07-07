@@ -78,6 +78,7 @@ namespace WebSource.Controllers
                                 shop_id = shop.shop_id,
                                 product_id = product.product_id,
                                 prod_quant = (int)product.qty,
+                                cust_name = sale.cust_name,
                                 cust_phone = sale.cust_phone,
                                 is_invoice = "N",
                                 is_pmnt_clr = "N"

@@ -56,6 +56,19 @@ namespace WebSource.Controllers
                 return Ok(false);
         }
 
+        [HttpGet]
+        [ActionName("getShop")]
+        public IHttpActionResult getShop(String apiKey)
+        {
+            SMS_DBEntities1 db = new SMS_DBEntities1();
+            var user = db.users.FirstOrDefault(x => x.api_key.Equals(apiKey));
+
+            if (user != null && user.shop_id != 0)
+                return Ok(new CShop(db.shops.FirstOrDefault(y => y.shop_id == user.shop_id)));
+            else
+                return Ok(false);
+        }
+
         // POST api/values
         public void Post([FromBody]user user)
         {
