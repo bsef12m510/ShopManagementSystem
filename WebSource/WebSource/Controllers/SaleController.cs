@@ -29,12 +29,19 @@ namespace WebSource.Controllers
                 int i = 1;
 
                 try {
-                    int sr_no = db.sales.Max(y => y.sr_no) + 1;
-                    sale_id = DateTime.Today.Date.ToString("ddMMyyyy") + sr_no.ToString("000") + "";
+                    var s_sales = shop.sales.Where(y => y.sale_date.Equals(DateTime.Today.Date));
+                    if (shop.sales.Count != 0 && null != s_sales && s_sales.Count() != 0)
+                    {
+                        int num = s_sales.Max(y => y.sr_no);
+                        var sr_no = int.Parse(db.sales.First(y => y.sr_no == num).sale_id.Substring(11))+1;
+                        sale_id = DateTime.Today.Date.ToString("ddMMyyyy") + shop.shop_id.ToString("000") + sr_no.ToString("000");
+                    }
+                    else
+                        sale_id = DateTime.Today.Date.ToString("ddMMyyyy")+ shop.shop_id.ToString("000") + "001";
                 }
                 catch(Exception ex)
                 {
-                    sale_id = DateTime.Today.Date.ToString("ddMMyyyy") + "001";
+                    sale_id = DateTime.Today.Date.ToString("ddMMyyyy") + shop.shop_id.ToString("000") + "001";
                 }
 
                 foreach (var product in sale.products)
