@@ -178,8 +178,19 @@ namespace WebSource.Controllers
                         sales = db.sales.Where(x => x.shop_id == shop.shop_id &&
                                                    (agentId != null ? x.agent_id.Equals(agentId) : true));
                     }
+
+                    double? lastprice = 0.0;
+                    int count = 1;
                     foreach (var s in sales)
                     {
+                        if (count != sales.Count())
+                        {
+                            lastprice += s.total_amt;
+                        }
+                        else
+                        {
+                            s.total_amt = s.total_amt - lastprice;
+                        }
                         var product = db.products.FirstOrDefault(x => x.product_id == s.product_id &&
                                                                      ((brandId != (-1)) ? (x.brand_id == brandId) : true) &&
                                                                      ((productTypeId != (-1)) ? (x.product_type == productTypeId) : true));
@@ -194,6 +205,7 @@ namespace WebSource.Controllers
 
                             csales.Add(new CSale(s, cproduct, cuser));
                         }
+                        count++;
                     }
 
                     return Ok(csales);
