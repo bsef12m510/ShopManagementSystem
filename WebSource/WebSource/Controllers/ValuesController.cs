@@ -115,7 +115,8 @@ namespace WebSource.Controllers
                 SMS_DBEntities1 db = new SMS_DBEntities1();
                 var user = db.users.FirstOrDefault(y => y.api_key.Equals(apiKey));
                 var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
-
+                if (shop.sales.Where(y => y.product.brand_id == p).Count() != 0)
+                    db.sales.RemoveRange(shop.sales.Where(y => y.product.brand_id == brand));
                 foreach (var inventory in shop.inventories.Where(y => y.product.brand_id == brand))
                 {
                     inventory.is_brand_active = "N";
@@ -142,7 +143,8 @@ namespace WebSource.Controllers
                 SMS_DBEntities1 db = new SMS_DBEntities1();
                 var user = db.users.FirstOrDefault(y => y.api_key.Equals(apiKey));
                 var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
-
+                if (shop.sales.Where(y => y.product.product_type == p).Count() != 0)
+                    db.sales.RemoveRange(shop.sales.Where(y => y.product.product_type == p));
                 foreach (var inventory in shop.inventories.Where(y => y.product.product_type == p)) {
                     inventory.is_prod_active = "N";
                     inventory.is_brand_active = "N";
@@ -166,7 +168,8 @@ namespace WebSource.Controllers
                 SMS_DBEntities1 db = new SMS_DBEntities1();
                 var user = db.users.FirstOrDefault(y => y.api_key.Equals(apiKey));
                 var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
-
+                if(shop.sales.Where(y => y.product_id == p).Count() != 0)
+                    db.sales.RemoveRange(shop.sales.Where(y=>y.product_id == p));
                 foreach (var inventory in shop.inventories.Where(y => y.product.product_id == p))
                 {
                     inventory.is_prod_active = "N";

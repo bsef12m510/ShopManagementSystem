@@ -118,6 +118,7 @@ namespace WebSource.Controllers
         public IHttpActionResult GetPurchaseInvoice(String apiKey, String invoiceId)
         {
             JInvoice invoice = null;
+            List<JInvoice> invoicesList = new List<JInvoice>();
 
             try
             {
@@ -129,8 +130,19 @@ namespace WebSource.Controllers
                 }
                 var shop = db.shops.FirstOrDefault(y => y.shop_id == user.shop_id);
 
-                if(null != db.purchases.Where(y => y.purch_id.Equals(invoiceId)))
-                   invoice = new JInvoice(db.purchases.Where(y => y.purch_id.Equals(invoiceId)).ToList());
+                if (null != db.sales.Where(y => y.sale_id.Contains(invoiceId) && y.shop_id == shop.shop_id))
+                {
+                    var salesList = db.sales.Where(y => y.cust_phone.Contains(invoiceId)).ToList();  // add cust phone for every row of same sale id in db
+                    foreach (var salesWithCellNo in salesList.GroupBy(x => x.sale_id))
+                    {
+                        //eventsInYear.Key - year
+                        //eventsInYear - collection of events in that year
+                        invoice = new JInvoice(salesWithCellNo.ToList());
+                        invoicesList.Add(invoice);
+                    }
+                    //invoice = new JInvoice(db.sales.Where(y => y.cust_phone == cust_phone).ToList());
+                }
+
                 else
                     return Ok(false);
 
